@@ -51,6 +51,7 @@ MARK_COOL = STATE / "cooldown_until.txt"
 STREAK = STATE / "blocked_streak.txt"
 CATALOG = CACHE / "catalog.json"
 POOL = CACHE / "pool.json"
+WATCHLIST = BASE / "watchlist.txt"
 LAST_DATA = CACHE / "latest.json"
 RUN_HISTORY = CACHE / "run_history.json"
 
@@ -359,6 +360,27 @@ def clean_deals(items: list[dict]) -> list[dict]:
     return out
 
 
+def load_watchlist() -> list[str]:
+    """读取关注关键词。一行一个，# 开头为注释。"""
+    try:
+        raw = WATCHLIST.read_text(encoding="utf-8")
+    except OSError:
+        return []
+    out = []
+    for line in raw.splitlines():
+        w = line.strip()
+        if w and not w.startswith("#"):
+            out.append(w)
+    return out
+
+
+def watch_hits(items: list[dict], words: list[str]) -> list[dict]:
+    """在商品里找标题包含任一关注词的。"""
+    if not words:
+        return []
+    return [d for d in items if any(w in (d.get("title") or "") for w in words)]
+
+
 def decorate(d: dict, catalog: "Catalog", cutoff: str, drop_pct: float,
              keep_days: int) -> dict:
     """补上「首次见到 / 历史新低 / 近期推过」三个标记。
@@ -397,7 +419,7 @@ def decorate(d: dict, catalog: "Catalog", cutoff: str, drop_pct: float,
 
 
 def pick(items: list[dict], cfg: configparser.ConfigParser,
-         catalog: "Catalog", pool: "Pool") -> tuple[list[dict], dict, list[dict]]:
+         catalog: "Catalog", pool: "Pool") -> tuple[list[dict], dict, list[dict], list[dict]]:
     """返回 (折扣榜, 统计, 好价榜候选)。
 
     好价榜候选保持数据源原始顺序，且**包含没有原价的商品**——
@@ -481,7 +503,19 @@ def pick(items: list[dict], cfg: configparser.ConfigParser,
     hot_ids = {d.get("article_id") for d in hot}
     feed_list = [d for d in passed if d.get("article_id") not in hot_ids]
     feed_list = feed_list[:cfg.getint("crawl", "top_n", fallback=50)]
-    return hot[:max_items], stat, feed_list
+
+    # 关注榜：从同一个 24 小时池里按关键词捞，筛选口径与折扣榜完全一致
+    words = load_watchlist()
+    wstat = {"words": len(words), "hit": 0}
+    watch_list = watch_hits(pool_items, words)
+    wstat["hit"] = len(watch_list)
+    watch_list = [d for d in watch_list if d.get("discount_pct")
+                  and d["discount_pct"] <= min_disc]
+    watch_list.sort(key=lambda d: (d["discount_pct"], -(d.get("save") or 0)))
+    watch_list = watch_list[:max_items]
+    stat["watch_words"] = wstat["words"]
+    stat["watch_hit"] = wstat["hit"]
+    return hot[:max_items], stat, feed_list, watch_list
 
 
 # ---------------------------------------------------------------- 商品身份
@@ -721,7 +755,8 @@ def zhe(pct: float) -> str:
     return f"{pct / 10:.1f}"
 
 
-def render_html(hot: list[dict], passed: list[dict], meta: dict) -> str:
+def render_html(hot: list[dict], passed: list[dict], meta: dict,
+                watch: list[dict] | None = None) -> str:
     def meta_line(d):
         parts = [d.get("category") or "其他", d.get("mall") or "",
                  d.get("source") or "", d.get("time") or ""]
@@ -791,6 +826,22 @@ def render_html(hot: list[dict], passed: list[dict], meta: dict) -> str:
 
     empty = "" if hot else '<div class="warn">今天没有符合力度阈值的商品，可以调低 config.ini 里的门槛。</div>'
     feed_top = passed  # pick 已按「去掉折扣榜重合 + 前 N 名」截好
+
+    watch = watch or []
+    n_words = (meta.get("stat") or {}).get("watch_words", 0)
+    edit_url = H.escape(meta.get("watch_edit_url") or "#")
+    edit_link = f'<a href="{edit_url}" target="_blank">编辑关注列表</a>'
+    if not n_words:
+        watch_hint = f'还没有设置关注关键词 · {edit_link}'
+        watch_rows = ('<tr><td colspan="5" style="color:#9aa0a8;padding:16px">'
+                      '在 watchlist.txt 里写关键词（一行一个），命中的商品会出现在这里。</td></tr>')
+    elif not watch:
+        watch_hint = f'关键词 {n_words} 个 · 今天没有命中 · {edit_link}'
+        watch_rows = ('<tr><td colspan="5" style="color:#9aa0a8;padding:16px">'
+                      '抓到的商品里暂时没有匹配关注关键词的，或折扣未达力度门槛。</td></tr>')
+    else:
+        watch_hint = f'关键词 {n_words} 个 · 命中 {len(watch)} 条 · {edit_link}'
+        watch_rows = "".join(row(d, i + 1) for i, d in enumerate(watch))
 
     return f"""<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -894,6 +945,9 @@ tbody tr:hover td{{background:#fcfcfd}}
   <h2><span class="dot"></span>折扣榜 <span class="hint">按折扣力度排序 · 只收 {float(meta['min_disc']) / 10:.1f} 折以内</span></h2>
   <table><thead><tr><th>#</th><th>商品</th><th>到手价</th><th>立省</th><th>折扣</th></tr></thead>
   <tbody>{''.join(row(d, i + 1) for i, d in enumerate(hot)) or '<tr><td colspan="5" style="color:#9aa0a8;padding:20px">无</td></tr>'}</tbody></table>
+  <h2><span class="dot"></span>关注商品 <span class="hint">{watch_hint}</span></h2>
+  <table><thead><tr><th>#</th><th>商品</th><th>到手价</th><th>立省</th><th>折扣</th></tr></thead>
+  <tbody>{watch_rows}</tbody></table>
   <h2><span class="dot"></span>好价榜 <span class="hint">{H.escape(meta.get('feed_name') or '')} 原始顺序 · 前 {len(feed_top)} 条</span></h2>
   <table><thead><tr><th>#</th><th>商品</th><th>到手价</th><th>立省</th><th>折扣</th></tr></thead>
   <tbody>{''.join(row(d, i + 1) for i, d in enumerate(feed_top)) or '<tr><td colspan="5" style="color:#9aa0a8;padding:20px">无</td></tr>'}</tbody></table>
@@ -1030,7 +1084,7 @@ def main() -> int:
     catalog = Catalog()
     pool = Pool()
     deals = clean_deals(data.get("deals") or [])
-    hot, stat, passed = pick(deals, cfg, catalog, pool)
+    hot, stat, passed, watch = pick(deals, cfg, catalog, pool)
 
     # 完全没有数据时，退到缓存
     if not deals:
@@ -1038,7 +1092,7 @@ def main() -> int:
             data = json.loads(LAST_DATA.read_text(encoding="utf-8"))
             data["stale"] = True
             deals = clean_deals(data.get("deals") or [])
-            hot, stat, passed = pick(deals, cfg, catalog, pool)
+            hot, stat, passed, watch = pick(deals, cfg, catalog, pool)
             log("本次无有效数据，已回退到缓存")
         else:
             log("本次抓取完全失败且无缓存，不推送")
@@ -1068,6 +1122,7 @@ def main() -> int:
         "dedup_days": cfg.getint("dedup", "days", fallback=7),
         "feed_name": FEED_NAME,
         "site_url": cfg.get("push", "site_url", fallback=""),
+        "watch_edit_url": cfg.get("watch", "edit_url", fallback=""),
         "feed_limit": cfg.getint("crawl", "top_n", fallback=50),
         "hot_count": len(hot),
         "feed_count": min(len(passed), feed_limit),
@@ -1077,7 +1132,7 @@ def main() -> int:
     # 报表
     REPORTS.mkdir(parents=True, exist_ok=True)
     report = REPORTS / f"{now:%Y-%m-%d}.html"
-    report.write_text(render_html(hot, passed, meta), encoding="utf-8")
+    report.write_text(render_html(hot, passed, meta, watch), encoding="utf-8")
     log(f"报表已生成 {report}")
 
     log(f"数据源 {meta['scanned']} 条 → 好价榜 {min(len(passed), feed_limit)} 条，"
@@ -1097,6 +1152,14 @@ def main() -> int:
         catalog.save()
         log(f"--no-notify：跳过所有通知（未记录已推送状态）· 目录共 {len(catalog.records)} 条")
         record_run("test", meta, "静默测试，未发送通知")
+        return 0
+
+    if not cfg.getboolean("push", "enabled", fallback=True):
+        # 总开关关掉时：照常抓取、入库、出报表，只是不打扰。
+        pool.save()
+        catalog.save()
+        log("推送已停用（[push] enabled = false），只更新日报")
+        record_run("disabled", meta, "推送已停用，仅更新日报")
         return 0
 
     # 推送只发「近期没推过」的，报表则展示完整榜单。
