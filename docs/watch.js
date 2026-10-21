@@ -25,7 +25,17 @@
       .filter(function (s) { return s && s.charAt(0) !== '#'; });
   }
 
+  // 入口上的「N 个关键词」是服务端生成时烙进去的，用户改完词不会自动更新，
+  // 这里跟着实时校正；读不到数据就藏起来，绝不显示一个不准的数字。
+  function updateCount(words) {
+    var el = document.getElementById('wishCount');
+    if (!el) return;
+    el.style.display = '';
+    el.textContent = words.length + ' 个关键词';
+  }
+
   function apply(words) {
+    updateCount(words);
     var rows = document.querySelectorAll('td.name[data-t]');
     for (var i = 0; i < rows.length; i++) {
       var td = rows[i];
@@ -75,8 +85,10 @@
     })
     .then(function (txt) { apply(parse(txt)); })
     .catch(function () {
+      var el = document.getElementById('wishCount');
+      if (el) el.style.display = 'none';
       if (window.console) {
-        console.warn('[watch] 关键词读取失败，沿用页面里已有的标签');
+        console.warn('[watch] 关键词读取失败，已隐藏计数');
       }
     });
 })();
