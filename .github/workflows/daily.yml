@@ -84,6 +84,10 @@ jobs:
           if [ -f build/cache/pool.json ]; then
             cp build/cache/pool.json data/pool.json
           fi
+          if [ -f build/db.json ]; then
+            cp build/db.json docs/db.json
+            echo "已更新 docs/db.json"
+          fi
           for f in last_push.txt cooldown_until.txt blocked_streak.txt; do
             if [ -f "build/state/$f" ]; then cp "build/state/$f" data/state/; fi
           done
