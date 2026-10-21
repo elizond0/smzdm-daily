@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>愿望单 · 什么值得买优惠推送</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;padding:30px 20px;background:#f5f6f8;color:#16181c;
+  font:14px/1.65 -apple-system,"Segoe UI","Microsoft YaHei",sans-serif}
+.wrap{max-width:720px;margin:0 auto}
+h1{font-size:21px;margin:0 0 4px}
+.sub{color:#71767e;font-size:12.5px;margin-bottom:22px}
+.sub a{color:#c8102e;text-decoration:none}
+.card{background:#fff;border:1px solid #e6e8eb;border-radius:10px;padding:16px 18px;margin-bottom:16px}
+h2{font-size:13.5px;margin:0 0 12px;display:flex;align-items:center;gap:8px;font-weight:600}
+h2 .dot{width:3px;height:13px;background:#7c3aed;border-radius:2px}
+.row{display:flex;gap:8px;align-items:center}
+input[type=text],input[type=password]{flex:1;min-width:0;padding:9px 11px;border:1px solid #dfe2e6;
+  border-radius:8px;font-size:14px;font-family:inherit;background:#fff}
+input:focus{outline:none;border-color:#7c3aed;box-shadow:0 0 0 3px rgba(124,58,237,.1)}
+button{padding:9px 16px;border-radius:8px;border:1px solid transparent;font-size:13.5px;
+  font-family:inherit;cursor:pointer;white-space:nowrap}
+.btn-main{background:#7c3aed;color:#fff}
+.btn-main:hover{background:#6d28d9}
+.btn-ghost{background:#fff;border-color:#dfe2e6;color:#16181c}
+.btn-ghost:hover{background:#f7f8fa}
+.btn-del{background:transparent;border:0;color:#c0c4ca;font-size:17px;padding:4px 8px;cursor:pointer}
+.btn-del:hover{color:#c8102e}
+.list{margin-top:4px}
+.item{display:flex;gap:8px;align-items:center;padding:7px 0;border-bottom:1px solid #f2f3f5}
+.item:last-child{border-bottom:0}
+.item input{border-color:transparent;background:#fafbfc}
+.item input:focus{border-color:#7c3aed;background:#fff}
+.empty{color:#9aa0a8;font-size:13px;padding:14px 0;text-align:center}
+.hint{color:#9aa0a8;font-size:11.5px;line-height:1.8;margin-top:10px}
+.hint code{background:#f2f3f5;padding:1px 5px;border-radius:3px;font-size:11px}
+.bar{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);
+  background:#16181c;color:#fff;padding:10px 18px;border-radius:8px;font-size:13px;
+  opacity:0;transition:.25s;pointer-events:none;max-width:88vw;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.err{background:#c8102e}
+.toast.ok{background:#1a7f42}
+.tag{display:inline-block;padding:1px 7px;border-radius:3px;font-size:11px;
+  background:#f3e8ff;color:#7c3aed;border:1px solid #e2d0fd}
+@media (max-width:700px){
+  body{padding:18px 12px}
+  h1{font-size:18px}
+  .card{padding:13px 14px}
+  .row{flex-wrap:wrap}
+  .row input{width:100%}
+  .row button{width:100%}
+  .bar button{flex:1}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>愿望单</h1>
+  <div class="sub">命中的商品会在日报里打上 <span class="tag">愿望单</span> 标签　<a href="./index.html">← 回日报</a></div>
+
+  <div class="card">
+    <h2><span class="dot"></span>GitHub Token</h2>
+    <div class="row">
+      <input type="password" id="token" placeholder="粘贴 Token（只需填一次，存在本机浏览器）">
+      <button class="btn-ghost" id="saveToken">保存</button>
+    </div>
+    <div class="hint">
+      保存到仓库需要写入权限。去 <a href="https://github.com/settings/tokens" target="_blank">github.com/settings/tokens</a>
+      创建 <b>Classic token</b>，勾选 <code>repo</code> 即可。<br>
+      Token 只存在你当前浏览器的 localStorage，不会上传到任何地方；换设备需要重新填。
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="dot"></span>关键词 <span id="count" class="hint" style="margin:0"></span></h2>
+    <div class="row">
+      <input type="text" id="newWord" placeholder="输入关键词，比如 耳机" maxlength="30">
+      <button class="btn-main" id="addBtn">添加</button>
+    </div>
+    <div class="list" id="list"></div>
+    <div class="bar">
+      <button class="btn-ghost" id="resetBtn">放弃修改</button>
+      <button class="btn-main" id="saveBtn">保存到仓库</button>
+    </div>
+    <div class="hint">
+      匹配规则：商品标题包含关键词即命中（不区分大小写）。词越长越精确，「耳机」会同时命中「蓝牙耳机」「有线耳机」。<br>
+      改动要保存后才会写回仓库，下次抓取运行时生效。
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const REPO = 'elizond0/smzdm-daily';
+const BRANCH = 'main';
+const FILE = 'watchlist.txt';
+const RAW = `https://raw.githubusercontent.com/${REPO}/${BRANCH}/${FILE}`;
+const API = `https://api.github.com/repos/${REPO}/contents/${FILE}`;
+
+let words = [];          // 当前编辑中的关键词
+let original = [];       // 上次加载的，用于「放弃修改」
+let dirty = false;
+
+const $ = id => document.getElementById(id);
+
+function toast(msg, type){
+  const t = $('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (type ? ' ' + type : '');
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => { t.className = 'toast'; }, 2600);
+}
+
+function parse(text){
+  return text.split('\n').map(s => s.trim())
+    .filter(s => s && !s.startsWith('#'));
+}
+
+function build(){
+  const head =
+    '# 关注关键词 · 一行一个\n' +
+    '#\n' +
+    '# 由愿望单页面自动生成 · ' + new Date().toLocaleString('zh-CN') + '\n' +
+    '# 命中的商品会在日报里标上「愿望单」标签，筛选规则与折扣榜一致。\n\n';
+  return head + words.join('\n') + '\n';
+}
+
+function render(){
+  const box = $('list');
+  box.innerHTML = '';
+  $('count').textContent = words.length ? `${words.length} 个` : '';
+  if (!words.length){
+    box.innerHTML = '<div class="empty">还没有关键词，上面输入框添加一个吧</div>';
+    return;
+  }
+  words.forEach((w, i) => {
+    const row = document.createElement('div');
+    row.className = 'item';
+    const inp = document.createElement('input');
+    inp.type = 'text';
+    inp.value = w;
+    inp.maxLength = 30;
+    inp.addEventListener('input', () => { words[i] = inp.value.trim(); dirty = true; });
+    inp.addEventListener('blur', () => { if (!inp.value.trim()){ words.splice(i,1); dirty = true; render(); } });
+    const del = document.createElement('button');
+    del.className = 'btn-del';
+    del.textContent = '×';
+    del.title = '删除';
+    del.addEventListener('click', () => { words.splice(i,1); dirty = true; render(); });
+    row.appendChild(inp);
+    row.appendChild(del);
+    box.appendChild(row);
+  });
+}
+
+async function load(){
+  try{
+    const r = await fetch(RAW + '?t=' + Date.now());
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const txt = await r.text();
+    words = parse(txt);
+    original = [...words];
+    dirty = false;
+    render();
+  }catch(e){
+    $('list').innerHTML = '<div class="empty">读取 watchlist.txt 失败，检查网络后刷新</div>';
+  }
+}
+
+async function save(){
+  const token = ($('token').value || '').trim();
+  if (!token){ toast('先填 GitHub Token 才能保存', 'err'); $('token').focus(); return; }
+
+  const clean = words.map(s => s.trim()).filter(Boolean);
+  if (!clean.length && !confirm('关键词会全部清空，确定吗？')) return;
+
+  $('saveBtn').disabled = true;
+  $('saveBtn').textContent = '保存中…';
+  try{
+    const g = await fetch(API + '?ref=' + BRANCH, {
+      headers: { Authorization: 'token ' + token, Accept: 'application/vnd.github+json' }
+    });
+    if (!g.ok) throw new Error(g.status === 401 ? 'Token 无效或已过期' : '读取仓库失败 ' + g.status);
+    const meta = await g.json();
+
+    const content = build();
+    const b64 = btoa(unescape(encodeURIComponent(content)));
+    const res = await fetch(API, {
+      method: 'PUT',
+      headers: {
+        Authorization: 'token ' + token,
+        Accept: 'application/vnd.github+json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        message: `chore: 更新愿望单（${clean.length} 个关键词）`,
+        content: b64,
+        sha: meta.sha,
+        branch: BRANCH
+      })
+    });
+    if (!res.ok){
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.message || ('写入失败 ' + res.status));
+    }
+    localStorage.setItem('gh_token', token);
+    original = [...clean];
+    dirty = false;
+    toast('已保存，下次抓取生效', 'ok');
+  }catch(e){
+    toast(e.message || '保存失败', 'err');
+  }finally{
+    $('saveBtn').disabled = false;
+    $('saveBtn').textContent = '保存到仓库';
+  }
+}
+
+$('addBtn').addEventListener('click', () => {
+  const inp = $('newWord');
+  const v = inp.value.trim();
+  if (!v) return;
+  if (words.includes(v)){ toast('已经有这个关键词了'); inp.value = ''; return; }
+  words.push(v);
+  dirty = true;
+  inp.value = '';
+  render();
+  inp.focus();
+});
+
+$('newWord').addEventListener('keydown', e => { if (e.key === 'Enter') $('addBtn').click(); });
+
+$('saveToken').addEventListener('click', () => {
+  const v = ($('token').value || '').trim();
+  if (!v){ toast('请先填写 Token', 'err'); return; }
+  localStorage.setItem('gh_token', v);
+  toast('Token 已存在本机', 'ok');
+});
+
+$('saveBtn').addEventListener('click', save);
+
+$('resetBtn').addEventListener('click', () => {
+  if (dirty && !confirm('放弃未保存的修改？')) return;
+  words = [...original];
+  dirty = false;
+  render();
+  toast('已恢复');
+});
+
+const saved = localStorage.getItem('gh_token');
+if (saved) $('token').value = saved;
+
+load();
+</script>
+</body>
+</html>
