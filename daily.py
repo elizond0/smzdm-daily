@@ -843,6 +843,42 @@ tbody tr:hover td{{background:#fcfcfd}}
   background:#e8f1fb;color:#1d5fbf;border:1px solid #c8dbf2;vertical-align:1px}}
 .lowhint{{font-size:11px;color:#9aa0a8;margin-top:2px;font-weight:400}}
 .foot{{color:#9aa0a8;font-size:11.5px;margin-top:24px;line-height:1.9}}
+/* ---------- 手机端：表格拆成卡片，避免窄屏把商品名挤成竖排 ---------- */
+@media (max-width:700px){{
+  html,body{{overflow-x:hidden;max-width:100%}}
+  body{{padding:18px 12px}}
+  h1{{font-size:18px}}
+  .sub{{font-size:11.5px;margin-bottom:16px;line-height:1.7}}
+  .stats{{grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:16px}}
+  .stat{{padding:10px 12px}}
+  .stat .k{{font-size:11px}}
+  .stat .v{{font-size:18px}}
+  .funnel{{font-size:11.5px;padding:8px 10px;line-height:1.8;word-break:break-word}}
+  h2{{font-size:13px;margin:20px 0 8px}}
+  h2 .hint{{font-size:11px}}
+  table,tbody,tr,td{{display:block;width:auto}}
+  table{{border:0;background:transparent;border-radius:0}}
+  thead{{display:none}}
+  tr{{position:relative;background:#fff;border:1px solid #e6e8eb;border-radius:10px;
+     padding:12px;margin-bottom:9px}}
+  tr:last-child{{margin-bottom:0}}
+  tbody tr:hover td{{background:transparent}}
+  td{{border:0;padding:0}}
+  .idx{{position:absolute;left:12px;top:12px;color:#c3c7cd;font-size:11px;width:auto}}
+  .name{{padding-left:19px;margin-bottom:7px;line-height:1.55;word-break:break-word}}
+  .name a{{font-size:14px}}
+  .meta{{font-size:11px;line-height:1.6;margin-top:3px}}
+  .num{{display:inline-block;width:auto;text-align:left;white-space:normal;
+        margin-right:10px;font-size:13px}}
+  .num b{{font-size:16px}}
+  .num s{{font-size:11.5px}}
+  .save{{display:inline-block;margin-right:8px;font-size:12px}}
+  .rate{{display:inline-block;width:auto;text-align:left;font-size:13px}}
+  .bar{{display:none}}
+  .tag,.newlow,.first{{font-size:10px;margin-left:4px}}
+  .lowhint{{font-size:10.5px}}
+  .foot{{font-size:11px;line-height:1.8}}
+}}
 </style></head><body><div class="wrap">
   <h1>值得买日报 · {H.escape(meta['date'])}</h1>
   <div class="sub">抓取 {H.escape(meta['fetched_at'])}　请求 {meta['requests']} 次　
