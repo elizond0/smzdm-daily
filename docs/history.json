@@ -1,16 +1,16 @@
 [
  {
-  "date": "2026-10-21",
-  "time": "23:27",
+  "date": "2026-10-22",
+  "time": "00:59",
   "status": "test",
   "pushed": false,
   "note": "静默测试，未发送通知",
-  "source": 77,
+  "source": 41,
   "requests": 5,
   "blocked": false,
   "hot": 7,
-  "feed": 20,
-  "catalog": 189,
+  "feed": 0,
+  "catalog": 230,
   "min_disc": "35",
   "min_save": "40"
  }
