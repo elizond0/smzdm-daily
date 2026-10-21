@@ -2,13 +2,14 @@
  *
  * 服务端渲染时用的是「上次抓取那一刻」的关键词。用户在愿望单页面改完词，
  * 如果等服务端重新生成，要等到下一次抓取。这里改成页面加载后读一次最新的
- * watchlist.txt，现场重算每个商品的标签，所以改完刷新就能看到。
+ * 关键词，现场重算每个商品的标签，所以改完刷新就能看到。
  *
- * 两个数据源依次尝试：
- *   1. GitHub API —— 实时；raw.githubusercontent 在国内常不可达，API 通常能通
- *   2. 同域 watchlist.txt —— 由 Actions 每次运行复制到 docs/，滞后一轮但稳定
+ * 数据来源按优先级：
+ *   1. localStorage —— 同域名下共享，愿望单页保存时写进来的，本机改完立刻生效
+ *   2. ./watchlist.txt —— Actions 每次运行同步到 docs/ 的副本，同域稳定，但滞后一轮
+ *   3. GitHub API —— 实时；raw.githubusercontent 在国内常不可达，API 一般能通
  *
- * 两个都失败时保留服务端渲染的标签，不会把标签全抹掉。
+ * 全部失败时保留服务端渲染的标签，只是不更新，不会把标签抹掉。
  */
 (function () {
   var meta = document.querySelector('meta[name="watch-src"]');
@@ -16,6 +17,7 @@
 
   var API_URL = meta.getAttribute('data-api') || '';
   var LOCAL_URL = './watchlist.txt';
+  var CACHE_KEY = 'watch_words_cache';
 
   function parse(txt) {
     return txt.split('\n')
@@ -47,24 +49,30 @@
     }
   }
 
-  function fetchApi() {
-    if (!API_URL) return Promise.reject();
-    var url = API_URL + (API_URL.indexOf('?') === -1 ? '?' : '&') + 't=' + Date.now();
-    return fetch(url, {
-      cache: 'no-store',
-      headers: { Accept: 'application/vnd.github.raw' }
-    }).then(function (r) {
-      return r.ok ? r.text() : Promise.reject();
-    });
-  }
+  // 1) 本机缓存：愿望单页保存时写入，最新
+  try {
+    var raw = localStorage.getItem(CACHE_KEY);
+    if (raw) {
+      var obj = JSON.parse(raw);
+      if (obj && Object.prototype.toString.call(obj.words) === '[object Array]') {
+        apply(obj.words);
+        return;
+      }
+    }
+  } catch (e) { /* localStorage 被禁用时忽略 */ }
 
-  function fetchLocal() {
-    return fetch(LOCAL_URL + '?t=' + Date.now(), { cache: 'no-store' })
-      .then(function (r) { return r.ok ? r.text() : Promise.reject(); });
-  }
-
-  fetchApi()
-    .catch(fetchLocal)
+  // 2) 同域副本：Actions 同步过来的，比 API 稳
+  fetch(LOCAL_URL + '?t=' + Date.now(), { cache: 'no-store' })
+    .then(function (r) { return r.ok ? r.text() : Promise.reject(); })
+    .catch(function () {
+      // 3) 最后再试 API
+      if (!API_URL) return Promise.reject();
+      var url = API_URL + (API_URL.indexOf('?') === -1 ? '?' : '&') + 't=' + Date.now();
+      return fetch(url, {
+        cache: 'no-store',
+        headers: { Accept: 'application/vnd.github.raw' }
+      }).then(function (r) { return r.ok ? r.text() : Promise.reject(); });
+    })
     .then(function (txt) { apply(parse(txt)); })
     .catch(function () {
       if (window.console) {
