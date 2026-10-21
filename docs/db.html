@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>商品库 · 什么值得买优惠推送</title>
+<title>数据库 · 什么值得买优惠推送</title>
 <style>
 *{box-sizing:border-box}
 body{margin:0;padding:30px 20px 60px;background:#f5f6f8;color:#16181c;
@@ -59,7 +59,7 @@ h1{font-size:21px;margin:0 0 4px}
 </head>
 <body>
 <div class="wrap">
-  <h1>商品库</h1>
+  <h1>数据库</h1>
   <div class="sub"><span id="totalHint">加载中…</span>　<a href="./index.html">← 回日报</a></div>
 
   <div class="searchbox">
@@ -75,7 +75,7 @@ h1{font-size:21px;margin:0 0 4px}
   <div class="pager" id="pager"></div>
 
   <div class="foot">
-    数据来自每日抓取累积的商品库，记录每件商品的历史最低价与最低折扣。<br>
+    数据来自每日抓取累积的数据库，记录每件商品的历史最低价与最低折扣。<br>
     「历史最低折扣」= 它历史上到过的最低折扣，不代表现在还是这个价。
   </div>
 </div>
@@ -181,7 +181,7 @@ fetch('./db.json', { cache: 'no-store' })
     render();
   })
   .catch(() => {
-    $('list').innerHTML = '<div class="empty">商品库还没生成，等第一次抓取运行后就有了</div>';
+    $('list').innerHTML = '<div class="empty">数据库还没生成，等第一次抓取运行后就有了</div>';
     $('totalHint').textContent = '暂无数据';
   });
 
