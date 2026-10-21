@@ -915,7 +915,8 @@ def render_html(hot: list[dict], passed: list[dict], meta: dict) -> str:
     return f"""<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>值得买日报 {H.escape(meta['date'])}</title>
-<meta name="watch-src" content="{H.escape(meta.get('watch_raw_url') or '')}"><style>
+<meta name="watch-src" content="{H.escape(meta.get('watch_raw_url') or '')}"
+        data-api="{H.escape(meta.get('watch_api_url') or '')}"><style>
 *{{box-sizing:border-box}}
 body{{margin:0;padding:34px 20px;background:#f5f6f8;color:#16181c;
   font:14px/1.65 -apple-system,"Segoe UI","Microsoft YaHei",sans-serif}}
@@ -1201,6 +1202,7 @@ def main() -> int:
         "watch_edit_url": cfg.get("watch", "edit_url", fallback=""),
         "watch_words": stat.get("watch_words", 0),
         "watch_raw_url": cfg.get("watch", "raw_url", fallback=""),
+        "watch_api_url": cfg.get("watch", "api_url", fallback=""),
         "build_at": datetime.now().strftime("%Y-%m-%d %H:%M"),
         "feed_limit": cfg.getint("crawl", "top_n", fallback=50),
         "hot_count": len(hot),
