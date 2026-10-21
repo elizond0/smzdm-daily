@@ -1,9 +1,17 @@
 [
  {
   "date": "2026-10-21",
-  "time": "14:14",
-  "status": "skipped",
+  "time": "14:17",
+  "status": "test",
   "pushed": false,
-  "note": "今天已经推送过了（--force 可强制重跑）"
+  "note": "静默测试，未发送通知",
+  "source": 79,
+  "requests": 5,
+  "blocked": false,
+  "hot": 6,
+  "feed": 20,
+  "catalog": 179,
+  "min_disc": "35",
+  "min_save": "40"
  }
 ]
