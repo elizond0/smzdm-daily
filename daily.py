@@ -782,7 +782,7 @@ def render_html(hot: list[dict], passed: list[dict], meta: dict) -> str:
         save = f'省¥{d["save"]:g}' if d.get("save") else '<span class="muted">—</span>'
         return f"""<tr>
   <td class="idx">{i}</td>
-  <td class="name"><a href="{d.get('url') or '#'}" target="_blank">{H.escape(display_title(d['title']))}</a>{conds}
+  <td class="name" data-t="{H.escape(d['title'])}"><a href="{d.get('url') or '#'}" target="_blank">{H.escape(display_title(d['title']))}</a>{conds}
     <div class="meta">{meta_line(d)}</div></td>
   <td class="num"><b>¥{d['price']:g}</b> {origin}{low_badge}{low_hint}</td>
   <td class="num save">{save}</td>
@@ -828,7 +828,8 @@ def render_html(hot: list[dict], passed: list[dict], meta: dict) -> str:
 
     return f"""<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>值得买日报 {H.escape(meta['date'])}</title><style>
+<title>值得买日报 {H.escape(meta['date'])}</title>
+<meta name="watch-src" content="{H.escape(meta.get('watch_raw_url') or '')}"><style>
 *{{box-sizing:border-box}}
 body{{margin:0;padding:34px 20px;background:#f5f6f8;color:#16181c;
   font:14px/1.65 -apple-system,"Segoe UI","Microsoft YaHei",sans-serif}}
@@ -940,7 +941,9 @@ tbody tr:hover td{{background:#fcfcfd}}
   <div class="foot">由 daily.py 自动生成 · <a href="./overview.html" style="color:#c8102e;text-decoration:none">运行概览</a> ·
     数据源 {H.escape(meta.get('feed_name') or '')}（全部好价排行榜）·
     仅抓列表页，未访问商品详情页 · 折扣按「现价/原价」计算，原价取自好价流描述，仅供参考。</div>
-</div></body></html>"""
+</div>
+<script src="./watch.js"></script>
+</body></html>"""
 
 
 def render_push(hot: list[dict], meta: dict) -> tuple[str, str]:
@@ -1110,6 +1113,7 @@ def main() -> int:
         "site_url": cfg.get("push", "site_url", fallback=""),
         "watch_edit_url": cfg.get("watch", "edit_url", fallback=""),
         "watch_words": stat.get("watch_words", 0),
+        "watch_raw_url": cfg.get("watch", "raw_url", fallback=""),
         "feed_limit": cfg.getint("crawl", "top_n", fallback=50),
         "hot_count": len(hot),
         "feed_count": min(len(passed), feed_limit),
