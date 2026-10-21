@@ -38,7 +38,7 @@ jobs:
           else
             echo "首次运行，目录为空"
           fi
-          for f in last_push.txt cooldown_until.txt; do
+          for f in last_push.txt cooldown_until.txt blocked_streak.txt; do
             if [ -f "data/state/$f" ]; then cp "data/state/$f" build/state/; fi
           done
 
@@ -61,7 +61,7 @@ jobs:
           if [ -f build/cache/catalog.json ]; then
             cp build/cache/catalog.json data/catalog.json
           fi
-          for f in last_push.txt cooldown_until.txt; do
+          for f in last_push.txt cooldown_until.txt blocked_streak.txt; do
             if [ -f "build/state/$f" ]; then cp "build/state/$f" data/state/; fi
           done
           latest=$(ls -t build/reports/*.html 2>/dev/null | head -1 || true)

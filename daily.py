@@ -48,6 +48,7 @@ TOAST = BASE / "tools" / "toast.ps1"
 
 MARK_PUSH = STATE / "last_push.txt"
 MARK_COOL = STATE / "cooldown_until.txt"
+STREAK = STATE / "blocked_streak.txt"
 CATALOG = CACHE / "catalog.json"
 LAST_DATA = CACHE / "latest.json"
 
@@ -170,11 +171,33 @@ def skip_reason(force: bool) -> str | None:
     return None
 
 
-def set_cooldown(hours: float) -> None:
+def set_cooldown(base_hours: float) -> None:
+    """被拦后进入冷却。
+
+    连续被拦说明这个出口 IP 已经进了观察名单，此时按原频率重试只会
+    加深处罚。所以冷却时长随连续拦截次数翻倍，最长封顶 24 小时——
+    这比单纯拉长请求间隔更有效，因为它减少的是「总请求数」。
+    """
+    streak = read_streak() + 1
     STATE.mkdir(parents=True, exist_ok=True)
+    STREAK.write_text(str(streak), encoding="utf-8")
+    hours = min(base_hours * (2 ** (streak - 1)), 24)
     until = datetime.now() + timedelta(hours=hours)
     MARK_COOL.write_text(until.isoformat(timespec="seconds"), encoding="utf-8")
-    log(f"已设置冷却至 {until:%Y-%m-%d %H:%M}")
+    log(f"连续第 {streak} 次被拦，冷却 {hours:g} 小时至 {until:%m-%d %H:%M}")
+
+
+def read_streak() -> int:
+    try:
+        return max(0, int(read_mark(STREAK) or 0))
+    except ValueError:
+        return 0
+
+
+def reset_streak() -> None:
+    """抓取成功就清零，下次被拦重新从基础冷却算起。"""
+    if STREAK.exists():
+        STREAK.unlink(missing_ok=True)
 
 
 # ---------------------------------------------------------------- 抓取
@@ -822,8 +845,11 @@ def main() -> int:
             LAST_DATA.write_text(json.dumps(data, ensure_ascii=False, indent=2),
                                  encoding="utf-8")
 
-    if data.get("blocked"):
-        set_cooldown(cfg.getfloat("crawl", "cooldown_hours", fallback=6))
+    if not args.no_crawl:
+        if data.get("blocked"):
+            set_cooldown(cfg.getfloat("crawl", "cooldown_hours", fallback=6))
+        elif data.get("deals"):
+            reset_streak()   # 抓到数据了，说明此前的观察状态已解除
 
     catalog = Catalog()
     deals = clean_deals(data.get("deals") or [])
