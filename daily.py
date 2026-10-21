@@ -825,7 +825,9 @@ def main() -> int:
             log(f"探测失败 {type(e).__name__}: {e}")
             return 1
 
-    reason = skip_reason(args.force)
+    # --no-notify 是测试模式：本来就不会推送，所以没理由被「今天已推送」挡住。
+    # 冷却仍然生效（skip_reason 里冷却不受 force 影响）。
+    reason = skip_reason(args.force or args.no_notify)
     if reason:
         log(f"跳过：{reason}")
         return 0
