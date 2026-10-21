@@ -18,7 +18,7 @@
   "low": 14.9,
   "first": "2026-10-19",
   "last": "2026-10-21",
-  "hits": 12,
+  "hits": 13,
   "push_date": null,
   "push_price": null
  },
@@ -114,7 +114,7 @@
   "low": 6.27,
   "first": "2026-10-19",
   "last": "2026-10-21",
-  "hits": 12,
+  "hits": 13,
   "push_date": null,
   "push_price": null
  },
@@ -316,7 +316,7 @@
   "low": 11.29,
   "first": "2026-10-19",
   "last": "2026-10-21",
-  "hits": 11,
+  "hits": 12,
   "push_date": null,
   "push_price": null
  },
@@ -723,7 +723,7 @@
   "low": 75.4,
   "first": "2026-10-19",
   "last": "2026-10-21",
-  "hits": 12,
+  "hits": 13,
   "push_date": null,
   "push_price": null
  },
@@ -761,7 +761,7 @@
   "low": 6.05,
   "first": "2026-10-19",
   "last": "2026-10-21",
-  "hits": 12,
+  "hits": 13,
   "push_date": null,
   "push_price": null
  },
@@ -868,7 +868,7 @@
   "low": 32.99,
   "first": "2026-10-19",
   "last": "2026-10-21",
-  "hits": 11,
+  "hits": 12,
   "push_date": null,
   "push_price": null
  },
@@ -910,7 +910,7 @@
   "low": 92.9,
   "first": "2026-10-19",
   "last": "2026-10-21",
-  "hits": 11,
+  "hits": 12,
   "push_date": null,
   "push_price": null
  },
@@ -1110,7 +1110,7 @@
   "low": 73.49,
   "first": "2026-10-19",
   "last": "2026-10-21",
-  "hits": 11,
+  "hits": 12,
   "push_date": null,
   "push_price": null
  },
@@ -1129,7 +1129,7 @@
   "low": 58.89,
   "first": "2026-10-19",
   "last": "2026-10-21",
-  "hits": 11,
+  "hits": 12,
   "push_date": null,
   "push_price": null
  },
@@ -1171,7 +1171,7 @@
   "low": 47.9,
   "first": "2026-10-19",
   "last": "2026-10-21",
-  "hits": 11,
+  "hits": 12,
   "push_date": "2026-10-21",
   "push_price": 47.9
  },
@@ -1260,12 +1260,13 @@
   "title": "今日必买：沃隆 28包*750g 加油版 每日坚果 礼盒装",
   "ids": [
    "184209632",
-   "184209277"
+   "184209277",
+   "184437285"
   ],
   "low": 22.62,
   "first": "2026-10-19",
-  "last": "2026-10-19",
-  "hits": 3,
+  "last": "2026-10-21",
+  "hits": 4,
   "push_date": null,
   "push_price": null
  },
@@ -1431,7 +1432,7 @@
   "low": 359.33,
   "first": "2026-10-19",
   "last": "2026-10-21",
-  "hits": 11,
+  "hits": 12,
   "push_date": null,
   "push_price": null
  },
@@ -1568,7 +1569,7 @@
   "low": 37.65,
   "first": "2026-10-19",
   "last": "2026-10-21",
-  "hits": 11,
+  "hits": 12,
   "push_date": null,
   "push_price": null
  },
@@ -1798,7 +1799,7 @@
   "low": 23.4,
   "first": "2026-10-19",
   "last": "2026-10-21",
-  "hits": 10,
+  "hits": 11,
   "push_date": null,
   "push_price": null
  },
@@ -1878,7 +1879,7 @@
   "low": 36.79,
   "first": "2026-10-19",
   "last": "2026-10-21",
-  "hits": 10,
+  "hits": 11,
   "push_date": null,
   "push_price": null
  },
@@ -2009,7 +2010,7 @@
   "low": 56.2,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 9,
+  "hits": 10,
   "push_date": null,
   "push_price": null
  },
@@ -2056,7 +2057,7 @@
   "low": 16.3,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 9,
+  "hits": 10,
   "push_date": "2026-10-21",
   "push_price": 16.3
  },
@@ -2070,7 +2071,7 @@
   "low": 49.12,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 9,
+  "hits": 10,
   "push_date": null,
   "push_price": null
  },
@@ -2097,7 +2098,7 @@
   "low": 109.3,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 9,
+  "hits": 10,
   "push_date": "2026-10-21",
   "push_price": 109.3
  },
@@ -2120,7 +2121,7 @@
   "low": 52.45,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 8,
+  "hits": 9,
   "push_date": null,
   "push_price": null
  },
@@ -2165,7 +2166,7 @@
   "low": 9.9,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 9,
+  "hits": 10,
   "push_date": null,
   "push_price": null
  },
@@ -2207,7 +2208,7 @@
   "low": 48.2,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 8,
+  "hits": 9,
   "push_date": null,
   "push_price": null
  },
@@ -2226,7 +2227,7 @@
   "low": 27.16,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 9,
+  "hits": 10,
   "push_date": null,
   "push_price": null
  },
@@ -2245,7 +2246,7 @@
   "low": 27.59,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 9,
+  "hits": 10,
   "push_date": null,
   "push_price": null
  },
@@ -2259,7 +2260,7 @@
   "low": 74.9,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 8,
+  "hits": 9,
   "push_date": null,
   "push_price": null
  },
@@ -2305,7 +2306,7 @@
   "low": 21.35,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 9,
+  "hits": 10,
   "push_date": null,
   "push_price": null
  },
@@ -2319,7 +2320,7 @@
   "low": 26.99,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 9,
+  "hits": 10,
   "push_date": null,
   "push_price": null
  },
@@ -2338,7 +2339,7 @@
   "low": 27.8,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 8,
+  "hits": 9,
   "push_date": null,
   "push_price": null
  },
@@ -2373,7 +2374,7 @@
   "low": 66.0,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 9,
+  "hits": 10,
   "push_date": null,
   "push_price": null
  },
@@ -2400,7 +2401,7 @@
   "low": 30.9,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 9,
+  "hits": 10,
   "push_date": null,
   "push_price": null
  },
@@ -2419,7 +2420,7 @@
   "low": 426.2,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 9,
+  "hits": 10,
   "push_date": null,
   "push_price": null
  },
@@ -2442,7 +2443,7 @@
   "low": 52.74,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 9,
+  "hits": 10,
   "push_date": "2026-10-21",
   "push_price": 52.74
  },
@@ -2507,7 +2508,7 @@
   "low": 15.68,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 9,
+  "hits": 10,
   "push_date": "2026-10-21",
   "push_price": 15.68
  },
@@ -2526,7 +2527,7 @@
   "low": 46.95,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 9,
+  "hits": 10,
   "push_date": null,
   "push_price": null
  },
@@ -2545,7 +2546,7 @@
   "low": 296.54,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 9,
+  "hits": 10,
   "push_date": null,
   "push_price": null
  },
@@ -2559,7 +2560,7 @@
   "low": 89.18,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 9,
+  "hits": 10,
   "push_date": null,
   "push_price": null
  },
@@ -2582,7 +2583,7 @@
   "low": 34.91,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 9,
+  "hits": 10,
   "push_date": "2026-10-21",
   "push_price": 34.91
  },
@@ -2596,7 +2597,7 @@
   "low": 107.5,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 9,
+  "hits": 10,
   "push_date": null,
   "push_price": null
  },
@@ -2619,7 +2620,7 @@
   "low": 52.77,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 9,
+  "hits": 10,
   "push_date": null,
   "push_price": null
  },
@@ -2638,7 +2639,7 @@
   "low": 207.3,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 9,
+  "hits": 10,
   "push_date": null,
   "push_price": null
  },
@@ -2661,7 +2662,7 @@
   "low": 20.88,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 9,
+  "hits": 10,
   "push_date": null,
   "push_price": null
  },
@@ -2703,7 +2704,7 @@
   "low": 19.9,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 8,
+  "hits": 9,
   "push_date": null,
   "push_price": null
  },
@@ -2731,7 +2732,7 @@
   "low": 133.71,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 9,
+  "hits": 10,
   "push_date": null,
   "push_price": null
  },
@@ -2754,7 +2755,7 @@
   "low": 52.94,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 9,
+  "hits": 10,
   "push_date": null,
   "push_price": null
  },
@@ -2773,7 +2774,7 @@
   "low": 2762.36,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 9,
+  "hits": 10,
   "push_date": null,
   "push_price": null
  },
@@ -2787,7 +2788,7 @@
   "low": 241.12,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 9,
+  "hits": 10,
   "push_date": "2026-10-21",
   "push_price": 241.12
  },
@@ -2820,7 +2821,7 @@
   "low": 145.9,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 9,
+  "hits": 10,
   "push_date": null,
   "push_price": null
  },
@@ -2839,7 +2840,7 @@
   "low": 65.41,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 9,
+  "hits": 10,
   "push_date": null,
   "push_price": null
  },
@@ -2867,7 +2868,7 @@
   "low": 2768.36,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 9,
+  "hits": 10,
   "push_date": null,
   "push_price": null
  },
@@ -2900,7 +2901,7 @@
   "low": 2533.0,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 9,
+  "hits": 10,
   "push_date": null,
   "push_price": null
  },
@@ -2914,7 +2915,7 @@
   "low": 24.3,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 8,
+  "hits": 9,
   "push_date": null,
   "push_price": null
  },
@@ -2928,7 +2929,7 @@
   "low": 663.15,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 9,
+  "hits": 10,
   "push_date": null,
   "push_price": null
  },
@@ -2947,7 +2948,7 @@
   "low": 16.2,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 8,
+  "hits": 9,
   "push_date": null,
   "push_price": null
  },
@@ -2966,7 +2967,7 @@
   "low": 44.75,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 9,
+  "hits": 10,
   "push_date": null,
   "push_price": null
  },
@@ -2989,7 +2990,7 @@
   "low": 23.97,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 9,
+  "hits": 10,
   "push_date": null,
   "push_price": null
  },
@@ -3008,7 +3009,7 @@
   "low": 21.33,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 9,
+  "hits": 10,
   "push_date": null,
   "push_price": null
  },
@@ -3027,7 +3028,7 @@
   "low": 68.4,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 9,
+  "hits": 10,
   "push_date": null,
   "push_price": null
  },
@@ -3041,7 +3042,7 @@
   "low": 33.33,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 9,
+  "hits": 10,
   "push_date": null,
   "push_price": null
  },
@@ -3064,7 +3065,7 @@
   "low": 48.24,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 9,
+  "hits": 10,
   "push_date": null,
   "push_price": null
  },
@@ -3078,7 +3079,7 @@
   "low": 375.96,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 9,
+  "hits": 10,
   "push_date": null,
   "push_price": null
  },
@@ -3092,7 +3093,7 @@
   "low": 1588.0,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 9,
+  "hits": 10,
   "push_date": null,
   "push_price": null
  },
@@ -3111,7 +3112,7 @@
   "low": 69.91,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 8,
+  "hits": 9,
   "push_date": null,
   "push_price": null
  },
@@ -3125,7 +3126,7 @@
   "low": 79.9,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 8,
+  "hits": 9,
   "push_date": null,
   "push_price": null
  },
@@ -3144,7 +3145,7 @@
   "low": 2.87,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 6,
+  "hits": 7,
   "push_date": null,
   "push_price": null
  },
@@ -3158,7 +3159,7 @@
   "low": 49.0,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 4,
+  "hits": 5,
   "push_date": null,
   "push_price": null
  },
@@ -3200,7 +3201,7 @@
   "low": 149.0,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 3,
+  "hits": 4,
   "push_date": null,
   "push_price": null
  },
@@ -3219,7 +3220,7 @@
   "low": 233.6,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 3,
+  "hits": 4,
   "push_date": null,
   "push_price": null
  },
@@ -3238,7 +3239,7 @@
   "low": 189.0,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 1,
+  "hits": 2,
   "push_date": null,
   "push_price": null
  },
@@ -3271,7 +3272,7 @@
   "low": 442.78,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 6,
+  "hits": 7,
   "push_date": null,
   "push_price": null
  },
@@ -3290,7 +3291,7 @@
   "low": 59.93,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 6,
+  "hits": 7,
   "push_date": null,
   "push_price": null
  },
@@ -3317,7 +3318,7 @@
   "low": 736.78,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 5,
+  "hits": 6,
   "push_date": null,
   "push_price": null
  },
@@ -3340,7 +3341,7 @@
   "low": 1.66,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 4,
+  "hits": 5,
   "push_date": null,
   "push_price": null
  },
@@ -3377,7 +3378,7 @@
   "low": 2384.0,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 3,
+  "hits": 4,
   "push_date": null,
   "push_price": null
  },
@@ -3400,7 +3401,7 @@
   "low": 209.88,
   "first": "2026-10-21",
   "last": "2026-10-21",
-  "hits": 1,
+  "hits": 2,
   "push_date": null,
   "push_price": null
  },
@@ -3412,6 +3413,72 @@
    "184431716"
   ],
   "low": 49.3,
+  "first": "2026-10-21",
+  "last": "2026-10-21",
+  "hits": 2,
+  "push_date": null,
+  "push_price": null
+ },
+ "H:5cbd5c49684b78bf": {
+  "norm": "1号会员店新西兰散养原切羔羊肉卷2斤",
+  "specs": [],
+  "title": "今日必买：1号会员店 新西兰散养原切羔羊肉卷 2斤",
+  "ids": [
+   "184437323"
+  ],
+  "low": 63.4,
+  "first": "2026-10-21",
+  "last": "2026-10-21",
+  "hits": 1,
+  "push_date": null,
+  "push_price": null
+ },
+ "H:7be6da7aaf2f5e38": {
+  "norm": "上次卖爆再降11元阳澄江南大闸蟹公4043两母2528两4对8只现货礼盒去绳足重死蟹包赔",
+  "specs": [
+   [
+    "8",
+    "只"
+   ]
+  ],
+  "title": "上次卖爆、再降11元！：阳澄·江南 大闸蟹 公4.0-4.3两 母2.5-2.8两 4对8只现货礼盒（去绳足重、死蟹包赔）",
+  "ids": [
+   "184435113"
+  ],
+  "low": 127.0,
+  "first": "2026-10-21",
+  "last": "2026-10-21",
+  "hits": 1,
+  "push_date": null,
+  "push_price": null
+ },
+ "H:c028b9a2bbbd5bdb": {
+  "norm": "农夫山泉预售赠品给力175脐橙净重8斤礼盒装赠富硒鸡蛋30枚多款可选",
+  "specs": [
+   [
+    "30",
+    "枚"
+   ]
+  ],
+  "title": "今日必买：农夫山泉 预售、赠品给力！17.5°脐橙 净重8斤 礼盒装+赠富硒鸡蛋30枚（多款可选）",
+  "ids": [
+   "184283317"
+  ],
+  "low": 79.99,
+  "first": "2026-10-21",
+  "last": "2026-10-21",
+  "hits": 1,
+  "push_date": null,
+  "push_price": null
+ },
+ "H:f2af47c3f32b0c41": {
+  "norm": "威露士la有氧洗衣液8斤组合装松木4斤樱花4斤",
+  "specs": [],
+  "title": "威露士 la有氧洗衣液8斤组合装 松木4斤+樱花4斤",
+  "ids": [
+   "184093494"
+  ],
+  "low": 42.9,
   "first": "2026-10-21",
   "last": "2026-10-21",
   "hits": 1,
