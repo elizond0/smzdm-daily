@@ -3,21 +3,14 @@ setlocal
 cd /d "%~dp0"
 
 REM ==========================================================
-REM  推送本仓库到 GitHub
-REM  账号信息已写在下面，Token 从 .deploy.token 读取
-REM  （该文件被 .gitignore 排除，不会上传）
+REM  Push this repo to GitHub.
+REM  Keep this file pure ASCII. Chinese characters get truncated
+REM  by cmd and the script breaks into garbage commands.
 REM ==========================================================
 
 set "GITHUB_USER=elizond0"
 set "REPO_NAME=smzdm-daily"
 
-echo.
-echo ==========================================
-echo   Push local repo to GitHub
-echo ==========================================
-echo.
-
-REM ---- 自动定位 git.exe（系统 PATH 里没有） ----
 set "GIT="
 set "PF86=%ProgramFiles(x86)%"
 
@@ -30,35 +23,28 @@ if not defined GIT (
     if exist "%%D\cmd\git.exe" set "GIT=%%D\cmd\git.exe"
   )
 )
-if not defined GIT (
-  for /d %%D in ("%LOCALAPPDATA%\Programs\PortableGit\*") do (
-    if exist "%%D\cmd\git.exe" set "GIT=%%D\cmd\git.exe"
-  )
-)
 
 if not defined GIT (
   echo [ERROR] git.exe not found.
-  echo Install Git for Windows: https://git-scm.com/download/win
+  start "" mshta "javascript:alert('Deploy FAILED - git.exe not found');close()" >nul 2>&1
   pause
   exit /b 1
 )
 
-echo Using git: %GIT%
-
-REM ---- 读 Token ----
 set "GH_TOKEN="
 if exist "%~dp0.deploy.token" (
   set /p GH_TOKEN=<"%~dp0.deploy.token"
 )
 
 if not defined GH_TOKEN (
-  echo.
-  echo [WARN] .deploy.token not found.
-  set /p GH_TOKEN=Paste token manually: 
+  echo [ERROR] .deploy.token not found in this folder.
+  start "" mshta "javascript:alert('Deploy FAILED - token file missing');close()" >nul 2>&1
+  pause
+  exit /b 1
 )
-if "%GH_TOKEN%"=="" goto abort
 
-echo Target: https://github.com/%GITHUB_USER%/%REPO_NAME%.git
+echo Using git: %GIT%
+echo Target : https://github.com/%GITHUB_USER%/%REPO_NAME%.git
 echo Pushing...
 echo.
 
@@ -75,34 +61,21 @@ echo ==========================================
 echo   PUSH OK
 echo ==========================================
 echo.
-echo Remaining steps on the repo page:
+echo Repo: https://github.com/%GITHUB_USER%/%REPO_NAME%
+echo Site: https://%GITHUB_USER%.github.io/%REPO_NAME%/
 echo.
-echo   1) Settings - Secrets and variables - Actions
-echo      New repository secret
-echo      Name : SERVERCHAN_SENDKEY
-echo      Value: the SCT... string in your config.ini
+echo Cloud will run automatically at 20:00 every day.
 echo.
-echo   2) Settings - Pages
-echo      Source: Deploy from a branch
-echo      Branch: main     Folder: /docs
-echo.
-echo   3) Actions tab - "Run workflow" to test
-echo.
+start "" mshta "javascript:alert('Deploy SUCCESS - code is on GitHub, cloud runs daily at 20:00');close()" >nul 2>&1
 pause
 exit /b 0
 
 :fail
 echo.
-echo [FAILED] Check:
-echo   - token expired or wrong scope (needs "repo")
-echo   - repo name / user name wrong
-echo   - repo not empty (has a README)
+echo [FAILED] Push did not succeed.
+echo   Token needs BOTH scopes: repo + workflow
+echo   Also check repo name and user name.
 echo.
-pause
-exit /b 1
-
-:abort
-echo.
-echo Cancelled: no token available.
+start "" mshta "javascript:alert('Deploy FAILED - token needs repo + workflow scopes');close()" >nul 2>&1
 pause
 exit /b 1

@@ -801,6 +801,8 @@ def main() -> int:
     ap.add_argument("--no-crawl", action="store_true", help="不联网，用缓存")
     ap.add_argument("--probe", action="store_true", help="只探测是否被风控")
     ap.add_argument("--reset-dedup", action="store_true", help="清空商品目录（去重与低价历史）后再跑")
+    ap.add_argument("--no-notify", action="store_true",
+                    help="完整跑一遍（含入库、出报表），但不发通知、不标记已推送")
     args = ap.parse_args()
 
     if args.reset_dedup:
@@ -905,6 +907,13 @@ def main() -> int:
 
     if args.dry_run:
         log("--dry-run：跳过推送")
+        return 0
+
+    if args.no_notify:
+        # 测试模式：抓取、入库、出报表都照常，只是不发通知，
+        # 也不记录「今天已推送」，所以之后正式跑一次仍会正常推送。
+        catalog.save()
+        log(f"--no-notify：跳过所有通知（未记录已推送状态）· 目录共 {len(catalog.records)} 条")
         return 0
 
     title, body = render_push(hot, meta)
