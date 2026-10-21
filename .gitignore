@@ -4,6 +4,9 @@ build/
 # 含 SendKey，不能进仓库。仓库里用 config.example.ini，密钥走 GitHub Secrets。
 config.ini
 
+# 本地存放 GitHub Token，仅供 deploy-to-github.bat 读取，绝不提交
+.deploy.token
+
 # Python
 __pycache__/
 *.pyc

@@ -2,13 +2,22 @@
 setlocal
 cd /d "%~dp0"
 
+REM ==========================================================
+REM  推送本仓库到 GitHub
+REM  账号信息已写在下面，Token 从 .deploy.token 读取
+REM  （该文件被 .gitignore 排除，不会上传）
+REM ==========================================================
+
+set "GITHUB_USER=elizond0"
+set "REPO_NAME=smzdm-daily"
+
 echo.
 echo ==========================================
 echo   Push local repo to GitHub
 echo ==========================================
 echo.
 
-REM ---- Locate git.exe (system PATH may not have it) ----
+REM ---- 自动定位 git.exe（系统 PATH 里没有） ----
 set "GIT="
 set "PF86=%ProgramFiles(x86)%"
 
@@ -28,40 +37,29 @@ if not defined GIT (
 )
 
 if not defined GIT (
-  echo [ERROR] git.exe not found on this machine.
-  echo.
-  echo Install Git for Windows first: https://git-scm.com/download/win
-  echo After installing, run this script again.
-  echo.
+  echo [ERROR] git.exe not found.
+  echo Install Git for Windows: https://git-scm.com/download/win
   pause
   exit /b 1
 )
 
 echo Using git: %GIT%
-echo.
-echo BEFORE YOU START - two things:
-echo   1) Create an EMPTY repo on GitHub (no README / .gitignore / license)
-echo      Suggested name: smzdm-daily
-echo   2) Create a token: https://github.com/settings/tokens
-echo      "Generate new token (classic)" - tick the "repo" scope
-echo.
 
-set "GITHUB_USER="
-set "REPO_NAME="
+REM ---- 读 Token ----
 set "GH_TOKEN="
+if exist "%~dp0.deploy.token" (
+  set /p GH_TOKEN=<"%~dp0.deploy.token"
+)
 
-set /p GITHUB_USER=GitHub username: 
-if "%GITHUB_USER%"=="" goto abort
-
-set /p REPO_NAME=Repo name: 
-if "%REPO_NAME%"=="" goto abort
-
-set /p GH_TOKEN=Paste token (ghp_...): 
+if not defined GH_TOKEN (
+  echo.
+  echo [WARN] .deploy.token not found.
+  set /p GH_TOKEN=Paste token manually: 
+)
 if "%GH_TOKEN%"=="" goto abort
 
-echo.
-echo Pushing to https://github.com/%GITHUB_USER%/%REPO_NAME%.git ...
-echo (the token is only used for this one command, nothing is saved)
+echo Target: https://github.com/%GITHUB_USER%/%REPO_NAME%.git
+echo Pushing...
 echo.
 
 "%GIT%" remote remove origin >nul 2>&1
@@ -77,7 +75,7 @@ echo ==========================================
 echo   PUSH OK
 echo ==========================================
 echo.
-echo Now finish these 3 steps on your repo page:
+echo Remaining steps on the repo page:
 echo.
 echo   1) Settings - Secrets and variables - Actions
 echo      New repository secret
@@ -88,24 +86,23 @@ echo   2) Settings - Pages
 echo      Source: Deploy from a branch
 echo      Branch: main     Folder: /docs
 echo.
-echo   3) Actions tab - "Run workflow" to test manually
+echo   3) Actions tab - "Run workflow" to test
 echo.
 pause
 exit /b 0
 
 :fail
 echo.
-echo [FAILED] Push did not succeed. Check:
-echo   - repo exists and the name is spelled right
-echo   - the token is copied completely (starts with ghp_)
-echo   - the token has the "repo" scope
-echo   - the repo is empty (no README created)
+echo [FAILED] Check:
+echo   - token expired or wrong scope (needs "repo")
+echo   - repo name / user name wrong
+echo   - repo not empty (has a README)
 echo.
 pause
 exit /b 1
 
 :abort
 echo.
-echo Cancelled: username, repo name and token are all required.
+echo Cancelled: no token available.
 pause
 exit /b 1
