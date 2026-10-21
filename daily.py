@@ -148,7 +148,7 @@ def log(msg: str) -> None:
 
 
 def export_db(catalog: "Catalog") -> int:
-    """导出商品库给 docs/db.html 用。
+    """导出数据库给 docs/db.html 用。
 
     按「历史最低折扣」升序排——也就是这个商品历史上最狠能到几折，
     没有折扣数据的排在最后。只保留展示需要的字段，用紧凑 JSON 控制体积。
@@ -594,6 +594,11 @@ def _bigrams(s: str) -> set:
     return {s[i:i + 2] for i in range(len(s) - 1)}
 
 
+# 标题里的价格描述：「13.8元/盒」「到手价99」——纯噪声，
+# 同一商品每次活动写法都不同，会把相似度拉低到阈值以下。
+_PRICE_NOISE = re.compile(r"\d+(?:\.\d+)?元(?:/[^\s，。、+*]*)?|到手价\d+(?:\.\d+)?")
+
+
 # 规格锚点：数字 + 单位。规格不同的绝不可能是同一件商品，
 # 这一条比相似度更硬——光看相似度，「4层20包」和「4层24包」能到 0.9。
 _SPEC = re.compile(
@@ -603,6 +608,34 @@ _SPEC = re.compile(
 
 def specs(norm: str) -> list:
     return sorted(_SPEC.findall(norm.lower()))
+
+
+# 件数类单位：写不写、写不写全，常因标题长度而省略，不代表不同商品
+_COUNT_UNITS = {"片", "包", "袋", "瓶", "支", "条", "卷", "只", "双",
+                "件", "抽", "枚", "盒", "桶", "罐", "杯"}
+
+
+def spec_compatible(a: list, b: list) -> bool:
+    """规格是否可能是同一件商品。
+
+    重量/容量（g、ml 等）必须完全一致——520g 和 260g 是两件商品。
+    件数类（盒、袋、卷）允许一边省略，但两边都写了就必须相同：
+    「224g*2」和「224g*2盒」算一致，「27卷」和「10卷」不算。
+    """
+    if not a or not b:
+        return True
+    if a == b:
+        return True
+    sa, sb = {tuple(x) for x in a}, {tuple(x) for x in b}
+    core_a = {x for x in sa if x[1] not in _COUNT_UNITS}
+    core_b = {x for x in sb if x[1] not in _COUNT_UNITS}
+    if core_a != core_b:
+        return False
+    cnt_a = {x for x in sa if x[1] in _COUNT_UNITS}
+    cnt_b = {x for x in sb if x[1] in _COUNT_UNITS}
+    if cnt_a and cnt_b and cnt_a != cnt_b:
+        return False
+    return True
 
 
 def similarity(a: str, b: str) -> float:
@@ -655,7 +688,7 @@ class Catalog:
                              encoding="utf-8")
 
     # ---------- 查找
-    def find(self, d: dict, threshold: float = 0.62):
+    def find(self, d: dict, threshold: float = 0.55):
         """三级查找：article_id → 标题指纹 → 模糊相似度 + 规格校验。
 
         返回 (指纹, 记录)，找不到返回 (None, None)。
@@ -673,6 +706,7 @@ class Catalog:
         if len(nt) < 6:
             return None, None
         ns = specs(nt)
+        nt_clean = _PRICE_NOISE.sub("", nt)
         best_fp, best = None, 0.0
         for f, rec in self.records.items():
             old = rec.get("norm", "")
@@ -680,9 +714,9 @@ class Catalog:
             if not old or abs(len(old) - len(nt)) > max(8, len(nt) * 0.4):
                 continue
             # 规格对不上直接排除，不看相似度
-            if ns and rec.get("specs") and ns != rec["specs"]:
+            if not spec_compatible(ns, rec.get("specs") or []):
                 continue
-            s = similarity(nt, old)
+            s = similarity(nt_clean, _PRICE_NOISE.sub("", old))
             if s > best:
                 best, best_fp = s, f
         if best >= threshold:
@@ -701,7 +735,7 @@ class Catalog:
                    "title": d.get("title", ""), "ids": [],
                    "low": None, "first": today, "last": today, "hits": 0,
                    "push_date": None, "push_price": None,
-                   # 下面这几个是给「商品库」页面展示用的，随时更新成最近一次见到的样子
+                   # 下面这几个是给「数据库」页面展示用的，随时更新成最近一次见到的样子
                    "url": None, "mall": None, "category": None,
                    "last_price": None, "last_origin": None, "low_disc": None}
             self.records[fp] = rec
@@ -976,7 +1010,7 @@ tbody tr:hover td{{background:#fcfcfd}}
   <div class="sub">抓取 {H.escape(meta['fetched_at'])}　请求 {meta['requests']} 次　
     来源 smzdm.com（时点快照，价格与库存随时变动）
     <a class="wishlink" href="./wishlist.html">⭐ 愿望单 <span style="font-weight:400">{meta.get('watch_words', 0)} 个关键词</span></a>
-    <a class="wishlink" href="./db.html" style="background:#eef4ff;color:#1d5fbf;border-color:#cfdefb">📚 商品库</a></div>
+    <a class="wishlink" href="./db.html" style="background:#eef4ff;color:#1d5fbf;border-color:#cfdefb">📚 数据库</a></div>
   {warn}{empty}
   <div class="stats">
     <div class="stat"><div class="k">折扣榜</div><div class="v">{len(hot)}<em> 条</em></div></div>
