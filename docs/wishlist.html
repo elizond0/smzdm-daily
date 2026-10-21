@@ -36,6 +36,10 @@ button{padding:9px 16px;border-radius:8px;border:1px solid transparent;font-size
 .hint{color:#9aa0a8;font-size:11.5px;line-height:1.8;margin-top:10px}
 .hint code{background:#f2f3f5;padding:1px 5px;border-radius:3px;font-size:11px}
 .bar{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
+.dirtybar{display:flex;align-items:center;gap:8px;background:#fff8e6;border:1px solid #f3e2b8;
+  color:#8a6410;border-radius:8px;padding:9px 13px;font-size:12.5px;margin-bottom:12px}
+.dirtybar b{font-weight:600}
+.dirtybar .dot2{width:6px;height:6px;border-radius:50%;background:#d99b19;flex:none}
 .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);
   background:#16181c;color:#fff;padding:10px 18px;border-radius:8px;font-size:13px;
   opacity:0;transition:.25s;pointer-events:none;max-width:88vw;text-align:center}
@@ -75,6 +79,9 @@ button{padding:9px 16px;border-radius:8px;border:1px solid transparent;font-size
 
   <div class="card">
     <h2><span class="dot"></span>关键词 <span id="count" class="hint" style="margin:0"></span></h2>
+    <div class="dirtybar" id="dirtyBar" style="display:none">
+      <span class="dot2"></span><span id="dirtyText">有未保存的修改</span>
+    </div>
     <div class="row">
       <input type="text" id="newWord" placeholder="输入关键词，比如 耳机" maxlength="30">
       <button class="btn-main" id="addBtn">添加</button>
@@ -128,12 +135,28 @@ function build(){
   return head + words.join('\n') + '\n';
 }
 
+function changed(){
+  const a = words.map(s => s.trim()).filter(Boolean);
+  const b = original.map(s => s.trim()).filter(Boolean);
+  return JSON.stringify(a) !== JSON.stringify(b);
+}
+
+function updateState(){
+  const diff = changed();
+  $('dirtyBar').style.display = diff ? 'flex' : 'none';
+  if (diff){
+    $('dirtyText').innerHTML =
+      '有未保存的修改（当前 <b>' + words.filter(Boolean).length + '</b> 个关键词）· 点「保存到仓库」才会写回';
+  }
+}
+
 function render(){
   const box = $('list');
   box.innerHTML = '';
   $('count').textContent = words.length ? `${words.length} 个` : '';
   if (!words.length){
     box.innerHTML = '<div class="empty">还没有关键词，上面输入框添加一个吧</div>';
+    updateState();
     return;
   }
   words.forEach((w, i) => {
@@ -143,7 +166,7 @@ function render(){
     inp.type = 'text';
     inp.value = w;
     inp.maxLength = 30;
-    inp.addEventListener('input', () => { words[i] = inp.value.trim(); dirty = true; });
+    inp.addEventListener('input', () => { words[i] = inp.value.trim(); dirty = true; updateState(); });
     inp.addEventListener('blur', () => { if (!inp.value.trim()){ words.splice(i,1); dirty = true; render(); } });
     const del = document.createElement('button');
     del.className = 'btn-del';
@@ -154,6 +177,7 @@ function render(){
     row.appendChild(del);
     box.appendChild(row);
   });
+  updateState();
 }
 
 async function load(){
@@ -209,7 +233,8 @@ async function save(){
     localStorage.setItem('gh_token', token);
     original = [...clean];
     dirty = false;
-    toast('已保存，下次抓取生效', 'ok');
+    updateState();
+    toast('已保存 · 刷新日报即可看到标签', 'ok');
   }catch(e){
     toast(e.message || '保存失败', 'err');
   }finally{
@@ -246,7 +271,12 @@ $('resetBtn').addEventListener('click', () => {
   words = [...original];
   dirty = false;
   render();
+  updateState();
   toast('已恢复');
+});
+
+window.addEventListener('beforeunload', e => {
+  if (changed()){ e.preventDefault(); e.returnValue = ''; }
 });
 
 const saved = localStorage.getItem('gh_token');
