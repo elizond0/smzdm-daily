@@ -938,7 +938,7 @@ tbody tr:hover td{{background:#fcfcfd}}
   <h2><span class="dot"></span>好价榜 <span class="hint">{H.escape(meta.get('feed_name') or '')} 原始顺序 · 前 {len(feed_top)} 条</span></h2>
   <table><thead><tr><th>#</th><th>商品</th><th>到手价</th><th>立省</th><th>折扣</th></tr></thead>
   <tbody>{''.join(row(d, i + 1) for i, d in enumerate(feed_top)) or '<tr><td colspan="5" style="color:#9aa0a8;padding:20px">无</td></tr>'}</tbody></table>
-  <div class="foot">由 daily.py 自动生成 · <a href="./overview.html" style="color:#c8102e;text-decoration:none">运行概览</a> ·
+  <div class="foot">页面版本 {H.escape(meta.get('build_at') or '')}<br>由 daily.py 自动生成 · <a href="./overview.html" style="color:#c8102e;text-decoration:none">运行概览</a> ·
     数据源 {H.escape(meta.get('feed_name') or '')}（全部好价排行榜）·
     仅抓列表页，未访问商品详情页 · 折扣按「现价/原价」计算，原价取自好价流描述，仅供参考。</div>
 </div>
@@ -1114,6 +1114,7 @@ def main() -> int:
         "watch_edit_url": cfg.get("watch", "edit_url", fallback=""),
         "watch_words": stat.get("watch_words", 0),
         "watch_raw_url": cfg.get("watch", "raw_url", fallback=""),
+        "build_at": datetime.now().strftime("%Y-%m-%d %H:%M"),
         "feed_limit": cfg.getint("crawl", "top_n", fallback=50),
         "hot_count": len(hot),
         "feed_count": min(len(passed), feed_limit),
