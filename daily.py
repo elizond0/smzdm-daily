@@ -442,9 +442,11 @@ def pick(items: list[dict], cfg: configparser.ConfigParser,
         cand.append(d)
 
     # 折扣榜：能算出折扣，且达到力度阈值的，按折扣从低到高（越低越狠）
+    # 折扣榜只看折扣力度，不掺「立省金额」。
+    # 原因：立省金额和原价正相关——255 元的商品打 8.6 折就省 43 元，
+    # 但它压根不算"力度大"。用「或 立省≥N」会把这种高价小折扣混进来。
     disc = [d for d in cand if d.get("discount_pct")]
-    hot = [d for d in disc
-           if d["discount_pct"] <= min_disc or (d.get("save") or 0) >= min_save]
+    hot = [d for d in disc if d["discount_pct"] <= min_disc]
     stat["threshold"] = len(disc) - len(hot)
     hot.sort(key=lambda d: (d["discount_pct"], -(d.get("save") or 0)))
 
@@ -766,7 +768,7 @@ tbody tr:hover td{{background:#fcfcfd}}
     <div class="stat"><div class="k">最高立省</div><div class="v">{f"¥{max(d['save'] for d in hot):,.0f}" if hot else "—"}</div></div>
   </div>
   {funnel}
-  <h2><span class="dot"></span>折扣榜 <span class="hint">按折扣力度排序 · {float(meta['min_disc']) / 10:.1f} 折以内 或 立省超 ¥{H.escape(str(meta['min_save']))}</span></h2>
+  <h2><span class="dot"></span>折扣榜 <span class="hint">按折扣力度排序 · 只收 {float(meta['min_disc']) / 10:.1f} 折以内</span></h2>
   <table><thead><tr><th>#</th><th>商品</th><th>到手价</th><th>立省</th><th>折扣</th></tr></thead>
   <tbody>{''.join(row(d, i + 1) for i, d in enumerate(hot)) or '<tr><td colspan="5" style="color:#9aa0a8;padding:20px">无</td></tr>'}</tbody></table>
   <h2><span class="dot"></span>好价榜 <span class="hint">{H.escape(meta.get('feed_name') or '')} 原始顺序 · 前 {len(feed_top)} 条</span></h2>
