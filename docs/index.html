@@ -49,76 +49,119 @@ tbody tr:hover td{background:#fcfcfd}
   background:#e8f1fb;color:#1d5fbf;border:1px solid #c8dbf2;vertical-align:1px}
 .lowhint{font-size:11px;color:#9aa0a8;margin-top:2px;font-weight:400}
 .foot{color:#9aa0a8;font-size:11.5px;margin-top:24px;line-height:1.9}
+/* ---------- 手机端：表格拆成卡片，避免窄屏把商品名挤成竖排 ---------- */
+@media (max-width:700px){
+  html,body{overflow-x:hidden;max-width:100%}
+  body{padding:18px 12px}
+  h1{font-size:18px}
+  .sub{font-size:11.5px;margin-bottom:16px;line-height:1.7}
+  .stats{grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:16px}
+  .stat{padding:10px 12px}
+  .stat .k{font-size:11px}
+  .stat .v{font-size:18px}
+  .funnel{font-size:11.5px;padding:8px 10px;line-height:1.8;word-break:break-word}
+  h2{font-size:13px;margin:20px 0 8px}
+  h2 .hint{font-size:11px}
+  table,tbody,tr,td{display:block;width:auto}
+  table{border:0;background:transparent;border-radius:0}
+  thead{display:none}
+  tr{position:relative;background:#fff;border:1px solid #e6e8eb;border-radius:10px;
+     padding:12px;margin-bottom:9px}
+  tr:last-child{margin-bottom:0}
+  tbody tr:hover td{background:transparent}
+  td{border:0;padding:0}
+  .idx{position:absolute;left:12px;top:12px;color:#c3c7cd;font-size:11px;width:auto}
+  .name{padding-left:19px;margin-bottom:7px;line-height:1.55;word-break:break-word}
+  .name a{font-size:14px}
+  .meta{font-size:11px;line-height:1.6;margin-top:3px}
+  .num{display:inline-block;width:auto;text-align:left;white-space:normal;
+        margin-right:10px;font-size:13px}
+  .num b{font-size:16px}
+  .num s{font-size:11.5px}
+  .save{display:inline-block;margin-right:8px;font-size:12px}
+  .rate{display:inline-block;width:auto;text-align:left;font-size:13px}
+  .bar{display:none}
+  .tag,.newlow,.first{font-size:10px;margin-left:4px}
+  .lowhint{font-size:10.5px}
+  .foot{font-size:11px;line-height:1.8}
+}
 </style></head><body><div class="wrap">
   <h1>值得买日报 · 2026-10-21</h1>
-  <div class="sub">抓取 2026-10-21 13:58　请求 5 次　
+  <div class="sub">抓取 2026-10-21 14:06　请求 5 次　
     来源 smzdm.com（时点快照，价格与库存随时变动）</div>
   
   <div class="stats">
-    <div class="stat"><div class="k">折扣榜</div><div class="v">5<em> 条</em></div></div>
-    <div class="stat"><div class="k">好价榜</div><div class="v">50<em> 条</em></div></div>
-    <div class="stat"><div class="k">最低折</div><div class="v">2.3<em>折</em></div></div>
+    <div class="stat"><div class="k">折扣榜</div><div class="v">6<em> 条</em></div></div>
+    <div class="stat"><div class="k">好价榜</div><div class="v">20<em> 条</em></div></div>
+    <div class="stat"><div class="k">最低折</div><div class="v">1.0<em>折</em></div></div>
     <div class="stat"><div class="k">最高立省</div><div class="v">¥137</div></div>
   </div>
-  <div class="funnel">数据源 77 条 → 热度不足 −1 → 价超限 −1 → 好价榜 <b>50</b> 条（无原价 47 条）　|　24 小时池 <b>75</b> 条 → 折扣榜 <b>5</b> 条　<span style="color:#8a6410">其中 7 条近期推过，榜单照常显示，推送时会跳过</span></div>
+  <div class="funnel">数据源 81 条 → 热度不足 −1 → 价超限 −2 → 好价榜 <b>20</b> 条（无原价 49 条）　|　24 小时池 <b>78</b> 条 → 折扣榜 <b>6</b> 条　<span style="color:#8a6410">其中 7 条近期推过，榜单照常显示，推送时会跳过</span></div>
   <h2><span class="dot"></span>折扣榜 <span class="hint">按折扣力度排序 · 只收 3.5 折以内</span></h2>
   <table><thead><tr><th>#</th><th>商品</th><th>到手价</th><th>立省</th><th>折扣</th></tr></thead>
   <tbody><tr>
   <td class="idx">1</td>
+  <td class="name"><a href="https://www.smzdm.com/p/184351305/" target="_blank">嘉顿 饱腹 苏打饼干 盒装原味 815g 普通盒装</a><span class="tag">88VIP</span>
+    <div class="meta">食品生鲜 · 天猫超市 · 12H最热 · 11:34 · 值48/评42</div></td>
+  <td class="num"><b>¥2.87</b> <s>¥30</s></td>
+  <td class="num save">省¥27.13</td>
+  <td class="rate">1.0<small>折</small><div class="bar"><i style="width:9.6%"></i></div></td>
+</tr><tr>
+  <td class="idx">2</td>
   <td class="name"><a href="https://www.smzdm.com/p/184337636/" target="_blank">王小卤 虎皮凤爪去骨凤爪卤味零食组合5袋520g</a><span class="tag">88VIP</span>
     <div class="meta">食品生鲜 · 天猫超市 · 12H最热 · 11:31 · 值60/评112</div></td>
   <td class="num"><b>¥15.68</b> <s>¥68.8</s></td>
   <td class="num save">省¥53.12</td>
   <td class="rate">2.3<small>折</small><div class="bar"><i style="width:22.8%"></i></div></td>
 </tr><tr>
-  <td class="idx">2</td>
+  <td class="idx">3</td>
   <td class="name"><a href="https://www.smzdm.com/p/183900955/" target="_blank">劲仔 深海小鱼 混合味 48包</a>
     <div class="meta">食品生鲜 · 京东 · 12H最热 · 11:34 · 值341/评490</div></td>
   <td class="num"><b>¥16.3</b> <s>¥68.8</s></td>
   <td class="num save">省¥52.5</td>
   <td class="rate">2.4<small>折</small><div class="bar"><i style="width:23.7%"></i></div></td>
 </tr><tr>
-  <td class="idx">3</td>
+  <td class="idx">4</td>
   <td class="name"><a href="https://www.smzdm.com/p/184429300/" target="_blank">福临门 臻选特等五常大米 5kg*2袋</a><span class="tag">88VIP</span>
     <div class="meta">食品生鲜 · 天猫超市 · 12H最热 · 13:45 · 值108/评131</div></td>
   <td class="num"><b>¥52.74</b> <s>¥189.9</s></td>
   <td class="num save">省¥137.16</td>
   <td class="rate">2.8<small>折</small><div class="bar"><i style="width:27.8%"></i></div></td>
 </tr><tr>
-  <td class="idx">4</td>
+  <td class="idx">5</td>
   <td class="name"><a href="https://www.smzdm.com/p/184416335/" target="_blank">心相印 茶语丝享系列 有芯卷纸 4层*140g*27卷</a>
-    <div class="meta">日用百货 · 天猫超市 · 12H最热 · 10:54 · 值60/评116</div></td>
+    <div class="meta">日用百货 · 天猫超市 · 12H最热 · 10:54 · 值60/评117</div></td>
   <td class="num"><b>¥20.88</b> <s>¥66.9</s></td>
   <td class="num save">省¥46.02</td>
   <td class="rate">3.1<small>折</small><div class="bar"><i style="width:31.2%"></i></div></td>
 </tr><tr>
-  <td class="idx">5</td>
+  <td class="idx">6</td>
   <td class="name"><a href="https://www.smzdm.com/p/184084033/" target="_blank">德芙 丝滑牛奶巧克力 224g*2盒</a>
     <div class="meta">食品生鲜 · 京东 · 12H最热 · 11:35 · 值87/评171</div></td>
   <td class="num"><b>¥34.91</b> <s>¥99.9</s></td>
   <td class="num save">省¥64.99</td>
   <td class="rate">3.5<small>折</small><div class="bar"><i style="width:34.9%"></i></div></td>
 </tr></tbody></table>
-  <h2><span class="dot"></span>好价榜 <span class="hint">12H最热 原始顺序 · 前 50 条</span></h2>
+  <h2><span class="dot"></span>好价榜 <span class="hint">12H最热 原始顺序 · 前 20 条</span></h2>
   <table><thead><tr><th>#</th><th>商品</th><th>到手价</th><th>立省</th><th>折扣</th></tr></thead>
   <tbody><tr>
   <td class="idx">1</td>
   <td class="name"><a href="https://www.smzdm.com/p/184426748/" target="_blank">酷态科 6号 Mini 90W氮化镓充电器</a>
-    <div class="meta">电脑数码 · 拼多多 · 12H最热 · 12:42 · 值48/评2</div></td>
+    <div class="meta">电脑数码 · 拼多多 · 12H最热 · 12:42 · 值48/评3</div></td>
   <td class="num"><b>¥56.2</b> <s>¥82.9</s></td>
   <td class="num save">省¥26.7</td>
   <td class="rate">6.8<small>折</small><div class="bar"><i style="width:67.8%"></i></div></td>
 </tr><tr>
   <td class="idx">2</td>
   <td class="name"><a href="https://www.smzdm.com/p/183696862/" target="_blank">三只松鼠 卤汁肉脯 500g/约18袋</a>
-    <div class="meta">食品生鲜 · 京东 · 12H最热 · 11:33 · 值543/评819</div></td>
+    <div class="meta">食品生鲜 · 京东 · 12H最热 · 11:33 · 值545/评821</div></td>
   <td class="num"><b>¥14.9</b> <s>¥27.9</s></td>
   <td class="num save">省¥13</td>
   <td class="rate">5.3<small>折</small><div class="bar"><i style="width:53.4%"></i></div></td>
 </tr><tr>
   <td class="idx">3</td>
   <td class="name"><a href="https://www.smzdm.com/p/183686113/" target="_blank">沃隆 混合纯坚果500g/罐 （买一送一 到手2罐）</a>
-    <div class="meta">食品生鲜 · 京东 · 12H最热 · 11:31 · 值439/评751</div></td>
+    <div class="meta">食品生鲜 · 京东 · 12H最热 · 11:31 · 值441/评752</div></td>
   <td class="num"><b>¥75.4</b> <s>¥119.9</s></td>
   <td class="num save">省¥44.5</td>
   <td class="rate">6.3<small>折</small><div class="bar"><i style="width:62.9%"></i></div></td>
@@ -139,14 +182,14 @@ tbody tr:hover td{background:#fcfcfd}
 </tr><tr>
   <td class="idx">6</td>
   <td class="name"><a href="https://www.smzdm.com/p/183882981/" target="_blank">倍乐思 提拉米苏扁桃仁夹心黑巧克力豆42g</a>
-    <div class="meta">食品生鲜 · 天猫精选 · 12H最热 · 11:32 · 值301/评519</div></td>
+    <div class="meta">食品生鲜 · 天猫精选 · 12H最热 · 11:32 · 值303/评520</div></td>
   <td class="num"><b>¥6.05</b> </td>
   <td class="num save"><span class="muted">—</span></td>
   <td class="rate"><span class="muted">无原价</span></td>
 </tr><tr>
   <td class="idx">7</td>
   <td class="name"><a href="https://www.smzdm.com/p/184352668/" target="_blank">Off &amp; Relax Off&amp;Relax蓬松零压瓶清爽洗发水860ml（赠735ml，到手1595ml）</a>
-    <div class="meta">日用百货 · 京东 · 12H最热 · 15:04 · 值233/评465</div></td>
+    <div class="meta">日用百货 · 京东 · 12H最热 · 15:04 · 值233/评468</div></td>
   <td class="num"><b>¥109.3</b> <s>¥188</s></td>
   <td class="num save">省¥78.7</td>
   <td class="rate">5.8<small>折</small><div class="bar"><i style="width:58.1%"></i></div></td>
@@ -166,16 +209,16 @@ tbody tr:hover td{background:#fcfcfd}
   <td class="rate"><span class="muted">无原价</span></td>
 </tr><tr>
   <td class="idx">10</td>
-  <td class="name"><a href="https://www.smzdm.com/p/183910447/" target="_blank">爱奇艺 白金会员年+京东PLUS年卡 支持电视端 含PLUS积分</a><span class="tag">会员</span>
-    <div class="meta">其他 · 京东 · 12H最热 · 10:26 · 值11/评101</div></td>
-  <td class="num"><b>¥248</b> </td>
+  <td class="name"><a href="https://www.smzdm.com/p/184305362/" target="_blank">威刚 UV128经典系列64GB USB3.2伸缩接口U盘</a>
+    <div class="meta">电脑数码 · 拼多多 · 12H最热 · 10-20 09:42 · 值5/评830</div></td>
+  <td class="num"><b>¥27.16</b> </td>
   <td class="num save"><span class="muted">—</span></td>
   <td class="rate"><span class="muted">无原价</span></td>
 </tr><tr>
   <td class="idx">11</td>
-  <td class="name"><a href="https://www.smzdm.com/p/184305362/" target="_blank">威刚 UV128经典系列64GB USB3.2伸缩接口U盘</a>
-    <div class="meta">电脑数码 · 拼多多 · 12H最热 · 10-20 09:42 · 值5/评794</div></td>
-  <td class="num"><b>¥27.16</b> </td>
+  <td class="name"><a href="https://www.smzdm.com/p/183910447/" target="_blank">爱奇艺 白金会员年+京东PLUS年卡 支持电视端 含PLUS积分</a><span class="tag">会员</span>
+    <div class="meta">其他 · 京东 · 12H最热 · 10:26 · 值11/评101</div></td>
+  <td class="num"><b>¥248</b> </td>
   <td class="num save"><span class="muted">—</span></td>
   <td class="rate"><span class="muted">无原价</span></td>
 </tr><tr>
@@ -188,14 +231,14 @@ tbody tr:hover td{background:#fcfcfd}
 </tr><tr>
   <td class="idx">13</td>
   <td class="name"><a href="https://www.smzdm.com/p/184098149/" target="_blank">上次卖爆、GB2707真原切！：鲜京采 2.5cm厚切眼肉牛排 净重1kg 袋装</a>
-    <div class="meta">食品生鲜 · 京东 · 12H最热 · 21:20 · 值133/评412</div></td>
+    <div class="meta">食品生鲜 · 京东 · 12H最热 · 21:20 · 值133/评413</div></td>
   <td class="num"><b>¥92.9</b> </td>
   <td class="num save"><span class="muted">—</span></td>
   <td class="rate"><span class="muted">无原价</span></td>
 </tr><tr>
   <td class="idx">14</td>
   <td class="name"><a href="https://www.smzdm.com/p/184249354/" target="_blank">得宝 无香抽纸4层加厚80抽*20包整箱</a>
-    <div class="meta">日用百货 · 京东 · 12H最热 · 10:14 · 值266/评323</div></td>
+    <div class="meta">日用百货 · 京东 · 12H最热 · 10:14 · 值268/评323</div></td>
   <td class="num"><b>¥37.37</b> </td>
   <td class="num save"><span class="muted">—</span></td>
   <td class="rate"><span class="muted">无原价</span></td>
@@ -237,218 +280,8 @@ tbody tr:hover td{background:#fcfcfd}
 </tr><tr>
   <td class="idx">20</td>
   <td class="name"><a href="https://www.smzdm.com/p/184417469/" target="_blank">维达 棉韧压花抽纸3层M码 90抽*40包</a><span class="tag">需券</span>
-    <div class="meta">日用百货 · 天猫超市 · 12H最热 · 11:11 · 值170/评177</div></td>
+    <div class="meta">日用百货 · 天猫超市 · 12H最热 · 11:11 · 值170/评178</div></td>
   <td class="num"><b>¥36.3</b> </td>
-  <td class="num save"><span class="muted">—</span></td>
-  <td class="rate"><span class="muted">无原价</span></td>
-</tr><tr>
-  <td class="idx">21</td>
-  <td class="name"><a href="https://www.smzdm.com/p/184281413/" target="_blank">GB2707真原切！大伊&amp;牛鲜尊 山东黄牛牛肉卷净重3斤</a>
-    <div class="meta">食品生鲜 · 京东 · 12H最热 · 21:19 · 值79/评73</div></td>
-  <td class="num"><b>¥74.9</b> </td>
-  <td class="num save"><span class="muted">—</span></td>
-  <td class="rate"><span class="muted">无原价</span></td>
-</tr><tr>
-  <td class="idx">22</td>
-  <td class="name"><a href="https://www.smzdm.com/p/184417328/" target="_blank">心相印 茶语丝享M码抽纸3层120抽24包</a><span class="tag">88VIP</span>
-    <div class="meta">日用百货 · 天猫超市 · 12H最热 · 11:08 · 值126/评211</div></td>
-  <td class="num"><b>¥21.35</b> </td>
-  <td class="num save"><span class="muted">—</span></td>
-  <td class="rate"><span class="muted">无原价</span></td>
-</tr><tr>
-  <td class="idx">23</td>
-  <td class="name"><a href="https://www.smzdm.com/p/184305068/" target="_blank">天顺源 GB2707、每斤26.9元！原切法师羔羊肩排 净重1斤</a>
-    <div class="meta">其他 · 京东 · 12H最热 · 20:35 · 值54/评71</div></td>
-  <td class="num"><b>¥26.99</b> </td>
-  <td class="num save"><span class="muted">—</span></td>
-  <td class="rate"><span class="muted">无原价</span></td>
-</tr><tr>
-  <td class="idx">24</td>
-  <td class="name"><a href="https://www.smzdm.com/p/184282624/" target="_blank">鲜京采 抹茶生巧乳酪大饼4寸250g 另有其他口味蛋糕可选</a>
-    <div class="meta">食品生鲜 · 京东 · 12H最热 · 21:18 · 值37/评37</div></td>
-  <td class="num"><b>¥27.8</b> </td>
-  <td class="num save"><span class="muted">—</span></td>
-  <td class="rate"><span class="muted">无原价</span></td>
-</tr><tr>
-  <td class="idx">25</td>
-  <td class="name"><a href="https://www.smzdm.com/p/184266858/" target="_blank">1号牧场 风干牛肉干600克 牛肉条350g*1袋+牛肉块250g*1袋</a>
-    <div class="meta">食品生鲜 · 京东 · 12H最热 · 11:33 · 值143/评259</div></td>
-  <td class="num"><b>¥66</b> </td>
-  <td class="num save"><span class="muted">—</span></td>
-  <td class="rate"><span class="muted">无原价</span></td>
-</tr><tr>
-  <td class="idx">26</td>
-  <td class="name"><a href="https://www.smzdm.com/p/184050581/" target="_blank">麦臻选 五香酱牛肉 600g</a>
-    <div class="meta">食品生鲜 · 京东 · 12H最热 · 11:32 · 值95/评204</div></td>
-  <td class="num"><b>¥58.89</b> <s>¥79.9</s></td>
-  <td class="num save">省¥21.01</td>
-  <td class="rate">7.4<small>折</small><div class="bar"><i style="width:73.7%"></i></div></td>
-</tr><tr>
-  <td class="idx">27</td>
-  <td class="name"><a href="https://www.smzdm.com/p/184334277/" target="_blank">特仑苏 蒙牛特仑苏纯牛奶250ml*16盒 3.6g蛋白 送礼礼盒</a><span class="tag">需券</span>
-    <div class="meta">食品生鲜 · 京东 · 12H最热 · 12:50 · 值55/评57</div></td>
-  <td class="num"><b>¥30.9</b> </td>
-  <td class="num save"><span class="muted">—</span></td>
-  <td class="rate"><span class="muted">无原价</span></td>
-</tr><tr>
-  <td class="idx">28</td>
-  <td class="name"><a href="https://www.smzdm.com/p/184258034/" target="_blank">伊丽莎白·雅顿 第二代粉胶次抛A醇精华60粒（赠同款共63粒+金胶面膜+粉胶面霜5ml）</a>
-    <div class="meta">日用百货 · 京东 · 12H最热 · 11:04 · 值28/评208</div></td>
-  <td class="num"><b>¥426.2</b> </td>
-  <td class="num save"><span class="muted">—</span></td>
-  <td class="rate"><span class="muted">无原价</span></td>
-</tr><tr>
-  <td class="idx">29</td>
-  <td class="name"><a href="https://www.smzdm.com/p/184088514/" target="_blank">沃隆 东北松子 158g*3袋东北松子</a>
-    <div class="meta">其他 · 京东 · 12H最热 · 11:33 · 值97/评232</div></td>
-  <td class="num"><b>¥47.9</b> <s>¥104.9</s></td>
-  <td class="num save">省¥57</td>
-  <td class="rate">4.6<small>折</small><div class="bar"><i style="width:45.7%"></i></div></td>
-</tr><tr>
-  <td class="idx">30</td>
-  <td class="name"><a href="https://www.smzdm.com/p/184427487/" target="_blank">露得清 小蓝管早C晚a醇面霜视黄醇抗皱修护紧致 40g</a><span class="tag">需券</span>
-    <div class="meta">日用百货 · 天猫精选 · 12H最热 · 13:02 · 值86/评147</div></td>
-  <td class="num"><b>¥46.95</b> </td>
-  <td class="num save"><span class="muted">—</span></td>
-  <td class="rate"><span class="muted">无原价</span></td>
-</tr><tr>
-  <td class="idx">31</td>
-  <td class="name"><a href="https://www.smzdm.com/p/184340819/" target="_blank">护舒宝 液体卫生巾量多日用 270mm*32片</a>
-    <div class="meta">日用百货 · 京东 · 12H最热 · 10:24 · 值113/评154</div></td>
-  <td class="num"><b>¥43.48</b> <s>¥55.6</s></td>
-  <td class="num save">省¥12.12</td>
-  <td class="rate">7.8<small>折</small><div class="bar"><i style="width:78.2%"></i></div></td>
-</tr><tr>
-  <td class="idx">32</td>
-  <td class="name"><a href="https://www.smzdm.com/p/184408822/" target="_blank">酷态科 CP6 67W快充 自带伸缩线 2C1A 充电器</a><span class="tag">需券</span>
-    <div class="meta">电脑数码 · 拼多多 · 12H最热 · 09:41 · 值12/评379</div></td>
-  <td class="num"><b>¥89.18</b> <s>¥125.9</s></td>
-  <td class="num save">省¥36.72</td>
-  <td class="rate">7.1<small>折</small><div class="bar"><i style="width:70.8%"></i></div></td>
-</tr><tr>
-  <td class="idx">33</td>
-  <td class="name"><a href="https://www.smzdm.com/p/184396890/" target="_blank">汾酒 青花20 53%vol 清香型白酒 500ml 单瓶装</a><span class="tag">需券</span>
-    <div class="meta">酒类 · 京东 · 12H最热 · 11:40 · 值46/评75</div></td>
-  <td class="num"><b>¥296.54</b> </td>
-  <td class="num save"><span class="muted">—</span></td>
-  <td class="rate"><span class="muted">无原价</span></td>
-</tr><tr>
-  <td class="idx">34</td>
-  <td class="name"><a href="https://www.smzdm.com/p/184351437/" target="_blank">霜山 304不锈钢保鲜盒六件套（限时立减91元）</a><span class="tag">会员</span>
-    <div class="meta">日用百货 · 京东 · 12H最热 · 15:49 · 值96/评145</div></td>
-  <td class="num"><b>¥107.5</b> </td>
-  <td class="num save"><span class="muted">—</span></td>
-  <td class="rate"><span class="muted">无原价</span></td>
-</tr><tr>
-  <td class="idx">35</td>
-  <td class="name"><a href="https://www.smzdm.com/p/184311963/" target="_blank">淘金币42.2元：范佳乐 小麦啤酒450ml*12瓶</a><span class="tag warn">淘金币</span>
-    <div class="meta">酒类 · 天猫精选 · 12H最热 · 12:59 · 值95/评145</div></td>
-  <td class="num"><b>¥52.77</b> </td>
-  <td class="num save"><span class="muted">—</span></td>
-  <td class="rate"><span class="muted">无原价</span></td>
-</tr><tr>
-  <td class="idx">36</td>
-  <td class="name"><a href="https://www.smzdm.com/p/184307640/" target="_blank">一虾一世界 国产大号青虾仁 250g*4袋(净重) 已去虾线</a>
-    <div class="meta">食品生鲜 · 京东 · 12H最热 · 17:20 · 值81/评186</div></td>
-  <td class="num"><b>¥52.94</b> </td>
-  <td class="num save"><span class="muted">—</span></td>
-  <td class="rate"><span class="muted">无原价</span></td>
-</tr><tr>
-  <td class="idx">37</td>
-  <td class="name"><a href="https://www.smzdm.com/p/184386905/" target="_blank">安踏 火壳2.0 Polartec Thermal Pro 抓绒衣</a><span class="tag">需券</span>
-    <div class="meta">其他 · 京东 · 12H最热 · 01:30 · 值46/评176</div></td>
-  <td class="num"><b>¥241.12</b> <s>¥519</s></td>
-  <td class="num save">省¥277.88</td>
-  <td class="rate">4.7<small>折</small><div class="bar"><i style="width:46.5%"></i></div></td>
-</tr><tr>
-  <td class="idx">38</td>
-  <td class="name"><a href="https://www.smzdm.com/p/184430814/" target="_blank">飞利浦 钻石3系列 HX5181 电动牙刷 优雅白</a>
-    <div class="meta">家用电器 · 天猫国际官方直营 · 12H最热 · 14:09 · 值70/评105</div></td>
-  <td class="num"><b>¥133.71</b> </td>
-  <td class="num save"><span class="muted">—</span></td>
-  <td class="rate"><span class="muted">无原价</span></td>
-</tr><tr>
-  <td class="idx">39</td>
-  <td class="name"><a href="https://www.smzdm.com/p/184304437/" target="_blank">鲜秋风物集：京觅 你都咋吃、每粒3元！云南孟连哈斯牛油果（ 7分熟）6粒装</a><span class="tag">需券</span>
-    <div class="meta">其他 · 京东 · 12H最热 · 21:18 · 值51/评188</div></td>
-  <td class="num"><b>¥19.9</b> </td>
-  <td class="num save"><span class="muted">—</span></td>
-  <td class="rate"><span class="muted">无原价</span></td>
-</tr><tr>
-  <td class="idx">40</td>
-  <td class="name"><a href="https://www.smzdm.com/p/184101134/" target="_blank">wps 超级会员3年+京东PLUS年卡/喜马拉雅/网易/优酷年卡+30元电影券包</a><span class="tag">会员</span>
-    <div class="meta">其他 · 京东 · 12H最热 · 10:38 · 值79/评120</div></td>
-  <td class="num"><b>¥255</b> <s>¥298</s></td>
-  <td class="num save">省¥43</td>
-  <td class="rate">8.6<small>折</small><div class="bar"><i style="width:85.6%"></i></div></td>
-</tr><tr>
-  <td class="idx">41</td>
-  <td class="name"><a href="https://www.smzdm.com/p/184102210/" target="_blank">施耐德 开关插座面板 家用86型 二三五孔墙壁电源插座 致铂系列玉脂白色 五孔10只装</a><span class="tag">秒杀</span>
-    <div class="meta">电脑数码 · 京东 · 12H最热 · 13:45 · 值29/评55</div></td>
-  <td class="num"><b>¥207.3</b> </td>
-  <td class="num save"><span class="muted">—</span></td>
-  <td class="rate"><span class="muted">无原价</span></td>
-</tr><tr>
-  <td class="idx">42</td>
-  <td class="name"><a href="https://www.smzdm.com/p/183967662/" target="_blank">迅雷 超级会员15个月（核120元/年）</a><span class="tag">会员</span>
-    <div class="meta">其他 · 京东 · 12H最热 · 10:39 · 值99/评128</div></td>
-  <td class="num"><b>¥152</b> </td>
-  <td class="num save"><span class="muted">—</span></td>
-  <td class="rate"><span class="muted">无原价</span></td>
-</tr><tr>
-  <td class="idx">43</td>
-  <td class="name"><a href="https://www.smzdm.com/p/184010257/" target="_blank">芒果TV 会员年卡+京东PLUS年卡</a><span class="tag">会员</span>
-    <div class="meta">食品生鲜 · 京东 · 12H最热 · 10:08 · 值65/评101</div></td>
-  <td class="num"><b>¥103</b> <s>¥118</s></td>
-  <td class="num save">省¥15</td>
-  <td class="rate">8.7<small>折</small><div class="bar"><i style="width:87.3%"></i></div></td>
-</tr><tr>
-  <td class="idx">44</td>
-  <td class="name"><a href="https://www.smzdm.com/p/184441705/" target="_blank">得宝 马卡龙4层无香软抽100抽30包M码</a>
-    <div class="meta">其他 · 天猫超市 · 12H最热 · 19:21 · 值122/评80</div></td>
-  <td class="num"><b>¥48.24</b> </td>
-  <td class="num save"><span class="muted">—</span></td>
-  <td class="rate"><span class="muted">无原价</span></td>
-</tr><tr>
-  <td class="idx">45</td>
-  <td class="name"><a href="https://www.smzdm.com/p/184408989/" target="_blank">無印良品 MUJI 大容量 不锈钢吸管杯 保温水杯杯子冰霸杯 银色 1.2L</a>
-    <div class="meta">日用百货 · 京东 · 12H最热 · 20:33 · 值48/评105</div></td>
-  <td class="num"><b>¥65.41</b> <s>¥90</s></td>
-  <td class="num save">省¥24.59</td>
-  <td class="rate">7.3<small>折</small><div class="bar"><i style="width:72.7%"></i></div></td>
-</tr><tr>
-  <td class="idx">46</td>
-  <td class="name"><a href="https://www.smzdm.com/p/184151645/" target="_blank">凯米 U6系列1.67超薄防蓝光镜片（0-800度）+31306黑色超轻钛架（可升级FILA斐乐镜架/施洛华镜架)TK1</a>
-    <div class="meta">其他 · 京东 · 12H最热 · 10:36 · 值67/评107</div></td>
-  <td class="num"><b>¥125.28</b> </td>
-  <td class="num save"><span class="muted">—</span></td>
-  <td class="rate"><span class="muted">无原价</span></td>
-</tr><tr>
-  <td class="idx">47</td>
-  <td class="name"><a href="https://www.smzdm.com/p/184373534/" target="_blank">售罄 任天堂 Switch 2港版体感游戏机1080p掌机120Hz刷新256GB150度开合</a><span class="tag">需券</span>
-    <div class="meta">电脑数码 · 天猫超市 · 12H最热 · 13:04 · 值39/评116</div></td>
-  <td class="num"><b>¥2762.36</b> </td>
-  <td class="num save"><span class="muted">—</span></td>
-  <td class="rate"><span class="muted">无原价</span></td>
-</tr><tr>
-  <td class="idx">48</td>
-  <td class="name"><a href="https://www.smzdm.com/p/184152538/" target="_blank">随机免单：万新 1.60非球面树脂镜片+9051黑色超轻钛架多款可选（来架免费加工）</a>
-    <div class="meta">其他 · 京东 · 12H最热 · 10:42 · 值83/评102</div></td>
-  <td class="num"><b>¥59.16</b> </td>
-  <td class="num save"><span class="muted">—</span></td>
-  <td class="rate"><span class="muted">无原价</span></td>
-</tr><tr>
-  <td class="idx">49</td>
-  <td class="name"><a href="https://www.smzdm.com/p/184309856/" target="_blank">京东超市 京觅海外直采 惠选进口原切牛肋条净重4斤(500g*4)</a>
-    <div class="meta">其他 · 京东 · 12H最热 · 11:13 · 值43/评88</div></td>
-  <td class="num"><b>¥145.9</b> </td>
-  <td class="num save"><span class="muted">—</span></td>
-  <td class="rate"><span class="muted">无原价</span></td>
-</tr><tr>
-  <td class="idx">50</td>
-  <td class="name"><a href="https://www.smzdm.com/p/184358363/" target="_blank">索尼 PlayStation 5系列 PS5 slim 数字版 日版 游戏机 白色</a>
-    <div class="meta">电脑数码 · 京东全球购 · 12H最热 · 13:21 · 值28/评163</div></td>
-  <td class="num"><b>¥2533</b> </td>
   <td class="num save"><span class="muted">—</span></td>
   <td class="rate"><span class="muted">无原价</span></td>
 </tr></tbody></table>
