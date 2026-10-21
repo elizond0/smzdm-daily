@@ -1010,7 +1010,7 @@ tbody tr:hover td{{background:#fcfcfd}}
   <h1>值得买日报 · {H.escape(meta['date'])}</h1>
   <div class="sub">抓取 {H.escape(meta['fetched_at'])}　请求 {meta['requests']} 次　
     来源 smzdm.com（时点快照，价格与库存随时变动）
-    <a class="wishlink" href="./wishlist.html">⭐ 愿望单 <span style="font-weight:400">{meta.get('watch_words', 0)} 个关键词</span></a>
+    <a class="wishlink" href="./wishlist.html">⭐ 愿望单 <span id="wishCount" style="font-weight:400">{meta.get('watch_words', 0)} 个关键词</span></a>
     <a class="wishlink" href="./db.html" style="background:#eef4ff;color:#1d5fbf;border-color:#cfdefb">📚 数据库</a></div>
   {warn}{empty}
   <div class="stats">
