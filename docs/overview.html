@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>运行概览 · 什么值得买优惠推送</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;padding:34px 20px;background:#f5f6f8;color:#16181c;
+  font:14px/1.65 -apple-system,"Segoe UI","Microsoft YaHei",sans-serif}
+.wrap{max-width:1000px;margin:0 auto}
+h1{font-size:21px;margin:0 0 4px}
+.sub{color:#71767e;font-size:12.5px;margin-bottom:22px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:22px}
+.stat{background:#fff;border:1px solid #e6e8eb;border-radius:10px;padding:13px 16px}
+.stat .k{font-size:11.5px;color:#71767e}
+.stat .v{font-size:21px;font-weight:600;margin-top:1px}
+.stat .v em{font-size:12px;font-style:normal;color:#71767e;font-weight:400;margin-left:2px}
+.card{background:#fff;border:1px solid #e6e8eb;border-radius:10px;padding:16px 18px;margin-bottom:18px}
+h2{font-size:13.5px;margin:0 0 12px;display:flex;align-items:center;gap:8px;font-weight:600}
+h2 .dot{width:3px;height:13px;background:#c8102e;border-radius:2px}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;font-size:11.5px;color:#71767e;font-weight:500;
+  padding:7px 10px;border-bottom:1px solid #e6e8eb;white-space:nowrap}
+td{padding:9px 10px;border-bottom:1px solid #f2f3f5;font-size:13px}
+tr:last-child td{border-bottom:0}
+tbody tr:hover td{background:#fcfcfd}
+.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.badge{display:inline-block;padding:1px 7px;border-radius:3px;font-size:11px;
+  border:1px solid;white-space:nowrap}
+.b-ok{background:#e9f6ee;color:#1a7f42;border-color:#c9e8d4}
+.b-test{background:#e8f1fb;color:#1d5fbf;border-color:#c8dbf2}
+.b-dry{background:#f1f2f4;color:#71767e;border-color:#e2e4e8}
+.b-skip{background:#fff8e6;color:#8a6410;border-color:#f3e2b8}
+.b-fail{background:#fdecee;color:#c8102e;border-color:#f3c3c9}
+.muted{color:#9aa0a8}
+.chart{width:100%;height:150px}
+.foot{color:#9aa0a8;font-size:11.5px;margin-top:22px;line-height:1.9}
+a{color:#c8102e;text-decoration:none}
+a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>运行概览</h1>
+  <div class="sub">什么值得买优惠推送 · GitHub Actions 云端执行记录　
+    <a href="./index.html">→ 查看今日报表</a></div>
+
+  <div class="stats" id="stats"></div>
+  <div class="card">
+    <h2><span class="dot"></span>数据源条数趋势</h2>
+    <div id="chart"></div>
+  </div>
+  <div class="card">
+    <h2><span class="dot"></span>最近运行</h2>
+    <div id="list"><div class="muted">加载中…</div></div>
+  </div>
+
+  <div class="foot">
+    数据来自仓库 <code>docs/history.json</code>，由 daily.py 每次运行后写入。<br>
+    状态说明：已推送＝正常发微信；静默测试＝跑全流程但不通知；仅报表＝--dry-run；跳过＝今天已推或冷却中；失败＝抓取异常。
+  </div>
+</div>
+
+<script>
+const LABEL = {
+  ok:      ['b-ok',   '已推送'],
+  test:    ['b-test', '静默测试'],
+  dry:     ['b-dry',  '仅报表'],
+  skipped: ['b-skip', '跳过'],
+  failed:  ['b-fail', '失败']
+};
+
+function el(tag, cls, text) {
+  const n = document.createElement(tag);
+  if (cls) n.className = cls;
+  if (text != null) n.textContent = text;
+  return n;
+}
+
+function fmt(v) { return (v === undefined || v === null || v === '') ? '—' : v; }
+
+function render(hist) {
+  if (!hist || !hist.length) {
+    document.getElementById('list').innerHTML = '<div class="muted">还没有运行记录，等第一次云端执行后就会出现。</div>';
+    return;
+  }
+  const recent = hist.slice(-20).reverse();
+
+  const okRate = Math.round(hist.filter(h => h.status === 'ok').length / hist.length * 100);
+  const last = hist[hist.length - 1];
+  const srcs = hist.map(h => h.source || 0);
+  const avg = Math.round(srcs.reduce((a, b) => a + b, 0) / srcs.length);
+
+  const stats = [
+    ['总运行次数', hist.length, ' 次'],
+    ['推送成功率', okRate, '%'],
+    ['最近数据源', fmt(last.source), ' 条'],
+    ['平均数据源', avg, ' 条']
+  ];
+  const box = document.getElementById('stats');
+  box.innerHTML = '';
+  stats.forEach(([k, v, u]) => {
+    const d = el('div', 'stat');
+    d.appendChild(el('div', 'k', k));
+    const val = el('div', 'v', String(v));
+    val.appendChild(el('em', null, u));
+    d.appendChild(val);
+    box.appendChild(d);
+  });
+
+  drawChart(recent.slice().reverse());
+  drawList(recent);
+}
+
+function drawChart(points) {
+  const host = document.getElementById('chart');
+  if (points.length < 2) {
+    host.innerHTML = '<div class="muted">数据点不足，跑两次以上才会显示趋势。</div>';
+    return;
+  }
+  const W = 940, H = 150, PAD = 26;
+  const vals = points.map(p => p.source || 0);
+  const max = Math.max(...vals, 1), min = Math.min(...vals, 0);
+  const span = Math.max(max - min, 1);
+  const x = i => PAD + i * (W - PAD * 2) / (points.length - 1);
+  const y = v => H - PAD - (v - min) / span * (H - PAD * 2);
+
+  let path = '', dots = '';
+  points.forEach((p, i) => {
+    const cx = x(i), cy = y(p.source || 0);
+    path += (i ? ' L' : 'M') + cx.toFixed(1) + ' ' + cy.toFixed(1);
+    const bad = p.status === 'failed' || p.blocked;
+    dots += `<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="3.5"
+      fill="${bad ? '#c8102e' : '#1d5fbf'}" />`;
+  });
+
+  host.innerHTML = `<svg class="chart" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
+    <line x1="${PAD}" y1="${H - PAD}" x2="${W - PAD}" y2="${H - PAD}" stroke="#e6e8eb" />
+    <line x1="${PAD}" y1="${PAD}" x2="${W - PAD}" y2="${PAD}" stroke="#f2f3f5" />
+    <path d="${path}" fill="none" stroke="#1d5fbf" stroke-width="2" />
+    ${dots}
+    <text x="${PAD}" y="${PAD - 8}" font-size="10" fill="#9aa0a8">${max}</text>
+    <text x="${PAD}" y="${H - PAD + 14}" font-size="10" fill="#9aa0a8">${min}</text>
+  </svg>`;
+}
+
+function drawList(rows) {
+  const host = document.getElementById('list');
+  const table = el('table');
+  const thead = el('thead');
+  const tr = el('tr');
+  ['时间', '状态', '数据源', '折扣榜', '好价榜', '商品库', '备注'].forEach(h => tr.appendChild(el('th', null, h)));
+  thead.appendChild(tr);
+  table.appendChild(thead);
+
+  const tbody = el('tbody');
+  rows.forEach(r => {
+    const line = el('tr');
+    line.appendChild(el('td', null, `${r.date} ${r.time}`));
+
+    const tdS = el('td');
+    const [cls, txt] = LABEL[r.status] || ['b-dry', r.status || '未知'];
+    tdS.appendChild(el('span', 'badge ' + cls, txt));
+    line.appendChild(tdS);
+
+    [r.source, r.hot, r.feed, r.catalog].forEach(v => {
+      line.appendChild(el('td', 'num', fmt(v)));
+    });
+    line.appendChild(el('td', 'muted', r.note || ''));
+    tbody.appendChild(line);
+  });
+  table.appendChild(tbody);
+
+  host.innerHTML = '';
+  host.appendChild(table);
+}
+
+fetch('history.json', { cache: 'no-store' })
+  .then(r => r.ok ? r.json() : Promise.reject())
+  .then(render)
+  .catch(() => {
+    document.getElementById('list').innerHTML =
+      '<div class="muted">还没有 history.json，等第一次云端执行完成后自动生成。</div>';
+  });
+</script>
+</body>
+</html>

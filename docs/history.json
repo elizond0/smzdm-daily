@@ -1,0 +1,32 @@
+[
+ {
+  "date": "2026-10-21",
+  "time": "21:28",
+  "status": "dry",
+  "pushed": false,
+  "note": "只生成报表，未推送",
+  "source": 75,
+  "requests": 5,
+  "blocked": false,
+  "hot": 4,
+  "feed": 50,
+  "catalog": 173,
+  "min_disc": "35",
+  "min_save": "40"
+ },
+ {
+  "date": "2026-10-21",
+  "time": "21:28",
+  "status": "dry",
+  "pushed": false,
+  "note": "只生成报表，未推送",
+  "source": 75,
+  "requests": 5,
+  "blocked": false,
+  "hot": 4,
+  "feed": 50,
+  "catalog": 173,
+  "min_disc": "35",
+  "min_save": "40"
+ }
+]

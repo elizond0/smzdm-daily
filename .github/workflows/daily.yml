@@ -83,6 +83,11 @@ jobs:
           else
             echo "本次没有生成报表"
           fi
+          # 运行历史供 docs/overview.html 读取
+          if [ -f build/cache/run_history.json ]; then
+            cp build/cache/run_history.json docs/history.json
+            echo "已更新 docs/history.json"
+          fi
 
       - name: 提交变更
         if: always()

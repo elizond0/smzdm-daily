@@ -51,6 +51,7 @@ MARK_COOL = STATE / "cooldown_until.txt"
 STREAK = STATE / "blocked_streak.txt"
 CATALOG = CACHE / "catalog.json"
 LAST_DATA = CACHE / "latest.json"
+RUN_HISTORY = CACHE / "run_history.json"
 
 # 数据源：全部好价排行榜 · 12H最热 · 全部分类 · 全部商城
 # h2=3小时 h3=12小时 h4=24小时；f0=全部分类 c0=全部商城；p{}=页码
@@ -140,6 +141,48 @@ def log(msg: str) -> None:
         LOGS.mkdir(parents=True, exist_ok=True)
         with (LOGS / "runs.log").open("a", encoding="utf-8") as fh:
             fh.write(line + "\n")
+    except OSError:
+        pass
+
+
+def record_run(status: str, meta: dict | None = None, note: str = "",
+               pushed: bool = False) -> None:
+    """把本次运行的结果追加到历史，供云端「运行概览」页面展示。
+
+    status 取值：ok（正常推送）/ test（静默测试）/ dry（只出报表）/
+                skipped（今天已推或冷却中）/ failed（抓取失败）
+    只保留最近 60 次，避免文件无限增长。
+    """
+    now = datetime.now()
+    entry: dict = {
+        "date": now.strftime("%Y-%m-%d"),
+        "time": now.strftime("%H:%M"),
+        "status": status,
+        "pushed": pushed,
+        "note": note,
+    }
+    if meta:
+        entry.update({
+            "source": meta.get("scanned", 0),
+            "requests": meta.get("requests", 0),
+            "blocked": bool(meta.get("blocked")),
+            "hot": meta.get("hot_count", 0),
+            "feed": meta.get("feed_count", 0),
+            "catalog": meta.get("catalog_count", 0),
+            "min_disc": meta.get("min_disc", ""),
+            "min_save": meta.get("min_save", ""),
+        })
+    try:
+        hist = json.loads(RUN_HISTORY.read_text(encoding="utf-8"))
+        if not isinstance(hist, list):
+            hist = []
+    except (OSError, ValueError):
+        hist = []
+    hist.append(entry)
+    try:
+        CACHE.mkdir(parents=True, exist_ok=True)
+        RUN_HISTORY.write_text(json.dumps(hist[-60:], ensure_ascii=False, indent=1),
+                               encoding="utf-8")
     except OSError:
         pass
 
@@ -729,7 +772,8 @@ tbody tr:hover td{{background:#fcfcfd}}
   <h2><span class="dot"></span>好价榜 <span class="hint">{H.escape(meta.get('feed_name') or '')} 原始顺序 · 前 {len(feed_top)} 条</span></h2>
   <table><thead><tr><th>#</th><th>商品</th><th>到手价</th><th>立省</th><th>折扣</th></tr></thead>
   <tbody>{''.join(row(d, i + 1) for i, d in enumerate(feed_top)) or '<tr><td colspan="5" style="color:#9aa0a8;padding:20px">无</td></tr>'}</tbody></table>
-  <div class="foot">由 daily.py 自动生成 · 数据源 {H.escape(meta.get('feed_name') or '')}（全部好价排行榜）·
+  <div class="foot">由 daily.py 自动生成 · <a href="./overview.html" style="color:#c8102e;text-decoration:none">运行概览</a> ·
+    数据源 {H.escape(meta.get('feed_name') or '')}（全部好价排行榜）·
     仅抓列表页，未访问商品详情页 · 折扣按「现价/原价」计算，原价取自好价流描述，仅供参考。</div>
 </div></body></html>"""
 
@@ -830,6 +874,7 @@ def main() -> int:
     reason = skip_reason(args.force or args.no_notify)
     if reason:
         log(f"跳过：{reason}")
+        record_run("skipped", note=reason)
         return 0
 
     # 取数据
@@ -869,6 +914,7 @@ def main() -> int:
             log("本次无有效数据，已回退到缓存")
         else:
             log("本次抓取完全失败且无缓存，不推送")
+            record_run("failed", {"blocked": data.get("blocked", False)}, "抓取失败且无缓存")
             return 3
 
     # 抓到的数据源全部入库（不管有没有过关、有没有进榜）。
@@ -894,6 +940,9 @@ def main() -> int:
         "dedup_days": cfg.getint("dedup", "days", fallback=7),
         "feed_name": FEED_NAME,
         "feed_limit": cfg.getint("crawl", "top_n", fallback=50),
+        "hot_count": len(hot),
+        "feed_count": min(len(passed), feed_limit),
+        "catalog_count": len(catalog.records),
     }
 
     # 报表
@@ -909,6 +958,7 @@ def main() -> int:
 
     if args.dry_run:
         log("--dry-run：跳过推送")
+        record_run("dry", meta, "只生成报表，未推送")
         return 0
 
     if args.no_notify:
@@ -916,6 +966,7 @@ def main() -> int:
         # 也不记录「今天已推送」，所以之后正式跑一次仍会正常推送。
         catalog.save()
         log(f"--no-notify：跳过所有通知（未记录已推送状态）· 目录共 {len(catalog.records)} 条")
+        record_run("test", meta, "静默测试，未发送通知")
         return 0
 
     title, body = render_push(hot, meta)
@@ -938,6 +989,7 @@ def main() -> int:
     MARK_PUSH.parent.mkdir(parents=True, exist_ok=True)
     MARK_PUSH.write_text(now.strftime("%Y-%m-%d"), encoding="utf-8")
     log(f"已记录今日状态，商品目录共 {len(catalog.records)} 条记录")
+    record_run("ok", meta, "已推送", pushed=True)
     return 0
 
 
