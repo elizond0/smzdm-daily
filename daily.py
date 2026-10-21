@@ -419,7 +419,7 @@ def decorate(d: dict, catalog: "Catalog", cutoff: str, drop_pct: float,
 
 
 def pick(items: list[dict], cfg: configparser.ConfigParser,
-         catalog: "Catalog", pool: "Pool") -> tuple[list[dict], dict, list[dict], list[dict]]:
+         catalog: "Catalog", pool: "Pool") -> tuple[list[dict], dict, list[dict]]:
     """返回 (折扣榜, 统计, 好价榜候选)。
 
     好价榜候选保持数据源原始顺序，且**包含没有原价的商品**——
@@ -445,6 +445,7 @@ def pick(items: list[dict], cfg: configparser.ConfigParser,
     drop_pct = cfg.getfloat("dedup", "price_drop_pct", fallback=0)
     cutoff = (datetime.now() - timedelta(days=keep_days)).strftime("%Y-%m-%d")
 
+    words = load_watchlist()
     cand = []
     now_str = datetime.now().strftime("%Y-%m-%d %H:%M")
     for d in items:
@@ -481,6 +482,7 @@ def pick(items: list[dict], cfg: configparser.ConfigParser,
             stat["dedup"] += 1
         if not d.get("discount_pct"):
             stat["no_discount"] += 1
+        d["watched"] = any(w in title for w in words) if words else False
         cand.append(d)
         pool.put(d, now_str)   # 合格的才入池，供后续 24 小时内的日报使用
 
@@ -504,18 +506,12 @@ def pick(items: list[dict], cfg: configparser.ConfigParser,
     feed_list = [d for d in passed if d.get("article_id") not in hot_ids]
     feed_list = feed_list[:cfg.getint("crawl", "top_n", fallback=50)]
 
-    # 关注榜：从同一个 24 小时池里按关键词捞，筛选口径与折扣榜完全一致
-    words = load_watchlist()
-    wstat = {"words": len(words), "hit": 0}
-    watch_list = watch_hits(pool_items, words)
-    wstat["hit"] = len(watch_list)
-    watch_list = [d for d in watch_list if d.get("discount_pct")
-                  and d["discount_pct"] <= min_disc]
-    watch_list.sort(key=lambda d: (d["discount_pct"], -(d.get("save") or 0)))
-    watch_list = watch_list[:max_items]
-    stat["watch_words"] = wstat["words"]
-    stat["watch_hit"] = wstat["hit"]
-    return hot[:max_items], stat, feed_list, watch_list
+    # 池子里取出的商品也要标一次「是否在愿望单里」，供折扣榜打标签
+    for d in hot:
+        d["watched"] = any(w in (d.get("title") or "") for w in words) if words else False
+    stat["watch_words"] = len(words)
+    stat["watch_hit"] = sum(1 for d in hot if d.get("watched"))
+    return hot[:max_items], stat, feed_list
 
 
 # ---------------------------------------------------------------- 商品身份
@@ -755,8 +751,7 @@ def zhe(pct: float) -> str:
     return f"{pct / 10:.1f}"
 
 
-def render_html(hot: list[dict], passed: list[dict], meta: dict,
-                watch: list[dict] | None = None) -> str:
+def render_html(hot: list[dict], passed: list[dict], meta: dict) -> str:
     def meta_line(d):
         parts = [d.get("category") or "其他", d.get("mall") or "",
                  d.get("source") or "", d.get("time") or ""]
@@ -768,6 +763,8 @@ def render_html(hot: list[dict], passed: list[dict], meta: dict,
         conds = "".join(
             f'<span class="tag{" warn" if c in WARN_CONDS else ""}">{H.escape(c)}</span>'
             for c in d["conds"])
+        if d.get("watched"):
+            conds = '<span class="wish">愿望单</span>' + conds
         origin = f'<s>¥{d["origin_price"]:g}</s>' if d.get("origin_price") else ""
         low_badge, low_hint = "", ""
         if d.get("is_low"):
@@ -827,21 +824,7 @@ def render_html(hot: list[dict], passed: list[dict], meta: dict,
     empty = "" if hot else '<div class="warn">今天没有符合力度阈值的商品，可以调低 config.ini 里的门槛。</div>'
     feed_top = passed  # pick 已按「去掉折扣榜重合 + 前 N 名」截好
 
-    watch = watch or []
-    n_words = (meta.get("stat") or {}).get("watch_words", 0)
-    edit_url = H.escape(meta.get("watch_edit_url") or "#")
-    edit_link = f'<a href="{edit_url}" target="_blank">编辑关注列表</a>'
-    if not n_words:
-        watch_hint = f'还没有设置关注关键词 · {edit_link}'
-        watch_rows = ('<tr><td colspan="5" style="color:#9aa0a8;padding:16px">'
-                      '在 watchlist.txt 里写关键词（一行一个），命中的商品会出现在这里。</td></tr>')
-    elif not watch:
-        watch_hint = f'关键词 {n_words} 个 · 今天没有命中 · {edit_link}'
-        watch_rows = ('<tr><td colspan="5" style="color:#9aa0a8;padding:16px">'
-                      '抓到的商品里暂时没有匹配关注关键词的，或折扣未达力度门槛。</td></tr>')
-    else:
-        watch_hint = f'关键词 {n_words} 个 · 命中 {len(watch)} 条 · {edit_link}'
-        watch_rows = "".join(row(d, i + 1) for i, d in enumerate(watch))
+
 
     return f"""<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -892,6 +875,11 @@ tbody tr:hover td{{background:#fcfcfd}}
   background:#e9f6ee;color:#1a7f42;border:1px solid #c9e8d4;vertical-align:1px}}
 .first{{display:inline-block;margin-left:5px;padding:0 5px;border-radius:3px;font-size:10.5px;
   background:#e8f1fb;color:#1d5fbf;border:1px solid #c8dbf2;vertical-align:1px}}
+.wish{{display:inline-block;margin-left:5px;padding:0 6px;border-radius:3px;font-size:10.5px;
+  background:#f3e8ff;color:#7c3aed;border:1px solid #e2d0fd;vertical-align:1px;font-weight:600}}
+.wishlink{{display:inline-block;margin-left:10px;padding:1px 9px;border-radius:20px;font-size:12px;
+  background:#f3e8ff;color:#7c3aed;border:1px solid #e2d0fd;text-decoration:none;font-weight:600}}
+.wishlink:hover{{background:#e9d9ff;text-decoration:none}}
 .lowhint{{font-size:11px;color:#9aa0a8;margin-top:2px;font-weight:400}}
 .foot{{color:#9aa0a8;font-size:11.5px;margin-top:24px;line-height:1.9}}
 /* ---------- 手机端：表格拆成卡片，避免窄屏把商品名挤成竖排 ---------- */
@@ -933,7 +921,8 @@ tbody tr:hover td{{background:#fcfcfd}}
 </style></head><body><div class="wrap">
   <h1>值得买日报 · {H.escape(meta['date'])}</h1>
   <div class="sub">抓取 {H.escape(meta['fetched_at'])}　请求 {meta['requests']} 次　
-    来源 smzdm.com（时点快照，价格与库存随时变动）</div>
+    来源 smzdm.com（时点快照，价格与库存随时变动）
+    <a class="wishlink" href="./wishlist.html">⭐ 愿望单 <span style="font-weight:400">{meta.get('watch_words', 0)} 个关键词</span></a></div>
   {warn}{empty}
   <div class="stats">
     <div class="stat"><div class="k">折扣榜</div><div class="v">{len(hot)}<em> 条</em></div></div>
@@ -945,9 +934,6 @@ tbody tr:hover td{{background:#fcfcfd}}
   <h2><span class="dot"></span>折扣榜 <span class="hint">按折扣力度排序 · 只收 {float(meta['min_disc']) / 10:.1f} 折以内</span></h2>
   <table><thead><tr><th>#</th><th>商品</th><th>到手价</th><th>立省</th><th>折扣</th></tr></thead>
   <tbody>{''.join(row(d, i + 1) for i, d in enumerate(hot)) or '<tr><td colspan="5" style="color:#9aa0a8;padding:20px">无</td></tr>'}</tbody></table>
-  <h2><span class="dot"></span>关注商品 <span class="hint">{watch_hint}</span></h2>
-  <table><thead><tr><th>#</th><th>商品</th><th>到手价</th><th>立省</th><th>折扣</th></tr></thead>
-  <tbody>{watch_rows}</tbody></table>
   <h2><span class="dot"></span>好价榜 <span class="hint">{H.escape(meta.get('feed_name') or '')} 原始顺序 · 前 {len(feed_top)} 条</span></h2>
   <table><thead><tr><th>#</th><th>商品</th><th>到手价</th><th>立省</th><th>折扣</th></tr></thead>
   <tbody>{''.join(row(d, i + 1) for i, d in enumerate(feed_top)) or '<tr><td colspan="5" style="color:#9aa0a8;padding:20px">无</td></tr>'}</tbody></table>
@@ -1084,7 +1070,7 @@ def main() -> int:
     catalog = Catalog()
     pool = Pool()
     deals = clean_deals(data.get("deals") or [])
-    hot, stat, passed, watch = pick(deals, cfg, catalog, pool)
+    hot, stat, passed = pick(deals, cfg, catalog, pool)
 
     # 完全没有数据时，退到缓存
     if not deals:
@@ -1092,7 +1078,7 @@ def main() -> int:
             data = json.loads(LAST_DATA.read_text(encoding="utf-8"))
             data["stale"] = True
             deals = clean_deals(data.get("deals") or [])
-            hot, stat, passed, watch = pick(deals, cfg, catalog, pool)
+            hot, stat, passed = pick(deals, cfg, catalog, pool)
             log("本次无有效数据，已回退到缓存")
         else:
             log("本次抓取完全失败且无缓存，不推送")
@@ -1123,6 +1109,7 @@ def main() -> int:
         "feed_name": FEED_NAME,
         "site_url": cfg.get("push", "site_url", fallback=""),
         "watch_edit_url": cfg.get("watch", "edit_url", fallback=""),
+        "watch_words": stat.get("watch_words", 0),
         "feed_limit": cfg.getint("crawl", "top_n", fallback=50),
         "hot_count": len(hot),
         "feed_count": min(len(passed), feed_limit),
@@ -1132,7 +1119,7 @@ def main() -> int:
     # 报表
     REPORTS.mkdir(parents=True, exist_ok=True)
     report = REPORTS / f"{now:%Y-%m-%d}.html"
-    report.write_text(render_html(hot, passed, meta, watch), encoding="utf-8")
+    report.write_text(render_html(hot, passed, meta), encoding="utf-8")
     log(f"报表已生成 {report}")
 
     log(f"数据源 {meta['scanned']} 条 → 好价榜 {min(len(passed), feed_limit)} 条，"
