@@ -147,6 +147,41 @@ def log(msg: str) -> None:
         pass
 
 
+def export_db(catalog: "Catalog") -> int:
+    """导出商品库给 docs/db.html 用。
+
+    按「历史最低折扣」升序排——也就是这个商品历史上最狠能到几折，
+    没有折扣数据的排在最后。只保留展示需要的字段，用紧凑 JSON 控制体积。
+    """
+    rows = []
+    for rec in catalog.records.values():
+        if not rec.get("title"):
+            continue
+        rows.append({
+            "t": rec.get("title"),
+            "p": rec.get("last_price"),
+            "o": rec.get("last_origin"),
+            "l": rec.get("low"),
+            "d": rec.get("low_disc"),
+            "u": rec.get("url"),
+            "m": rec.get("mall"),
+            "c": rec.get("category"),
+            "n": rec.get("hits", 0),
+            "f": rec.get("first"),
+            "s": rec.get("last"),
+        })
+    rows.sort(key=lambda r: (r["d"] is None, r["d"] or 999, r["t"] or ""))
+    payload = {"updated": datetime.now().strftime("%Y-%m-%d %H:%M"),
+               "total": len(rows), "items": rows}
+    try:
+        (BUILD / "db.json").write_text(
+            json.dumps(payload, ensure_ascii=False, separators=(",", ":")),
+            encoding="utf-8")
+    except OSError:
+        pass
+    return len(rows)
+
+
 def record_run(status: str, meta: dict | None = None, note: str = "",
                pushed: bool = False) -> None:
     """把本次运行的结果追加到历史，供云端「运行概览」页面展示。
@@ -665,7 +700,10 @@ class Catalog:
             rec = {"norm": nt, "specs": specs(nt),
                    "title": d.get("title", ""), "ids": [],
                    "low": None, "first": today, "last": today, "hits": 0,
-                   "push_date": None, "push_price": None}
+                   "push_date": None, "push_price": None,
+                   # 下面这几个是给「商品库」页面展示用的，随时更新成最近一次见到的样子
+                   "url": None, "mall": None, "category": None,
+                   "last_price": None, "last_origin": None, "low_disc": None}
             self.records[fp] = rec
         # 见过的 id 全收进池子，下次这个 id 就能直接命中
         aid = d.get("article_id")
@@ -678,6 +716,21 @@ class Catalog:
             rec["low"] = price if lo is None else min(lo, price)
         rec["last"] = today
         rec["hits"] = rec.get("hits", 0) + 1
+
+        # 展示字段：始终保留最近一次见到的链接、商城、分类
+        for k, v in (("url", d.get("url")), ("mall", d.get("mall")),
+                     ("category", d.get("category"))):
+            if v:
+                rec[k] = v
+        if price:
+            rec["last_price"] = price
+        if d.get("origin_price"):
+            rec["last_origin"] = d["origin_price"]
+        # 历史最低折扣：每次出现都算一次，取最小的那个
+        disc = d.get("discount_pct")
+        if disc and disc > 0:
+            prev = rec.get("low_disc")
+            rec["low_disc"] = disc if prev is None else min(prev, disc)
         return rec
 
     def set_pushed(self, d: dict, today: str | None = None) -> None:
@@ -923,7 +976,8 @@ tbody tr:hover td{{background:#fcfcfd}}
   <h1>值得买日报 · {H.escape(meta['date'])}</h1>
   <div class="sub">抓取 {H.escape(meta['fetched_at'])}　请求 {meta['requests']} 次　
     来源 smzdm.com（时点快照，价格与库存随时变动）
-    <a class="wishlink" href="./wishlist.html">⭐ 愿望单 <span style="font-weight:400">{meta.get('watch_words', 0)} 个关键词</span></a></div>
+    <a class="wishlink" href="./wishlist.html">⭐ 愿望单 <span style="font-weight:400">{meta.get('watch_words', 0)} 个关键词</span></a>
+    <a class="wishlink" href="./db.html" style="background:#eef4ff;color:#1d5fbf;border-color:#cfdefb">📚 商品库</a></div>
   {warn}{empty}
   <div class="stats">
     <div class="stat"><div class="k">折扣榜</div><div class="v">{len(hot)}<em> 条</em></div></div>
@@ -1142,6 +1196,7 @@ def main() -> int:
         # 也不记录「今天已推送」，所以之后正式跑一次仍会正常推送。
         pool.save()
         catalog.save()
+        export_db(catalog)
         log(f"--no-notify：跳过所有通知（未记录已推送状态）· 目录共 {len(catalog.records)} 条")
         record_run("test", meta, "静默测试，未发送通知")
         return 0
@@ -1150,6 +1205,7 @@ def main() -> int:
         # 总开关关掉时：照常抓取、入库、出报表，只是不打扰。
         pool.save()
         catalog.save()
+        export_db(catalog)
         log("推送已停用（[push] enabled = false），只更新日报")
         record_run("disabled", meta, "推送已停用，仅更新日报")
         return 0
@@ -1180,6 +1236,7 @@ def main() -> int:
         catalog.set_pushed(d)
     pool.save()
     catalog.save()
+    export_db(catalog)
     MARK_PUSH.parent.mkdir(parents=True, exist_ok=True)
     MARK_PUSH.write_text(now.strftime("%Y-%m-%d"), encoding="utf-8")
     log(f"已记录今日状态，商品目录共 {len(catalog.records)} 条记录")
