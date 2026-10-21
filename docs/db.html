@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>商品库 · 什么值得买优惠推送</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;padding:30px 20px 60px;background:#f5f6f8;color:#16181c;
+  font:14px/1.65 -apple-system,"Segoe UI","Microsoft YaHei",sans-serif}
+.wrap{max-width:860px;margin:0 auto}
+h1{font-size:21px;margin:0 0 4px}
+.sub{color:#71767e;font-size:12.5px;margin-bottom:18px}
+.sub a{color:#1d5fbf;text-decoration:none}
+.searchbox{position:sticky;top:0;z-index:9;background:#f5f6f8;padding:10px 0 12px;margin:0 -2px}
+.searchbox input{width:100%;padding:12px 15px;border:1px solid #dfe2e6;border-radius:10px;
+  font-size:15px;font-family:inherit;background:#fff;box-shadow:0 1px 2px rgba(16,24,40,.04)}
+.searchbox input:focus{outline:none;border-color:#1d5fbf;box-shadow:0 0 0 3px rgba(29,95,191,.1)}
+.meta{display:flex;justify-content:space-between;align-items:center;color:#71767e;
+  font-size:12px;margin-bottom:10px;flex-wrap:wrap;gap:6px}
+.card{background:#fff;border:1px solid #e6e8eb;border-radius:10px;padding:13px 16px;margin-bottom:9px}
+.card:hover{border-color:#cfd4da}
+.tt{font-size:14px;line-height:1.5;margin-bottom:6px;word-break:break-word}
+.tt a{color:#16181c;text-decoration:none}
+.tt a:hover{color:#1d5fbf;text-decoration:underline}
+.prices{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12.5px;color:#5a5f66;margin-bottom:5px}
+.prices b{color:#c8102e;font-size:15px;font-weight:600}
+.prices s{color:#a8adb5}
+.hl{color:#1a7f42;font-weight:600}
+.tags{font-size:11.5px;color:#9aa0a8;display:flex;flex-wrap:wrap;gap:4px 10px}
+.badge{display:inline-block;padding:0 6px;border-radius:3px;font-size:11px;
+  background:#fdf0f2;color:#c8102e;border:1px solid #f5d3d8;font-weight:600}
+.rk{display:inline-block;min-width:20px;color:#c3c7cd;font-size:11.5px;margin-right:4px}
+.empty{background:#fff;border:1px solid #e6e8eb;border-radius:10px;padding:40px 20px;
+  text-align:center;color:#9aa0a8;font-size:13.5px}
+.pager{display:flex;justify-content:center;align-items:center;gap:6px;margin-top:18px;flex-wrap:wrap}
+.pager button{min-width:34px;height:34px;padding:0 10px;border-radius:8px;border:1px solid #dfe2e6;
+  background:#fff;color:#16181c;font-size:13px;font-family:inherit;cursor:pointer}
+.pager button:hover:not(:disabled){background:#f7f8fa}
+.pager button:disabled{opacity:.4;cursor:default}
+.pager button.on{background:#1d5fbf;border-color:#1d5fbf;color:#fff}
+.pager .gap{color:#a8adb5;padding:0 2px}
+.foot{color:#9aa0a8;font-size:11.5px;margin-top:26px;line-height:1.9;text-align:center}
+@media (max-width:700px){
+  html,body{overflow-x:hidden;max-width:100%}
+  body{padding:16px 12px 50px}
+  h1{font-size:18px}
+  .sub{font-size:11.5px;margin-bottom:14px}
+  .searchbox{padding:8px 0 10px}
+  .searchbox input{padding:11px 13px;font-size:15px}
+  .card{padding:11px 13px;border-radius:9px}
+  .tt{font-size:13.5px}
+  .prices{font-size:12px;gap:4px 11px}
+  .prices b{font-size:14px}
+  .tags{font-size:11px}
+  .meta{font-size:11.5px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>商品库</h1>
+  <div class="sub"><span id="totalHint">加载中…</span>　<a href="./index.html">← 回日报</a></div>
+
+  <div class="searchbox">
+    <input type="text" id="q" placeholder="搜索商品标题，比如 牛奶、耳机、纸巾" autocomplete="off">
+  </div>
+
+  <div class="meta">
+    <span id="range"></span>
+    <span id="sortHint">按历史最低折扣排序</span>
+  </div>
+
+  <div id="list"></div>
+  <div class="pager" id="pager"></div>
+
+  <div class="foot">
+    数据来自每日抓取累积的商品库，记录每件商品的历史最低价与最低折扣。<br>
+    「历史最低折扣」= 它历史上到过的最低折扣，不代表现在还是这个价。
+  </div>
+</div>
+
+<script>
+const PER = 20;
+let all = [];        // 全量
+let view = [];       // 搜索结果
+let page = 1;
+let total = 0;
+let updated = '';
+
+const $ = id => document.getElementById(id);
+
+function esc(s){
+  return String(s == null ? '' : s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function yuan(v){ return v == null ? '—' : '¥' + (Math.round(v * 100) / 100); }
+function zhe(p){ return p == null ? '' : (Math.round(p) / 10).toFixed(1) + ' 折'; }
+
+function itemHtml(r, i){
+  const disc = r.d == null ? '' :
+    `<span>历史最低折扣 <span class="hl">${zhe(r.d)}</span></span>`;
+  const tags = [
+    r.c ? esc(r.c) : '',
+    r.m ? esc(r.m) : '',
+    `出现 ${r.n || 0} 次`,
+    r.s ? `最近 ${esc(r.s)}` : ''
+  ].filter(Boolean).map(x => `<span>${x}</span>`).join('');
+
+  return `<div class="card">
+    <div class="tt"><span class="rk">${(page - 1) * PER + i + 1}</span>
+      ${r.u ? `<a href="${esc(r.u)}" target="_blank" rel="noopener">${esc(r.t)}</a>` : esc(r.t)}
+      ${r.l != null ? `<span class="badge">最低 ${yuan(r.l)}</span>` : ''}
+    </div>
+    <div class="prices">
+      <span>现价 <b>${yuan(r.p)}</b></span>
+      ${r.o ? `<s>${yuan(r.o)}</s>` : ''}
+      ${disc}
+    </div>
+    <div class="tags">${tags}</div>
+  </div>`;
+}
+
+function render(){
+  const start = (page - 1) * PER;
+  const slice = view.slice(start, start + PER);
+
+  if (!view.length){
+    $('list').innerHTML = '<div class="empty">没有匹配的商品，换个词试试</div>';
+    $('range').textContent = '';
+    $('pager').innerHTML = '';
+    return;
+  }
+  $('list').innerHTML = slice.map((r, i) => itemHtml(r, i)).join('');
+  $('range').textContent = `共 ${view.length} 条 · 第 ${start + 1}–${Math.min(start + PER, view.length)} 条`;
+
+  const pages = Math.ceil(view.length / PER);
+  let html = `<button ${page === 1 ? 'disabled' : ''} data-p="${page - 1}">上一页</button>`;
+  const nums = [];
+  for (let p = 1; p <= pages; p++){
+    if (p === 1 || p === pages || Math.abs(p - page) <= 1) nums.push(p);
+    else if (nums[nums.length - 1] !== '…') nums.push('…');
+  }
+  nums.forEach(p => {
+    if (p === '…') html += '<span class="gap">…</span>';
+    else html += `<button class="${p === page ? 'on' : ''}" data-p="${p}">${p}</button>`;
+  });
+  html += `<button ${page === pages ? 'disabled' : ''} data-p="${page + 1}">下一页</button>`;
+  $('pager').innerHTML = html;
+
+  $('pager').querySelectorAll('button[data-p]').forEach(b => {
+    b.addEventListener('click', () => {
+      const p = parseInt(b.dataset.p, 10);
+      if (p >= 1 && p <= pages){ page = p; render(); window.scrollTo({top: 0, behavior: 'smooth'}); }
+    });
+  });
+}
+
+function filter(kw){
+  const q = kw.trim().toLowerCase();
+  if (!q){ view = all.slice(); }
+  else {
+    const terms = q.split(/\s+/).filter(Boolean);
+    view = all.filter(r => {
+      const t = (r.t || '').toLowerCase();
+      return terms.every(x => t.indexOf(x) !== -1);
+    });
+  }
+  page = 1;
+  render();
+}
+
+fetch('./db.json', { cache: 'no-store' })
+  .then(r => r.ok ? r.json() : Promise.reject())
+  .then(d => {
+    all = d.items || [];
+    total = d.total || all.length;
+    updated = d.updated || '';
+    $('totalHint').textContent = `共 ${total} 件商品${updated ? ' · 更新于 ' + updated : ''}`;
+    view = all.slice();
+    render();
+  })
+  .catch(() => {
+    $('list').innerHTML = '<div class="empty">商品库还没生成，等第一次抓取运行后就有了</div>';
+    $('totalHint').textContent = '暂无数据';
+  });
+
+let timer = null;
+$('q').addEventListener('input', e => {
+  clearTimeout(timer);
+  const v = e.target.value;
+  timer = setTimeout(() => filter(v), 90);
+});
+</script>
+</body>
+</html>
