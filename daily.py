@@ -427,16 +427,21 @@ def pick(items: list[dict], cfg: configparser.ConfigParser,
                 d["low_price"] = None
                 d["is_low"] = False
 
+        # 近期推过只做标记，不再直接剔除——
+        # 报表要展示完整榜单（哪怕之前推过），推送时才按这个标记过滤，
+        # 这样「榜单为什么缺条」和「今天该推什么」两件事互不干扰。
+        d["pushed_before"] = False
         if keep_days > 0 and rec:
             pushed_on = rec.get("push_date")
             if pushed_on and pushed_on >= cutoff:
                 prev = rec.get("push_price")
                 # 比上次推的时候更便宜，就不算重复，照推
                 cheaper = bool(prev) and d["price"] < prev * (1 - drop_pct / 100.0)
-                if not cheaper:
+                if cheaper:
+                    stat["price_drop"] += 1
+                else:
+                    d["pushed_before"] = True
                     stat["dedup"] += 1
-                    continue
-                stat["price_drop"] += 1
         if not d.get("discount_pct"):
             stat["no_discount"] += 1
         cand.append(d)
@@ -971,13 +976,21 @@ def main() -> int:
         record_run("test", meta, "静默测试，未发送通知")
         return 0
 
-    title, body = render_push(hot, meta)
+    # 推送只发「近期没推过」的，报表则展示完整榜单。
+    fresh = [d for d in hot if not d.get("pushed_before")]
+    if not fresh:
+        log(f"折扣榜 {len(hot)} 条全部近期推过，今天没有新增，跳过推送")
+        catalog.save()
+        record_run("skipped", meta, "今日无新增好价，未推送")
+        return 0
+
+    title, body = render_push(fresh, meta)
     # 云端把 key 放 GitHub Secrets 里注入，避免明文进仓库
     key = (os.environ.get("SERVERCHAN_SENDKEY", "").strip()
            or cfg.get("push", "serverchan_sendkey", fallback="").strip())
 
     if cfg.getboolean("push", "desktop_notify", fallback=True):
-        summary = (f"{len(hot)} 条 · " + hot[0]["title"][:24]) if hot else "今日无达标好价"
+        summary = f"{len(fresh)} 条 · " + fresh[0]["title"][:24]
         log(f"桌面通知：{push_desktop(title, summary)}")
 
     if key:
@@ -985,7 +998,7 @@ def main() -> int:
     else:
         log("未配置 serverchan_sendkey，仅桌面通知")
 
-    for d in hot:
+    for d in fresh:
         catalog.set_pushed(d)
     catalog.save()
     MARK_PUSH.parent.mkdir(parents=True, exist_ok=True)
