@@ -188,6 +188,10 @@ async function load(){
     words = parse(txt);
     original = [...words];
     dirty = false;
+    try {
+      localStorage.setItem('watch_words_cache',
+        JSON.stringify({ words, ts: Date.now() }));
+    } catch (e) {}
     render();
   }catch(e){
     $('list').innerHTML = '<div class="empty">读取 watchlist.txt 失败，检查网络后刷新</div>';
@@ -231,6 +235,12 @@ async function save(){
       throw new Error(err.message || ('写入失败 ' + res.status));
     }
     localStorage.setItem('gh_token', token);
+    // 同域名下日报页会优先读这份缓存，所以本机改完刷新就生效，
+    // 不依赖 raw / API 这些国内可能不通的域名。
+    try {
+      localStorage.setItem('watch_words_cache',
+        JSON.stringify({ words: clean, ts: Date.now() }));
+    } catch (e) {}
     original = [...clean];
     dirty = false;
     updateState();
