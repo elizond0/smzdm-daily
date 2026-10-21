@@ -698,14 +698,18 @@ def render_html(hot: list[dict], passed: list[dict], meta: dict) -> str:
                            ("价超限", "price"), ("已排除", "excluded")):
             if st.get(key):
                 parts.append(f'{label} −{st[key]}')
-        if st.get("dedup"):
-            parts.append(f'近期推过 −{st["dedup"]}')
         if st.get("price_drop"):
             parts.append(f'降价放行 +{st["price_drop"]}')
+        # 「近期推过」不是过滤项了（榜单照样显示，只是推送时跳过），
+        # 所以单独放在末尾说明，不能混进筛选链条里。
+        note = ""
+        if st.get("dedup"):
+            note = (f'　<span style="color:#8a6410">其中 {st["dedup"]} 条近期推过，'
+                    f'榜单照常显示，推送时会跳过</span>')
         funnel = (f'<div class="funnel">{" → ".join(parts)} → '
                   f'好价榜 <b>{len(passed)}</b> 条'
                   f'（其中无原价 {st.get("no_discount", 0)} 条）→ '
-                  f'折扣榜 <b>{len(hot)}</b> 条</div>')
+                  f'折扣榜 <b>{len(hot)}</b> 条{note}</div>')
 
     empty = "" if hot else '<div class="warn">今天没有符合力度阈值的商品，可以调低 config.ini 里的门槛。</div>'
     feed_top = passed  # pick 已按「去掉折扣榜重合 + 前 N 名」截好
