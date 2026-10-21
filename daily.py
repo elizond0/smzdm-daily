@@ -50,6 +50,7 @@ MARK_PUSH = STATE / "last_push.txt"
 MARK_COOL = STATE / "cooldown_until.txt"
 STREAK = STATE / "blocked_streak.txt"
 CATALOG = CACHE / "catalog.json"
+POOL = CACHE / "pool.json"
 LAST_DATA = CACHE / "latest.json"
 RUN_HISTORY = CACHE / "run_history.json"
 
@@ -358,8 +359,45 @@ def clean_deals(items: list[dict]) -> list[dict]:
     return out
 
 
+def decorate(d: dict, catalog: "Catalog", cutoff: str, drop_pct: float,
+             keep_days: int) -> dict:
+    """补上「首次见到 / 历史新低 / 近期推过」三个标记。
+
+    本次抓取的商品和 24 小时池子里的商品都要过这一步——
+    池子里的记录是上一轮存下来的，推送状态可能已经变了，必须重新算。
+    """
+    _, rec = catalog.find(d)
+    d["pushed_before"] = False
+    d["price_dropped"] = False
+    if rec is None:
+        d["first_seen"] = True
+        d["low_price"] = None
+        d["is_low"] = False
+        return d
+
+    d["first_seen"] = False
+    low = rec.get("low")
+    if low is not None:
+        d["low_price"] = low
+        d["is_low"] = d["price"] < low - 1e-9   # 严格低于才算新低
+    else:
+        d["low_price"] = None
+        d["is_low"] = False
+
+    if keep_days > 0:
+        pushed_on = rec.get("push_date")
+        if pushed_on and pushed_on >= cutoff:
+            prev = rec.get("push_price")
+            cheaper = bool(prev) and d["price"] < prev * (1 - drop_pct / 100.0)
+            if cheaper:
+                d["price_dropped"] = True
+            else:
+                d["pushed_before"] = True
+    return d
+
+
 def pick(items: list[dict], cfg: configparser.ConfigParser,
-         catalog: "Catalog") -> tuple[list[dict], dict, list[dict]]:
+         catalog: "Catalog", pool: "Pool") -> tuple[list[dict], dict, list[dict]]:
     """返回 (折扣榜, 统计, 好价榜候选)。
 
     好价榜候选保持数据源原始顺序，且**包含没有原价的商品**——
@@ -386,6 +424,7 @@ def pick(items: list[dict], cfg: configparser.ConfigParser,
     cutoff = (datetime.now() - timedelta(days=keep_days)).strftime("%Y-%m-%d")
 
     cand = []
+    now_str = datetime.now().strftime("%Y-%m-%d %H:%M")
     for d in items:
         title = d.get("title", "")
         if blocks and any(w in title for w in blocks):
@@ -410,49 +449,30 @@ def pick(items: list[dict], cfg: configparser.ConfigParser,
         if exclude and (set(d["conds"]) & exclude):
             stat["excluded"] += 1
             continue
-        # 查目录：此刻 low 还是「本次更新前」的底价，正好用来判断是否新低
-        _, rec = catalog.find(d)
-        if rec is None:
-            # 目录里没有它 —— 今天第一次见，还没有任何历史价可比
-            d["first_seen"] = True
-            d["low_price"] = None
-            d["is_low"] = False
-        else:
-            d["first_seen"] = False
-            if rec.get("low") is not None:
-                d["low_price"] = rec["low"]
-                # 严格低于才算新低。持平只是回到最低价，不算创新低。
-                d["is_low"] = d["price"] < rec["low"] - 1e-9
-            else:
-                d["low_price"] = None
-                d["is_low"] = False
-
         # 近期推过只做标记，不再直接剔除——
         # 报表要展示完整榜单（哪怕之前推过），推送时才按这个标记过滤，
         # 这样「榜单为什么缺条」和「今天该推什么」两件事互不干扰。
-        d["pushed_before"] = False
-        if keep_days > 0 and rec:
-            pushed_on = rec.get("push_date")
-            if pushed_on and pushed_on >= cutoff:
-                prev = rec.get("push_price")
-                # 比上次推的时候更便宜，就不算重复，照推
-                cheaper = bool(prev) and d["price"] < prev * (1 - drop_pct / 100.0)
-                if cheaper:
-                    stat["price_drop"] += 1
-                else:
-                    d["pushed_before"] = True
-                    stat["dedup"] += 1
+        decorate(d, catalog, cutoff, drop_pct, keep_days)
+        if d.get("price_dropped"):
+            stat["price_drop"] += 1
+        elif d.get("pushed_before"):
+            stat["dedup"] += 1
         if not d.get("discount_pct"):
             stat["no_discount"] += 1
         cand.append(d)
+        pool.put(d, now_str)   # 合格的才入池，供后续 24 小时内的日报使用
 
-    # 折扣榜：能算出折扣，且达到力度阈值的，按折扣从低到高（越低越狠）
-    # 折扣榜只看折扣力度，不掺「立省金额」。
-    # 原因：立省金额和原价正相关——255 元的商品打 8.6 折就省 43 元，
-    # 但它压根不算"力度大"。用「或 立省≥N」会把这种高价小折扣混进来。
-    disc = [d for d in cand if d.get("discount_pct")]
+    # 折扣榜：从 24 小时池子里筛，不是只看本次抓的。
+    # 只看折扣力度，不掺「立省金额」——立省金额和原价正相关，
+    # 255 元的商品打 8.6 折就省 43 元，但那压根不算力度大。
+    pool_items = pool.recent()
+    for d in pool_items:
+        decorate(d, catalog, cutoff, drop_pct, keep_days)
+        d["_from_pool"] = True
+    disc = [d for d in pool_items if d.get("discount_pct")]
     hot = [d for d in disc if d["discount_pct"] <= min_disc]
     stat["threshold"] = len(disc) - len(hot)
+    stat["pool_size"] = len(pool_items)
     hot.sort(key=lambda d: (d["discount_pct"], -(d.get("save") or 0)))
 
     # 好价榜：去掉折扣榜里已有的（同一商品不重复占位），
@@ -638,6 +658,63 @@ class Catalog:
         rec["push_price"] = d.get("price")
 
 
+class Pool:
+    """最近 24 小时的合格商品池。
+
+    折扣榜看的是「一天内出现过的所有好价」，而不是单次抓取的结果——
+    上午 10 点抓到的 2 折好货，傍晚 6 点那份日报里依然在，
+    不会因为数据源换了一批就消失。
+    """
+
+    FIELDS = ("article_id", "title", "price", "origin_price", "discount_pct",
+              "save", "url", "mall", "conds", "category", "zhi", "comments",
+              "source", "time", "rank_no")
+
+    def __init__(self, path: Path = POOL, hours: int = 24):
+        self.path = path
+        self.hours = hours
+        self.items: dict[str, dict] = {}
+        self._load()
+
+    def _load(self) -> None:
+        try:
+            raw = json.loads(self.path.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            raw = {}
+        if isinstance(raw, dict):
+            self.items = {k: v for k, v in raw.items() if isinstance(v, dict)}
+        self._prune()
+
+    def _prune(self) -> None:
+        cutoff = (datetime.now() - timedelta(hours=self.hours)).strftime("%Y-%m-%d %H:%M")
+        self.items = {k: v for k, v in self.items.items()
+                      if (v.get("last_seen") or "") >= cutoff}
+
+    def put(self, d: dict, now_str: str) -> None:
+        # 用标题指纹做 key，same商品换个 article_id 也不会在池子里占两条
+        key = fingerprint(d)
+        rec = self.items.get(key, {})
+        for f in self.FIELDS:
+            if d.get(f) is not None:
+                rec[f] = d.get(f)
+        rec["last_seen"] = now_str
+        rec.setdefault("first_seen", now_str)
+        self.items[key] = rec
+
+    def recent(self) -> list[dict]:
+        self._prune()
+        return list(self.items.values())
+
+    def save(self) -> None:
+        self._prune()
+        try:
+            self.path.parent.mkdir(parents=True, exist_ok=True)
+            self.path.write_text(json.dumps(self.items, ensure_ascii=False, indent=1),
+                                 encoding="utf-8")
+        except OSError:
+            pass
+
+
 # ---------------------------------------------------------------- 渲染
 def zhe(pct: float) -> str:
     """折扣百分比转中文折数：18% → 1.8（折）。"""
@@ -708,7 +785,8 @@ def render_html(hot: list[dict], passed: list[dict], meta: dict) -> str:
                     f'榜单照常显示，推送时会跳过</span>')
         funnel = (f'<div class="funnel">{" → ".join(parts)} → '
                   f'好价榜 <b>{len(passed)}</b> 条'
-                  f'（其中无原价 {st.get("no_discount", 0)} 条）→ '
+                  f'（无原价 {st.get("no_discount", 0)} 条）　|　'
+                  f'24 小时池 <b>{st.get("pool_size", 0)}</b> 条 → '
                   f'折扣榜 <b>{len(hot)}</b> 条{note}</div>')
 
     empty = "" if hot else '<div class="warn">今天没有符合力度阈值的商品，可以调低 config.ini 里的门槛。</div>'
@@ -790,30 +868,32 @@ tbody tr:hover td{{background:#fcfcfd}}
 
 
 def render_push(hot: list[dict], meta: dict) -> tuple[str, str]:
-    """Server酱：标题 + markdown 正文。手机上要能直接看完重点。"""
+    """Server酱：简短摘要 + 日报网页链接，手机上点开就能看完整榜单。"""
     date = datetime.now().strftime("%m-%d")
+    site = (meta.get("site_url") or "").strip()
+
     if not hot:
-        return f"值得买 {date}｜今日无达标好价", "今天扫描到的商品里没有达到力度阈值的，可以调低 config.ini 的门槛。"
+        return (f"值得买 {date}｜今日无达标好价",
+                f"今天没有达到力度阈值的商品。\n\n[查看日报]({site})")
 
-    title = f"值得买 {date}｜{len(hot)} 条力度大"
-    if hot[0]["discount_pct"] <= 30:
-        title = f"值得买 {date}｜最低 {zhe(hot[0]['discount_pct'])} 折"
+    title = f"值得买日报 {date}｜最低 {zhe(hot[0]['discount_pct'])} 折"
 
-    lines = []
-    for i, d in enumerate(hot, 1):
-        tags = f"（{'+'.join(d['conds'])}）" if d["conds"] else ""
-        low = " · 【新低】" if d.get("is_low") else ""
-        lines.append(
-            f"{i}. **{display_title(d['title'])}**{tags}\n"
-            f"   ¥{d['price']:g} · 原价 ¥{d['origin_price']:g} · "
-            f"省 {d['save']:g} · **{zhe(d['discount_pct'])}折**{low} · "
-            f"{d.get('mall') or ''} · {d.get('category') or '其他'} · "
-            f"值{d.get('zhi', 0)}/评{d.get('comments', 0)}"
-        )
-    lines.append("")
-    lines.append(f"> 数据源 {meta['scanned']} 条 · 折扣榜 {len(hot)} 条 · "
-                 f"{meta['fetched_at']} 抓取 · 价格随时变，下单前请核对")
-    return title, "\n\n".join(lines)
+    lines = [
+        f"### 值得买日报 {date}",
+        "",
+        f"最低 **{zhe(hot[0]['discount_pct'])} 折** · "
+        f"折扣榜 {len(hot)} 条 · 好价榜 {meta.get('feed_count', 0)} 条",
+        "",
+        f"👉 **[点这里查看完整日报]({site})**",
+        "",
+        "**今日前三**",
+        "",
+    ]
+    for i, d in enumerate(hot[:3], 1):
+        lines.append(f"{i}. {display_title(d['title'])}  "
+                     f"¥{d['price']:g}（{zhe(d['discount_pct'])}折）")
+    lines += ["", f"> {meta['fetched_at']} 抓取 · 价格随时变，下单前请在页面核对"]
+    return title, "\n".join(lines)
 
 
 # ---------------------------------------------------------------- 推送
@@ -912,8 +992,9 @@ def main() -> int:
             reset_streak()   # 抓到数据了，说明此前的观察状态已解除
 
     catalog = Catalog()
+    pool = Pool()
     deals = clean_deals(data.get("deals") or [])
-    hot, stat, passed = pick(deals, cfg, catalog)
+    hot, stat, passed = pick(deals, cfg, catalog, pool)
 
     # 完全没有数据时，退到缓存
     if not deals:
@@ -921,7 +1002,7 @@ def main() -> int:
             data = json.loads(LAST_DATA.read_text(encoding="utf-8"))
             data["stale"] = True
             deals = clean_deals(data.get("deals") or [])
-            hot, stat, passed = pick(deals, cfg, catalog)
+            hot, stat, passed = pick(deals, cfg, catalog, pool)
             log("本次无有效数据，已回退到缓存")
         else:
             log("本次抓取完全失败且无缓存，不推送")
@@ -950,6 +1031,7 @@ def main() -> int:
         "cats": split_list(cfg.get("interest", "categories", fallback="")),
         "dedup_days": cfg.getint("dedup", "days", fallback=7),
         "feed_name": FEED_NAME,
+        "site_url": cfg.get("push", "site_url", fallback=""),
         "feed_limit": cfg.getint("crawl", "top_n", fallback=50),
         "hot_count": len(hot),
         "feed_count": min(len(passed), feed_limit),
@@ -975,6 +1057,7 @@ def main() -> int:
     if args.no_notify:
         # 测试模式：抓取、入库、出报表都照常，只是不发通知，
         # 也不记录「今天已推送」，所以之后正式跑一次仍会正常推送。
+        pool.save()
         catalog.save()
         log(f"--no-notify：跳过所有通知（未记录已推送状态）· 目录共 {len(catalog.records)} 条")
         record_run("test", meta, "静默测试，未发送通知")
@@ -1004,6 +1087,7 @@ def main() -> int:
 
     for d in fresh:
         catalog.set_pushed(d)
+    pool.save()
     catalog.save()
     MARK_PUSH.parent.mkdir(parents=True, exist_ok=True)
     MARK_PUSH.write_text(now.strftime("%Y-%m-%d"), encoding="utf-8")
