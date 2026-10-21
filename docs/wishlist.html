@@ -32,14 +32,18 @@ button{padding:9px 16px;border-radius:8px;border:1px solid transparent;font-size
 .item:last-child{border-bottom:0}
 .item input{border-color:transparent;background:#fafbfc}
 .item input:focus{border-color:#7c3aed;background:#fff}
+.item input.emptying{border-color:#f3c3c9;background:#fdf0f2;color:#a1404c}
 .empty{color:#9aa0a8;font-size:13px;padding:14px 0;text-align:center}
 .hint{color:#9aa0a8;font-size:11.5px;line-height:1.8;margin-top:10px}
 .hint code{background:#f2f3f5;padding:1px 5px;border-radius:3px;font-size:11px}
-.bar{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
+.bar{display:flex;gap:8px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap}
 .dirtybar{display:flex;align-items:center;gap:8px;background:#fff8e6;border:1px solid #f3e2b8;
   color:#8a6410;border-radius:8px;padding:9px 13px;font-size:12.5px;margin-bottom:12px}
 .dirtybar b{font-weight:600}
 .dirtybar .dot2{width:6px;height:6px;border-radius:50%;background:#d99b19;flex:none}
+.errbar{display:flex;align-items:center;gap:10px;background:#fdecee;border:1px solid #f3c3c9;
+  color:#a1404c;border-radius:8px;padding:10px 13px;font-size:12.5px;margin-bottom:12px}
+.errbar button{padding:5px 12px;font-size:12px;margin-left:auto}
 .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);
   background:#16181c;color:#fff;padding:10px 18px;border-radius:8px;font-size:13px;
   opacity:0;transition:.25s;pointer-events:none;max-width:88vw;text-align:center}
@@ -79,6 +83,10 @@ button{padding:9px 16px;border-radius:8px;border:1px solid transparent;font-size
 
   <div class="card">
     <h2><span class="dot"></span>关键词 <span id="count" class="hint" style="margin:0"></span></h2>
+    <div class="errbar" id="errBar" style="display:none">
+      <span id="errText">读取失败</span>
+      <button class="btn-ghost" id="reloadBtn">重新加载</button>
+    </div>
     <div class="dirtybar" id="dirtyBar" style="display:none">
       <span class="dot2"></span><span id="dirtyText">有未保存的修改</span>
     </div>
@@ -93,7 +101,7 @@ button{padding:9px 16px;border-radius:8px;border:1px solid transparent;font-size
     </div>
     <div class="hint">
       匹配规则：商品标题包含关键词即命中（不区分大小写）。词越长越精确，「耳机」会同时命中「蓝牙耳机」「有线耳机」。<br>
-      改动要保存后才会写回仓库，下次抓取运行时生效。
+      改动要点「保存到仓库」才会写回；<b>保存成功后刷新日报页即可看到标签变化</b>。
     </div>
   </div>
 </div>
@@ -106,6 +114,7 @@ const BRANCH = 'main';
 const FILE = 'watchlist.txt';
 const RAW = `https://raw.githubusercontent.com/${REPO}/${BRANCH}/${FILE}`;
 const API = `https://api.github.com/repos/${REPO}/contents/${FILE}`;
+const CACHE_KEY = 'watch_words_cache';
 
 let words = [];          // 当前编辑中的关键词
 let original = [];       // 上次加载的，用于「放弃修改」
@@ -119,6 +128,20 @@ function toast(msg, type){
   t.className = 'toast show' + (type ? ' ' + type : '');
   clearTimeout(toast._t);
   toast._t = setTimeout(() => { t.className = 'toast'; }, 2600);
+}
+
+function utf8ToB64(s){
+  const bytes = new TextEncoder().encode(s);
+  let bin = '';
+  bytes.forEach(b => { bin += String.fromCharCode(b); });
+  return btoa(bin);
+}
+
+function b64ToUtf8(b64){
+  const bin = atob(String(b64).replace(/\n/g, ''));
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
 }
 
 function parse(text){
@@ -162,17 +185,37 @@ function render(){
   words.forEach((w, i) => {
     const row = document.createElement('div');
     row.className = 'item';
+    row.dataset.i = i;                 // 删除时按 DOM 上记的序号取，避免闭包里下标过期
+
     const inp = document.createElement('input');
     inp.type = 'text';
     inp.value = w;
     inp.maxLength = 30;
-    inp.addEventListener('input', () => { words[i] = inp.value.trim(); dirty = true; updateState(); });
-    inp.addEventListener('blur', () => { if (!inp.value.trim()){ words.splice(i,1); dirty = true; render(); } });
+    if (!w.trim()) inp.classList.add('emptying');
+    inp.addEventListener('input', () => {
+      words[+row.dataset.i] = inp.value.trim();
+      inp.classList.toggle('emptying', !inp.value.trim());
+      dirty = true;
+      updateState();
+    });
+    // 故意不监听 blur：点别处就删掉整行太容易误删，
+    // 而且 blur 先于 × 的 click 触发，重渲染后按钮已脱离 DOM，一次会删两条。
+    // 空内容保存时本来就会被过滤掉，这里只标红提示。
+
     const del = document.createElement('button');
     del.className = 'btn-del';
     del.textContent = '×';
     del.title = '删除';
-    del.addEventListener('click', () => { words.splice(i,1); dirty = true; render(); });
+    del.addEventListener('click', () => {
+      const idx = +row.dataset.i;
+      if (!(idx >= 0 && idx < words.length)) return;   // 防重复触发
+      const removed = words[idx];
+      words.splice(idx, 1);
+      dirty = true;
+      render();
+      toast(`已移除「${removed}」，记得保存`, 'ok');
+    });
+
     row.appendChild(inp);
     row.appendChild(del);
     box.appendChild(row);
@@ -180,24 +223,65 @@ function render(){
   updateState();
 }
 
+/* ---------- 读取：API 优先，raw 最后 ----------
+ * raw.githubusercontent.com 被 CDN 缓存约 5 分钟，刚保存完刷新会拿到旧内容，
+ * 所以它只能当兜底；api.github.com 带时间戳基本实时。 */
 async function load(){
-  try{
-    const r = await fetch(RAW + '?t=' + Date.now());
-    if (!r.ok) throw new Error('HTTP ' + r.status);
-    const txt = await r.text();
-    words = parse(txt);
-    original = [...words];
-    dirty = false;
+  $('errBar').style.display = 'none';
+
+  const sources = [
+    async () => {
+      const r = await fetch(`${API}?ref=${BRANCH}&t=${Date.now()}`, { cache: 'no-store' });
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return b64ToUtf8((await r.json()).content || '');
+    },
+    async () => {
+      const r = await fetch(`${RAW}?t=${Date.now()}`, { cache: 'no-store' });
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.text();
+    },
+    async () => {
+      const r = await fetch(`./watchlist.txt?t=${Date.now()}`, { cache: 'no-store' });
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.text();
+    }
+  ];
+
+  for (const get of sources){
     try {
-      localStorage.setItem('watch_words_cache',
-        JSON.stringify({ words, ts: Date.now() }));
-    } catch (e) {}
-    render();
-  }catch(e){
-    $('list').innerHTML = '<div class="empty">读取 watchlist.txt 失败，检查网络后刷新</div>';
+      const txt = await get();
+      words = parse(txt);
+      original = [...words];
+      dirty = false;
+      try {
+        localStorage.setItem(CACHE_KEY, JSON.stringify({ words, ts: Date.now() }));
+      } catch (e) {}
+      render();
+      return;
+    } catch (e) { /* 换下一个源 */ }
   }
+
+  // 三个源都不通：退回本机缓存，至少能看能改
+  try {
+    const obj = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
+    if (obj && Array.isArray(obj.words)){
+      words = obj.words;
+      original = [...words];
+      dirty = false;
+      render();
+      $('errText').textContent = '网络不通，显示的是本机缓存（可能不是最新）';
+      $('errBar').style.display = 'flex';
+      return;
+    }
+  } catch (e) {}
+
+  $('list').innerHTML = '';
+  $('count').textContent = '';
+  $('errText').textContent = '读取 watchlist.txt 失败，点右侧重试';
+  $('errBar').style.display = 'flex';
 }
 
+/* ---------- 保存：sha 失效时自动重取重试 ---------- */
 async function save(){
   const token = ($('token').value || '').trim();
   if (!token){ toast('先填 GitHub Token 才能保存', 'err'); $('token').focus(); return; }
@@ -207,57 +291,65 @@ async function save(){
 
   $('saveBtn').disabled = true;
   $('saveBtn').textContent = '保存中…';
-  try{
-    const g = await fetch(API + '?ref=' + BRANCH, {
-      headers: { Authorization: 'token ' + token, Accept: 'application/vnd.github+json' }
-    });
-    if (!g.ok) throw new Error(g.status === 401 ? 'Token 无效或已过期' : '读取仓库失败 ' + g.status);
-    const meta = await g.json();
-
-    const content = build();
-    const b64 = btoa(unescape(encodeURIComponent(content)));
-    const res = await fetch(API, {
-      method: 'PUT',
-      headers: {
-        Authorization: 'token ' + token,
-        Accept: 'application/vnd.github+json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        message: `chore: 更新愿望单（${clean.length} 个关键词）`,
-        content: b64,
-        sha: meta.sha,
-        branch: BRANCH
-      })
-    });
-    if (!res.ok){
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err.message || ('写入失败 ' + res.status));
-    }
+  try {
+    await putWithRetry(build(), 0);
     localStorage.setItem('gh_token', token);
-    // 同域名下日报页会优先读这份缓存，所以本机改完刷新就生效，
-    // 不依赖 raw / API 这些国内可能不通的域名。
+    // 同域名下日报页会优先读这份缓存，所以本机改完刷新就生效
     try {
-      localStorage.setItem('watch_words_cache',
-        JSON.stringify({ words: clean, ts: Date.now() }));
+      localStorage.setItem(CACHE_KEY, JSON.stringify({ words: clean, ts: Date.now() }));
     } catch (e) {}
     original = [...clean];
     dirty = false;
     updateState();
     toast('已保存 · 刷新日报即可看到标签', 'ok');
-  }catch(e){
+  } catch (e) {
     toast(e.message || '保存失败', 'err');
-  }finally{
+  } finally {
     $('saveBtn').disabled = false;
     $('saveBtn').textContent = '保存到仓库';
   }
+}
+
+async function putWithRetry(content, attempt){
+  const headers = {
+    Authorization: 'token ' + ($('token').value || '').trim(),
+    Accept: 'application/vnd.github+json',
+    'Content-Type': 'application/json'
+  };
+  const g = await fetch(`${API}?ref=${BRANCH}&t=${Date.now()}`, { headers, cache: 'no-store' });
+  if (!g.ok){
+    throw new Error(g.status === 401 ? 'Token 无效或已过期' : '读取仓库失败 ' + g.status);
+  }
+  const meta = await g.json();
+
+  const res = await fetch(API, {
+    method: 'PUT',
+    headers,
+    body: JSON.stringify({
+      message: `chore: 更新愿望单（${parse(content).length} 个关键词）`,
+      content: utf8ToB64(content),
+      sha: meta.sha,
+      branch: BRANCH
+    })
+  });
+
+  // 409 = 仓库在我读 sha 之后又被改过，重取 sha 再试一次
+  if (res.status === 409 && attempt < 2){
+    await new Promise(r => setTimeout(r, 900));
+    return putWithRetry(content, attempt + 1);
+  }
+  if (!res.ok){
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.message || ('写入失败 ' + res.status));
+  }
+  return res.json();
 }
 
 $('addBtn').addEventListener('click', () => {
   const inp = $('newWord');
   const v = inp.value.trim();
   if (!v) return;
-  if (words.includes(v)){ toast('已经有这个关键词了'); inp.value = ''; return; }
+  if (words.some(w => w.trim() === v)){ toast('已经有这个关键词了'); inp.value = ''; return; }
   words.push(v);
   dirty = true;
   inp.value = '';
@@ -275,6 +367,7 @@ $('saveToken').addEventListener('click', () => {
 });
 
 $('saveBtn').addEventListener('click', save);
+$('reloadBtn').addEventListener('click', load);
 
 $('resetBtn').addEventListener('click', () => {
   if (dirty && !confirm('放弃未保存的修改？')) return;
