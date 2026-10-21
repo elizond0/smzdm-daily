@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>什么值得买 · 排行榜抓取样例</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;padding:32px 20px;background:#f6f7f9;color:#1a1a1a;
+       font:14px/1.6 -apple-system,"Segoe UI","Microsoft YaHei",sans-serif}
+  .wrap{max-width:1080px;margin:0 auto}
+  h1{font-size:22px;margin:0 0 6px}
+  .sub{color:#6b7280;font-size:13px;margin-bottom:20px}
+  .cards{display:flex;gap:12px;margin-bottom:22px;flex-wrap:wrap}
+  .card{background:#fff;border:1px solid #e8eaed;border-radius:10px;padding:14px 18px;min-width:150px}
+  .card .k{font-size:12px;color:#6b7280}
+  .card .v{font-size:22px;font-weight:600;margin-top:2px}
+  .card .v em{font-size:13px;font-style:normal;color:#6b7280;font-weight:400}
+  table{width:100%;border-collapse:collapse;background:#fff;border:1px solid #e8eaed;
+         border-radius:10px;overflow:hidden}
+  th{text-align:left;font-size:12px;color:#6b7280;font-weight:500;background:#fafbfc;
+      padding:10px 12px;border-bottom:1px solid #e8eaed}
+  td{padding:11px 12px;border-bottom:1px solid #f1f3f5;vertical-align:middle}
+  tr:last-child td{border-bottom:0}
+  tr:hover td{background:#fcfcfd}
+  .rank{color:#9ca3af;font-variant-numeric:tabular-nums;width:38px}
+  .cat{font-size:12px;color:#6b7280;width:80px}
+  .name a{color:#1a1a1a;text-decoration:none}
+  .name a:hover{color:#c8102e;text-decoration:underline}
+  .price{white-space:nowrap;font-variant-numeric:tabular-nums}
+  .price b{color:#c8102e;font-size:15px}
+  .price s{color:#b0b5bd;font-size:12px;margin-left:5px}
+  .save{font-size:12px;color:#6b7280;white-space:nowrap}
+  .rate{display:inline-block;min-width:48px;text-align:center;padding:2px 8px;border-radius:5px;
+        background:#fdecee;color:#c8102e;font-weight:600;font-size:12px}
+  .rate.none{background:#f1f3f5;color:#a0a6ae;font-weight:400}
+</style></head><body><div class="wrap">
+  <h1>什么值得买 · 排行榜抓取样例</h1>
+  <div class="sub">抓取时间 2026-10-18 23:36　来源 www.smzdm.com/top/（时点快照，价格随时变动）</div>
+  <div class="cards">
+    <div class="card"><div class="k">榜单条目</div><div class="v">56<em> 条</em></div></div>
+    <div class="card"><div class="k">已补全原价</div><div class="v">8<em> 条</em></div></div>
+    <div class="card"><div class="k">最大力度</div><div class="v">49%<em> 折扣</em></div></div>
+    <div class="card"><div class="k">最高立省</div><div class="v">¥2,038</div></div>
+  </div>
+  <table>
+    <thead><tr><th>#</th><th>分类</th><th>商品</th><th>价格</th><th>优惠</th><th>折扣</th></tr></thead>
+    <tbody><tr>
+      <td class="rank">1</td>
+      <td class="cat">电脑数码</td>
+      <td class="name"><a href="https://www.smzdm.com/p/184195255/" target="_blank">百亿补贴：酷态科 万象屏单体版</a></td>
+      <td class="price"><b>¥102</b> <s>¥129</s></td>
+      <td class="save">省 ¥27</td>
+      <td><span class="rate">79%</span></td>
+    </tr><tr>
+      <td class="rank">1</td>
+      <td class="cat">京东</td>
+      <td class="name"><a href="https://www.smzdm.com/p/184135768/" target="_blank">鲜秋风物集：京鲜生 &amp;柿一家 山东串收樱桃番茄123g*8条 礼盒装</a></td>
+      <td class="price"><b>¥32.99</b> <s>¥49.9</s></td>
+      <td class="save">省 ¥16.91</td>
+      <td><span class="rate">66%</span></td>
+    </tr><tr>
+      <td class="rank">1</td>
+      <td class="cat">全部</td>
+      <td class="name"><a href="https://www.smzdm.com/p/184030736/" target="_blank">App Store内购限免：Lekh AI - Local AI Studio</a></td>
+      <td class="price"><b></b></td>
+      <td class="save">待补全</td>
+      <td><span class="rate none">—</span></td>
+    </tr><tr>
+      <td class="rank">2</td>
+      <td class="cat">电脑数码</td>
+      <td class="name"><a href="https://www.smzdm.com/p/184203747/" target="_blank">百亿补贴：酷态科 CP24电能块20000毫安时自带线充电宝适用苹果18小米Fold</a></td>
+      <td class="price"><b>¥67.2</b> <s>¥102</s></td>
+      <td class="save">省 ¥34.8</td>
+      <td><span class="rate">66%</span></td>
+    </tr><tr>
+      <td class="rank">2</td>
+      <td class="cat">京东</td>
+      <td class="name"><a href="https://www.smzdm.com/p/184098149/" target="_blank">上次卖爆、GB2707真原切！：鲜京采 2.5cm厚切眼肉牛排 净重1kg 袋装</a></td>
+      <td class="price"><b>¥92.9</b> <s>¥149</s></td>
+      <td class="save">省 ¥56.1</td>
+      <td><span class="rate">62%</span></td>
+    </tr><tr>
+      <td class="rank">2</td>
+      <td class="cat">全部</td>
+      <td class="name"><a href="https://www.smzdm.com/p/184031344/" target="_blank">App Store内购限免：iWidget - Live Wallpaper Theme</a></td>
+      <td class="price"><b></b></td>
+      <td class="save">待补全</td>
+      <td><span class="rate none">—</span></td>
+    </tr><tr>
+      <td class="rank">3</td>
+      <td class="cat">电脑数码</td>
+      <td class="name"><a href="https://www.smzdm.com/p/184189087/" target="_blank">带E-MARK PD100W快充双头TYPE-C数据线 2米</a></td>
+      <td class="price"><b>8.9元</b></td>
+      <td class="save">待补全</td>
+      <td><span class="rate none">—</span></td>
+    </tr><tr>
+      <td class="rank">3</td>
+      <td class="cat">京东</td>
+      <td class="name"><a href="https://www.smzdm.com/p/184174679/" target="_blank">心相印 品诺加厚四层 有芯卷纸200g*10卷（1提）</a></td>
+      <td class="price"><b>18.68元（需买3件，需用券）</b></td>
+      <td class="save">待补全</td>
+      <td><span class="rate none">—</span></td>
+    </tr><tr>
+      <td class="rank">3</td>
+      <td class="cat">全部</td>
+      <td class="name"><a href="https://www.smzdm.com/p/184030281/" target="_blank">App Store本体限免：AuraRead - Local Novel Reader</a></td>
+      <td class="price"><b></b></td>
+      <td class="save">待补全</td>
+      <td><span class="rate none">—</span></td>
+    </tr><tr>
+      <td class="rank">4</td>
+      <td class="cat">电脑数码</td>
+      <td class="name"><a href="https://www.smzdm.com/p/184193772/" target="_blank">今日必买：红米 K90 5G手机 12GB+256GB 骁龙8至尊版</a></td>
+      <td class="price"><b>¥2080</b> <s>¥3099</s></td>
+      <td class="save">省 ¥1019</td>
+      <td><span class="rate">67%</span></td>
+    </tr><tr>
+      <td class="rank">4</td>
+      <td class="cat">京东</td>
+      <td class="name"><a href="https://www.smzdm.com/p/184179478/" target="_blank">今日必买：洁柔 粉Face3层110抽*24包 可湿水纸巾卫生纸 柔韧抽纸整箱</a></td>
+      <td class="price"><b>24.51元</b></td>
+      <td class="save">待补全</td>
+      <td><span class="rate none">—</span></td>
+    </tr><tr>
+      <td class="rank">4</td>
+      <td class="cat">全部</td>
+      <td class="name"><a href="https://www.smzdm.com/p/184097727/" target="_blank">App Store内购限免：Zweep - Photo Cleaner</a></td>
+      <td class="price"><b></b></td>
+      <td class="save">待补全</td>
+      <td><span class="rate none">—</span></td>
+    </tr><tr>
+      <td class="rank">5</td>
+      <td class="cat">电脑数码</td>
+      <td class="name"><a href="https://www.smzdm.com/p/184201554/" target="_blank">利民 TF7 CPU导热硅脂 2g</a></td>
+      <td class="price"><b>¥2.9</b> <s>¥5.9</s></td>
+      <td class="save">省 ¥3</td>
+      <td><span class="rate">49%</span></td>
+    </tr><tr>
+      <td class="rank">5</td>
+      <td class="cat">京东</td>
+      <td class="name"><a href="https://www.smzdm.com/p/184186154/" target="_blank">今日必买：雪菲力 可口可乐（Coca-Cola）雪菲力 柠檬味盐汽水  600ml×24瓶 整箱装</a></td>
+      <td class="price"><b>7.9元</b></td>
+      <td class="save">待补全</td>
+      <td><span class="rate none">—</span></td>
+    </tr><tr>
+      <td class="rank">5</td>
+      <td class="cat">全部</td>
+      <td class="name"><a href="https://www.smzdm.com/p/184031066/" target="_blank">App Store本体限免：Palette Hunt: Color Picker</a></td>
+      <td class="price"><b></b></td>
+      <td class="save">待补全</td>
+      <td><span class="rate none">—</span></td>
+    </tr><tr>
+      <td class="rank">6</td>
+      <td class="cat">电脑数码</td>
+      <td class="name"><a href="https://www.smzdm.com/p/184210264/" target="_blank">今日必买：小米 MIX Flip 2 5G手机 骁龙8至尊版</a></td>
+      <td class="price"><b>¥2660.84</b> <s>¥4699</s></td>
+      <td class="save">省 ¥2038.16</td>
+      <td><span class="rate">57%</span></td>
+    </tr><tr>
+      <td class="rank">6</td>
+      <td class="cat">京东</td>
+      <td class="name"><a href="https://www.smzdm.com/p/156784271/" target="_blank">每日可领：京东外卖 百亿餐补40-20/25-13/17-16券，叠加好运叠4-3券</a></td>
+      <td class="price"><b>抢6-5好友叠加券</b></td>
+      <td class="save">待补全</td>
+      <td><span class="rate none">—</span></td>
+    </tr><tr>
+      <td class="rank">6</td>
+      <td class="cat">全部</td>
+      <td class="name"><a href="https://www.smzdm.com/p/184097669/" target="_blank">App Store内购限免：GlowVox: LED Scrolling Text</a></td>
+      <td class="price"><b></b></td>
+      <td class="save">待补全</td>
+      <td><span class="rate none">—</span></td>
+    </tr><tr>
+      <td class="rank">7</td>
+      <td class="cat">电脑数码</td>
+      <td class="name"><a href="https://www.smzdm.com/p/184210076/" target="_blank">百亿补贴：酷态科 25号超级电能块SE 120W自带线 25000mAh移动电源</a></td>
+      <td class="price"><b>¥123</b> <s>¥183</s></td>
+      <td class="save">省 ¥60</td>
+      <td><span class="rate">67%</span></td>
+    </tr><tr>
+      <td class="rank">7</td>
+      <td class="cat">京东</td>
+      <td class="name"><a href="https://www.smzdm.com/p/184183864/" target="_blank">今日必买：苹果 iPhone Duo 256GB 星光白色 折叠屏手机</a></td>
+      <td class="price"><b>20998元</b></td>
+      <td class="save">待补全</td>
+      <td><span class="rate none">—</span></td>
+    </tr><tr>
+      <td class="rank">7</td>
+      <td class="cat">全部</td>
+      <td class="name"><a href="https://www.smzdm.com/p/184055879/" target="_blank">App Store本体限免：Orbital Invaders:Space shooter</a></td>
+      <td class="price"><b></b></td>
+      <td class="save">待补全</td>
+      <td><span class="rate none">—</span></td>
+    </tr><tr>
+      <td class="rank">8</td>
+      <td class="cat">电脑数码</td>
+      <td class="name"><a href="https://www.smzdm.com/p/184190394/" target="_blank">小天才 Z6Pro 翻转双摄 SIM版 星云粉 智能手表 运动礼盒</a></td>
+      <td class="price"><b>745.61元（需用券）</b></td>
+      <td class="save">待补全</td>
+      <td><span class="rate none">—</span></td>
+    </tr><tr>
+      <td class="rank">8</td>
+      <td class="cat">京东</td>
+      <td class="name"><a href="https://www.smzdm.com/p/183819707/" target="_blank">今日必买：蒙牛 每日鲜酪 牛油果希腊酸奶 100g*3杯</a></td>
+      <td class="price"><b>5.6元返20值得买积分后</b></td>
+      <td class="save">待补全</td>
+      <td><span class="rate none">—</span></td>
+    </tr><tr>
+      <td class="rank">8</td>
+      <td class="cat">全部</td>
+      <td class="name"><a href="https://www.smzdm.com/p/184056271/" target="_blank">App Store本体限免：有声记忆</a></td>
+      <td class="price"><b></b></td>
+      <td class="save">待补全</td>
+      <td><span class="rate none">—</span></td>
+    </tr><tr>
+      <td class="rank">9</td>
+      <td class="cat">电脑数码</td>
+      <td class="name"><a href="https://www.smzdm.com/p/184193276/" target="_blank">国家补贴：惠普 暗影精灵14代i7 RTX5060Ti 16GB+1TB 台式机</a></td>
+      <td class="price"><b>7666.15元（需用券）</b></td>
+      <td class="save">待补全</td>
+      <td><span class="rate none">—</span></td>
+    </tr><tr>
+      <td class="rank">9</td>
+      <td class="cat">京东</td>
+      <td class="name"><a href="https://www.smzdm.com/p/184202925/" target="_blank">今日必买：弥鹿 儿童玩具钻面磁铁彩窗磁力片100片（含小车*2）+收纳袋新年礼物</a></td>
+      <td class="price"><b>132.41元（需用券）</b></td>
+      <td class="save">待补全</td>
+      <td><span class="rate none">—</span></td>
+    </tr><tr>
+      <td class="rank">9</td>
+      <td class="cat">全部</td>
+      <td class="name"><a href="https://www.smzdm.com/p/184030559/" target="_blank">App Store本体限免：Pulse - Metronome</a></td>
+      <td class="price"><b></b></td>
+      <td class="save">待补全</td>
+      <td><span class="rate none">—</span></td>
+    </tr><tr>
+      <td class="rank">10</td>
+      <td class="cat">电脑数码</td>
+      <td class="name"><a href="https://www.smzdm.com/p/184196665/" target="_blank">百亿补贴：安克 65W安心充Pro+氮化镓充电器+1.5m快充线</a></td>
+      <td class="price"><b>69元</b></td>
+      <td class="save">待补全</td>
+      <td><span class="rate none">—</span></td>
+    </tr><tr>
+      <td class="rank">10</td>
+      <td class="cat">京东</td>
+      <td class="name"><a href="https://www.smzdm.com/p/184164234/" target="_blank">今日必买：京觅 每粒9毛、上次卖爆！陕西翠香猕猴桃24粒礼盒装（另有巨无霸黄心款）</a></td>
+      <td class="price"><b>22.9元（需用券）</b></td>
+      <td class="save">待补全</td>
+      <td><span class="rate none">—</span></td>
+    </tr><tr>
+      <td class="rank">11</td>
+      <td class="cat">电脑数码</td>
+      <td class="name"><a href="https://www.smzdm.com/p/184204670/" target="_blank">红米 K100 Pro 5G手机 12GB+256GB</a></td>
+      <td class="price"><b>2830元</b></td>
+      <td class="save">待补全</td>
+      <td><span class="rate none">—</span></td>
+    </tr><tr>
+      <td class="rank">11</td>
+      <td class="cat">京东</td>
+      <td class="name"><a href="https://www.smzdm.com/p/183970458/" target="_blank">值友专享、今日必买：科尔沁 风干牛肉 500g 原味</a></td>
+      <td class="price"><b>59元返50积分后</b></td>
+      <td class="save">待补全</td>
+      <td><span class="rate none">—</span></td>
+    </tr><tr>
+      <td class="rank">12</td>
+      <td class="cat">电脑数码</td>
+      <td class="name"><a href="https://www.smzdm.com/p/184211089/" target="_blank">华为 WATCH FIT 5 智能运动手表</a></td>
+      <td class="price"><b>577.1元（需用券）</b></td>
+      <td class="save">待补全</td>
+      <td><span class="rate none">—</span></td>
+    </tr><tr>
+      <td class="rank">12</td>
+      <td class="cat">京东</td>
+      <td class="name"><a href="https://www.smzdm.com/p/184174929/" target="_blank">今日必买：Gap 麦穗刺绣绞花针织开衫</a></td>
+      <td class="price"><b>149元（需用券）</b></td>
+      <td class="save">待补全</td>
+      <td><span class="rate none">—</span></td>
+    </tr><tr>
+      <td class="rank">13</td>
+      <td class="cat">电脑数码</td>
+      <td class="name"><a href="https://www.smzdm.com/p/184204381/" target="_blank">国家补贴：京东京造 LR03S10 彩虹碱性电池7号 1.5V 10节单色</a></td>
+      <td class="price"><b>2.07元（需用券）</b></td>
+      <td class="save">待补全</td>
+      <td><span class="rate none">—</span></td>
+    </tr><tr>
+      <td class="rank">13</td>
+      <td class="cat">京东</td>
+      <td class="name"><a href="https://www.smzdm.com/p/184185163/" target="_blank">依视路 A4/膜岩 +1.56-1.67折射率*2现片 + 赠钛框 原厂加工</a></td>
+      <td class="price"><b>179元（需用券）</b></td>
+      <td class="save">待补全</td>
+      <td><span class="rate none">—</span></td>
+    </tr><tr>
+      <td class="rank">14</td>
+      <td class="cat">电脑数码</td>
+      <td class="name"><a href="https://www.smzdm.com/p/184193963/" target="_blank">国家补贴：小米 手环11 标准版 智能手环 黑色 硅胶腕带</a></td>
+      <td class="price"><b>227.15元（需用券）</b></td>
+      <td class="save">待补全</td>
+      <td><span class="rate none">—</span></td>
+    </tr><tr>
+      <td class="rank">14</td>
+      <td class="cat">京东</td>
+      <td class="name"><a href="https://www.smzdm.com/p/184019531/" target="_blank">五粮液 普五八代 2023-26年 浓香型 52度500ml*2瓶</a></td>
+      <td class="price"><b>1491.84元</b></td>
+      <td class="save">待补全</td>
+      <td><span class="rate none">—</span></td>
+    </tr><tr>
+      <td class="rank">15</td>
+      <td class="cat">电脑数码</td>
+      <td class="name"><a href="https://www.smzdm.com/p/184204601/" target="_blank">今日必买：华为 FreeBuds pro 5悦彰耳机 无线蓝牙降噪耳机 母带级音质 双擎极致降噪 耳边AI智能体 雪域白</a></td>
+      <td class="price"><b>858.08元（需用券）</b></td>
+      <td class="save">待补全</td>
+      <td><span class="rate none">—</span></td>
+    </tr><tr>
+      <td class="rank">15</td>
+      <td class="cat">京东</td>
+      <td class="name"><a href="https://www.smzdm.com/p/184204485/" target="_blank">PLUS会员：弥鹿 儿童玩具钻面磁铁彩窗磁力片100片（含小车*2）+收纳袋新年礼物</a></td>
+      <td class="price"><b>127.84元（需用券）</b></td>
+      <td class="save">待补全</td>
+      <td><span class="rate none">—</span></td>
+    </tr><tr>
+      <td class="rank">16</td>
+      <td class="cat">电脑数码</td>
+      <td class="name"><a href="https://www.smzdm.com/p/184194046/" target="_blank">华为 Slim 蓝牙星闪双模 白色 无线鼠标</a></td>
+      <td class="price"><b>45元</b></td>
+      <td class="save">待补全</td>
+      <td><span class="rate none">—</span></td>
+    </tr><tr>
+      <td class="rank">16</td>
+      <td class="cat">京东</td>
+      <td class="name"><a href="https://www.smzdm.com/p/183696862/" target="_blank">值友专享、今日必买：三只松鼠 卤汁肉脯 500g/约18袋</a></td>
+      <td class="price"><b>14.9元返30积分后</b></td>
+      <td class="save">待补全</td>
+      <td><span class="rate none">—</span></td>
+    </tr><tr>
+      <td class="rank">17</td>
+      <td class="cat">电脑数码</td>
+      <td class="name"><a href="https://www.smzdm.com/p/184189319/" target="_blank">双Type-C数据线 60W 1.5m 编织款</a></td>
+      <td class="price"><b>6.9元</b></td>
+      <td class="save">待补全</td>
+      <td><span class="rate none">—</span></td>
+    </tr><tr>
+      <td class="rank">17</td>
+      <td class="cat">京东</td>
+      <td class="name"><a href="https://www.smzdm.com/p/184186830/" target="_blank">今日必买：安达露西 特级初榨橄榄油1L</a></td>
+      <td class="price"><b>22.94元</b></td>
+      <td class="save">待补全</td>
+      <td><span class="rate none">—</span></td>
+    </tr><tr>
+      <td class="rank">18</td>
+      <td class="cat">电脑数码</td>
+      <td class="name"><a href="https://www.smzdm.com/p/184204591/" target="_blank">荣耀 GS5 AI版 千问大模型 幻夜黑 蓝牙版 智能手表</a></td>
+      <td class="price"><b>199元</b></td>
+      <td class="save">待补全</td>
+      <td><span class="rate none">—</span></td>
+    </tr><tr>
+      <td class="rank">18</td>
+      <td class="cat">京东</td>
+      <td class="name"><a href="https://www.smzdm.com/p/184183942/" target="_blank">PLUS会员：学而思 限时九折！爆款旗舰T4 AI学习新方式 学习机</a></td>
+      <td class="price"><b>4771.61元</b></td>
+      <td class="save">待补全</td>
+      <td><span class="rate none">—</span></td>
+    </tr><tr>
+      <td class="rank">19</td>
+      <td class="cat">电脑数码</td>
+      <td class="name"><a href="https://www.smzdm.com/p/184210383/" target="_blank">PLUS会员：vivo X300 蔡司2亿超级主摄 好运红 16GB+512GB 手机</a></td>
+      <td class="price"><b>3849.62元（需用券）</b></td>
+      <td class="save">待补全</td>
+      <td><span class="rate none">—</span></td>
+    </tr><tr>
+      <td class="rank">19</td>
+      <td class="cat">京东</td>
+      <td class="name"><a href="https://www.smzdm.com/p/183743537/" target="_blank">水牛奶含量大于50%：认养 吃甘蔗的水牛奶4.2g蛋白 200mL*24盒 全脂纯牛奶</a></td>
+      <td class="price"><b>51.88元返50积分后</b></td>
+      <td class="save">待补全</td>
+      <td><span class="rate none">—</span></td>
+    </tr><tr>
+      <td class="rank">20</td>
+      <td class="cat">电脑数码</td>
+      <td class="name"><a href="https://www.smzdm.com/p/184197610/" target="_blank">国家补贴：OPPO Find X8 Ultra 5G手机 16GB+1TB 月光白 卫星通信版</a></td>
+      <td class="price"><b>5499元</b></td>
+      <td class="save">待补全</td>
+      <td><span class="rate none">—</span></td>
+    </tr><tr>
+      <td class="rank">20</td>
+      <td class="cat">京东</td>
+      <td class="name"><a href="https://www.smzdm.com/p/184133897/" target="_blank">值友专享、今日必买：思念 大虾仁水饺400g*5袋</a></td>
+      <td class="price"><b>46.8元返30积分后</b></td>
+      <td class="save">待补全</td>
+      <td><span class="rate none">—</span></td>
+    </tr><tr>
+      <td class="rank">21</td>
+      <td class="cat">电脑数码</td>
+      <td class="name"><a href="https://www.smzdm.com/p/184208403/" target="_blank">华为 手环11/Pro智能运动手环支持睡眠分析</a></td>
+      <td class="price"><b>178.84元（需用券）</b></td>
+      <td class="save">待补全</td>
+      <td><span class="rate none">—</span></td>
+    </tr><tr>
+      <td class="rank">21</td>
+      <td class="cat">京东</td>
+      <td class="name"><a href="https://www.smzdm.com/p/184208653/" target="_blank">MZPLOI 巨无霸 四川 特大果 爱媛38号果冻橙 4.5斤装 单果80-90mm</a></td>
+      <td class="price"><b>14.98元（需买2件，需用券）</b></td>
+      <td class="save">待补全</td>
+      <td><span class="rate none">—</span></td>
+    </tr><tr>
+      <td class="rank">22</td>
+      <td class="cat">电脑数码</td>
+      <td class="name"><a href="https://www.smzdm.com/p/184192534/" target="_blank">国家补贴、PLUS会员：vivo X300 Pro 卫星通信版 5G手机 12GB+256GB 纯粹黑</a></td>
+      <td class="price"><b>4163.51元（需用券）</b></td>
+      <td class="save">待补全</td>
+      <td><span class="rate none">—</span></td>
+    </tr><tr>
+      <td class="rank">23</td>
+      <td class="cat">电脑数码</td>
+      <td class="name"><a href="https://www.smzdm.com/p/184194866/" target="_blank">国家补贴：苹果 AI/MacBook Air13英寸M5 (10+8核) 16G 512G午夜色笔记本电脑教育优惠MDHE4CH/A</a></td>
+      <td class="price"><b>7436.65元</b></td>
+      <td class="save">待补全</td>
+      <td><span class="rate none">—</span></td>
+    </tr><tr>
+      <td class="rank">23</td>
+      <td class="cat">京东</td>
+      <td class="name"><a href="https://www.smzdm.com/p/184050581/" target="_blank">值友专享、今日必买：麦臻选 五香酱牛肉 600g</a></td>
+      <td class="price"><b>58.89元返60积分后</b></td>
+      <td class="save">待补全</td>
+      <td><span class="rate none">—</span></td>
+    </tr><tr>
+      <td class="rank">24</td>
+      <td class="cat">电脑数码</td>
+      <td class="name"><a href="https://www.smzdm.com/p/184190576/" target="_blank">狼蛛 S99无线三模键盘有线蓝牙2.4G笔记本电脑办公打字游戏便携</a></td>
+      <td class="price"><b>58元（需用券）</b></td>
+      <td class="save">待补全</td>
+      <td><span class="rate none">—</span></td>
+    </tr><tr>
+      <td class="rank">24</td>
+      <td class="cat">京东</td>
+      <td class="name"><a href="https://www.smzdm.com/p/184178501/" target="_blank">京东 PLUS超级补贴会场 领200-25/480-60/1500-180元等超级补贴券；1600元品类券；最高465元专属补贴券等</a></td>
+      <td class="price"><b>领200-25元超补券</b></td>
+      <td class="save">待补全</td>
+      <td><span class="rate none">—</span></td>
+    </tr></tbody>
+  </table>
+</div></body></html>

@@ -1,0 +1,93 @@
+name: 值得买每日优惠推送
+
+on:
+  schedule:
+    # GitHub 的 cron 走 UTC。12:00 UTC = 北京时间 20:00
+    # 注意：GitHub 的定时触发在整点前后负载高，实际可能延迟几分钟到半小时。
+    - cron: "0 12 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+# 同一时间只跑一个，避免手动触发和定时撞车导致重复推送
+concurrency:
+  group: smzdm-daily
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: 拉取代码
+        uses: actions/checkout@v4
+
+      - name: 准备 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: 恢复商品目录与运行状态
+        run: |
+          mkdir -p build/cache build/state
+          if [ -f data/catalog.json ]; then
+            cp data/catalog.json build/cache/catalog.json
+            echo "已恢复商品目录：$(wc -c < data/catalog.json) 字节"
+          else
+            echo "首次运行，目录为空"
+          fi
+          for f in last_push.txt cooldown_until.txt; do
+            if [ -f "data/state/$f" ]; then cp "data/state/$f" build/state/; fi
+          done
+
+      - name: 生成配置
+        run: |
+          cp config.example.ini config.ini
+          echo "配置已生成（SendKey 由 Secrets 注入，不落盘到仓库）"
+
+      - name: 抓取 · 生成报表 · 推送
+        id: run
+        continue-on-error: true
+        env:
+          SERVERCHAN_SENDKEY: ${{ secrets.SERVERCHAN_SENDKEY }}
+        run: python daily.py
+
+      - name: 回写数据与报表
+        if: always()
+        run: |
+          mkdir -p data/state docs
+          if [ -f build/cache/catalog.json ]; then
+            cp build/cache/catalog.json data/catalog.json
+          fi
+          for f in last_push.txt cooldown_until.txt; do
+            if [ -f "build/state/$f" ]; then cp "build/state/$f" data/state/; fi
+          done
+          latest=$(ls -t build/reports/*.html 2>/dev/null | head -1 || true)
+          if [ -n "$latest" ]; then
+            cp "$latest" docs/index.html
+            echo "已更新 docs/index.html ← $latest"
+          else
+            echo "本次没有生成报表"
+          fi
+
+      - name: 提交变更
+        if: always()
+        run: |
+          git config user.name "smzdm-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A data docs
+          if git diff --staged --quiet; then
+            echo "内容无变化，跳过提交"
+          else
+            git commit -m "chore: $(date -u +%F) 优惠数据更新"
+            git push
+          fi
+
+      - name: 失败时打印日志
+        if: steps.run.outcome == 'failure'
+        run: |
+          echo "::error::抓取或推送失败，最近日志如下"
+          tail -40 build/logs/runs.log 2>/dev/null || echo "（无日志）"
+          exit 1

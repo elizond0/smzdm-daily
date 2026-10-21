@@ -1,0 +1,10 @@
+# 本地虚拟环境与运行产物（体积大，且每次运行都会变）
+build/
+
+# 含 SendKey，不能进仓库。仓库里用 config.example.ini，密钥走 GitHub Secrets。
+config.ini
+
+# Python
+__pycache__/
+*.pyc
+*.pyo

@@ -1,0 +1,6 @@
+# 云端跑在 Linux，脚本必须是 LF，否则 workflow 的 shell 步骤会报 $'\r' 错误
+* text=auto eol=lf
+
+# Windows 本地仍用 CRLF
+*.bat text eol=crlf
+*.ps1 text eol=crlf
