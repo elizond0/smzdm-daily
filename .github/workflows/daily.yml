@@ -2,9 +2,9 @@ name: 值得买每日优惠推送
 
 on:
   schedule:
-    # GitHub 的 cron 走 UTC。12:00 UTC = 北京时间 20:00
+    # GitHub 的 cron 走 UTC。北京时间 10:00 和 18:00 = UTC 02:00 和 10:00
     # 注意：GitHub 的定时触发在整点前后负载高，实际可能延迟几分钟到半小时。
-    - cron: "0 12 * * *"
+    - cron: "0 2,10 * * *"
   workflow_dispatch:
     inputs:
       no_notify:
@@ -43,6 +43,10 @@ jobs:
           else
             echo "首次运行，目录为空"
           fi
+          if [ -f data/pool.json ]; then
+            cp data/pool.json build/cache/pool.json
+            echo "已恢复 24 小时商品池"
+          fi
           for f in last_push.txt cooldown_until.txt blocked_streak.txt; do
             if [ -f "data/state/$f" ]; then cp "data/state/$f" build/state/; fi
           done
@@ -72,6 +76,9 @@ jobs:
           mkdir -p data/state docs
           if [ -f build/cache/catalog.json ]; then
             cp build/cache/catalog.json data/catalog.json
+          fi
+          if [ -f build/cache/pool.json ]; then
+            cp build/cache/pool.json data/pool.json
           fi
           for f in last_push.txt cooldown_until.txt blocked_streak.txt; do
             if [ -f "build/state/$f" ]; then cp "build/state/$f" data/state/; fi
