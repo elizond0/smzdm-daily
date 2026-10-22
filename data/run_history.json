@@ -61,5 +61,19 @@
   "feed": 20,
   "catalog": 320,
   "min_disc": "35"
+ },
+ {
+  "date": "2026-10-23",
+  "time": "01:04",
+  "status": "test",
+  "pushed": false,
+  "note": "静默测试，未发送通知",
+  "source": 84,
+  "requests": 5,
+  "blocked": false,
+  "hot": 10,
+  "feed": 20,
+  "catalog": 331,
+  "min_disc": "35"
  }
 ]
