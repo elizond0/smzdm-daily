@@ -230,13 +230,12 @@ def read_mark(p: Path) -> str:
         return ""
 
 
-def skip_reason(force: bool) -> str | None:
-    """--force 只绕过「今日已推送」，绕不过风控冷却。
+def cooldown_reason() -> str | None:
+    """风控冷却是否还在生效。
 
-    冷却期发请求只会把封禁时间往后推，这是踩过的坑，所以强制项也不放行。
-    真要排查，删 build/state/cooldown_until.txt 即可。
+    冷却期发请求只会把封禁时间往后推，这是踩过的坑。真要排查，
+    删 build/state/cooldown_until.txt 即可。
     """
-    today = datetime.now().strftime("%Y-%m-%d")
     cool = read_mark(MARK_COOL)
     if cool:
         try:
@@ -245,9 +244,16 @@ def skip_reason(force: bool) -> str | None:
                 return f"风控冷却中，{until:%m-%d %H:%M} 之后才会再请求"
         except ValueError:
             pass
-    if not force and read_mark(MARK_PUSH) == today:
-        return "今天已经推送过了（--force 可强制重跑）"
     return None
+
+
+def pushed_today() -> bool:
+    """今天是否已经推送过。
+
+    注意这个只影响「要不要推送」，不再挡住抓取——一天跑多次时，
+    每一次都该刷新数据和报表，否则 24 小时池永远累积不起来。
+    """
+    return read_mark(MARK_PUSH) == datetime.now().strftime("%Y-%m-%d")
 
 
 def set_cooldown(base_hours: float) -> None:
@@ -828,7 +834,24 @@ def zhe(pct: float) -> str:
     return f"{pct / 10:.1f}"
 
 
+TEMPLATE = BASE / "template.html"
+
+
+def _fill(template: str, values: dict) -> str:
+    """把模板里的 {{key}} 占位符替换成 values 里的值。
+
+    刻意不用 str.format：那样 CSS 里的花括号全都得写成 {{ }}，
+    改样式时容易看漏。用 {{}} 占位符，模板就是一份普通 HTML/CSS。
+    """
+    return re.sub(r"\{\{(\w+)\}\}",
+                  lambda m: str(values.get(m.group(1), "")), template)
+
+
 def render_html(hot: list[dict], passed: list[dict], meta: dict) -> str:
+    """把数据填进 template.html 得到日报页面。
+
+    这个函数只负责算数、拼行；长成什么样全在 template.html 里。
+    """
     def meta_line(d):
         parts = [d.get("category") or "其他", d.get("mall") or "",
                  d.get("source") or "", d.get("time") or ""]
@@ -856,7 +879,6 @@ def render_html(hot: list[dict], passed: list[dict], meta: dict) -> str:
                     f'<div class="bar"><i style="width:{max(4, pct)}%"></i></div>')
         else:
             rate = '<span class="muted">无原价</span>'
-        save = f'省¥{d["save"]:g}' if d.get("save") else '<span class="muted">—</span>'
         return f"""<tr>
   <td class="idx">{i}</td>
   <td class="name" data-t="{H.escape(d['title'])}"><a href="{d.get('url') or '#'}" target="_blank">{H.escape(display_title(d['title']))}</a>{conds}
@@ -899,129 +921,34 @@ def render_html(hot: list[dict], passed: list[dict], meta: dict) -> str:
 
     empty = "" if hot else '<div class="warn">今天没有符合力度阈值的商品，可以调低 config.ini 里的门槛。</div>'
     feed_top = passed  # pick 已按「去掉折扣榜重合 + 前 N 名」截好
+    no_row = '<tr><td colspan="4" style="color:#9aa0a8;padding:20px">无</td></tr>'
 
+    values = {
+        "date": H.escape(meta["date"]),
+        "watch_raw": H.escape(meta.get("watch_raw_url") or ""),
+        "watch_api": H.escape(meta.get("watch_api_url") or ""),
+        "fetched_at": H.escape(meta["fetched_at"]),
+        "requests": meta["requests"],
+        "wish_count": meta.get("watch_words", 0),
+        "warn": warn,
+        "empty": empty,
+        "hot_count": len(hot),
+        "feed_count": len(feed_top),
+        "min_zhe": f"{zhe(hot[0]['discount_pct'])}<em>折</em>" if hot else "—",
+        "max_save": f"¥{max(d['save'] for d in hot):,.0f}" if hot else "—",
+        "funnel": funnel,
+        "min_disc": f"{float(meta['min_disc']) / 10:.1f}",
+        "hot_rows": "".join(row(d, i + 1) for i, d in enumerate(hot)) or no_row,
+        "feed_rows": "".join(row(d, i + 1) for i, d in enumerate(feed_top)) or no_row,
+        "feed_name": H.escape(meta.get("feed_name") or ""),
+        "build_at": H.escape(meta.get("build_at") or ""),
+    }
 
-
-    return f"""<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>值得买日报 {H.escape(meta['date'])}</title>
-<meta name="watch-src" content="{H.escape(meta.get('watch_raw_url') or '')}"
-        data-api="{H.escape(meta.get('watch_api_url') or '')}"><style>
-*{{box-sizing:border-box}}
-body{{margin:0;padding:34px 20px;background:#f5f6f8;color:#16181c;
-  font:14px/1.65 -apple-system,"Segoe UI","Microsoft YaHei",sans-serif}}
-.wrap{{max-width:1000px;margin:0 auto}}
-h1{{font-size:21px;margin:0 0 4px}}
-.sub{{color:#71767e;font-size:12.5px;margin-bottom:22px}}
-.warn{{background:#fff8e6;border:1px solid #f3e2b8;color:#8a6410;border-radius:8px;
-  padding:10px 14px;font-size:13px;margin-bottom:18px}}
-.funnel{{background:#fff;border:1px solid #e6e8eb;border-radius:8px;padding:9px 14px;
-  font-size:12px;color:#71767e;margin-bottom:20px;line-height:1.8}}
-.funnel b{{color:#c8102e;font-weight:600}}
-.stats{{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:26px}}
-.stat{{background:#fff;border:1px solid #e6e8eb;border-radius:10px;padding:13px 16px}}
-.stat .k{{font-size:11.5px;color:#71767e}}
-.stat .v{{font-size:21px;font-weight:600;margin-top:1px}}
-.stat .v em{{font-size:12px;font-style:normal;color:#71767e;font-weight:400;margin-left:2px}}
-h2{{font-size:14px;margin:28px 0 10px;display:flex;align-items:center;gap:8px}}
-h2 .dot{{width:3px;height:13px;background:#c8102e;border-radius:2px}}
-h2 .hint{{font-weight:400;color:#8a8f97;font-size:12px}}
-table{{width:100%;border-collapse:collapse;background:#fff;border:1px solid #e6e8eb;
-  border-radius:10px;overflow:hidden}}
-th{{text-align:left;font-size:11.5px;color:#71767e;font-weight:500;background:#fafbfc;
-  padding:9px 12px;border-bottom:1px solid #e6e8eb;white-space:nowrap}}
-td{{padding:11px 12px;border-bottom:1px solid #f2f3f5;vertical-align:middle}}
-tr:last-child td{{border-bottom:0}}
-tbody tr:hover td{{background:#fcfcfd}}
-.idx{{color:#a8adb5;width:32px;font-variant-numeric:tabular-nums;font-size:12.5px}}
-.cat{{color:#71767e;font-size:12px;width:78px}}
-.name a{{color:#16181c;text-decoration:none}}
-.name a:hover{{color:#c8102e;text-decoration:underline}}
-.meta{{color:#9aa0a8;font-size:11.5px;margin-top:2px}}
-.num{{white-space:nowrap;font-variant-numeric:tabular-nums;text-align:right;width:110px}}
-.num b{{color:#c8102e;font-size:14.5px}}
-.num s{{color:#b6bac1;font-size:12px;margin-left:4px}}
-.save{{color:#71767e;font-size:12px}}
-.rate{{width:76px;text-align:right;font-weight:600;color:#c8102e;font-variant-numeric:tabular-nums}}
-.rate small{{font-size:11px;font-weight:400}}
-.bar{{height:3px;background:#f1f2f4;border-radius:2px;margin-top:4px;overflow:hidden}}
-.bar i{{display:block;height:100%;background:#c8102e;border-radius:2px}}
-.tag{{display:inline-block;margin-left:5px;padding:0 5px;border-radius:3px;font-size:10.5px;
-  background:#fff4e5;color:#a86a12;border:1px solid #f5e0c3;vertical-align:1px}}
-.tag.warn{{background:#fdecee;color:#c8102e;border-color:#f3c3c9}}
-.newlow{{display:inline-block;margin-left:5px;padding:0 5px;border-radius:3px;font-size:10.5px;
-  background:#e9f6ee;color:#1a7f42;border:1px solid #c9e8d4;vertical-align:1px}}
-.first{{display:inline-block;margin-left:5px;padding:0 5px;border-radius:3px;font-size:10.5px;
-  background:#e8f1fb;color:#1d5fbf;border:1px solid #c8dbf2;vertical-align:1px}}
-.wish{{display:inline-block;margin-left:5px;padding:0 6px;border-radius:3px;font-size:10.5px;
-  background:#f3e8ff;color:#7c3aed;border:1px solid #e2d0fd;vertical-align:1px;font-weight:600}}
-.wishlink{{display:inline-block;margin-left:10px;padding:1px 9px;border-radius:20px;font-size:12px;
-  background:#f3e8ff;color:#7c3aed;border:1px solid #e2d0fd;text-decoration:none;font-weight:600}}
-.wishlink:hover{{background:#e9d9ff;text-decoration:none}}
-.lowhint{{font-size:11px;color:#9aa0a8;margin-top:2px;font-weight:400}}
-.foot{{color:#9aa0a8;font-size:11.5px;margin-top:24px;line-height:1.9}}
-/* ---------- 手机端：表格拆成卡片，避免窄屏把商品名挤成竖排 ---------- */
-@media (max-width:700px){{
-  html,body{{overflow-x:hidden;max-width:100%}}
-  body{{padding:18px 12px}}
-  h1{{font-size:18px}}
-  .sub{{font-size:11.5px;margin-bottom:16px;line-height:1.7}}
-  .stats{{grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:16px}}
-  .stat{{padding:10px 12px}}
-  .stat .k{{font-size:11px}}
-  .stat .v{{font-size:18px}}
-  .funnel{{font-size:11.5px;padding:8px 10px;line-height:1.8;word-break:break-word}}
-  h2{{font-size:13px;margin:20px 0 8px}}
-  h2 .hint{{font-size:11px}}
-  table,tbody,tr,td{{display:block;width:auto}}
-  table{{border:0;background:transparent;border-radius:0}}
-  thead{{display:none}}
-  tr{{position:relative;background:#fff;border:1px solid #e6e8eb;border-radius:10px;
-     padding:12px;margin-bottom:9px}}
-  tr:last-child{{margin-bottom:0}}
-  tbody tr:hover td{{background:transparent}}
-  td{{border:0;padding:0}}
-  .idx{{position:absolute;left:12px;top:12px;color:#c3c7cd;font-size:11px;width:auto}}
-  .name{{padding-left:19px;margin-bottom:7px;line-height:1.55;word-break:break-word}}
-  .name a{{font-size:14px}}
-  .meta{{font-size:11px;line-height:1.6;margin-top:3px}}
-  .num{{display:inline-block;width:auto;text-align:left;white-space:normal;
-        margin-right:10px;font-size:13px}}
-  .num b{{font-size:16px}}
-  .num s{{font-size:11.5px}}
-  .save{{display:inline-block;margin-right:8px;font-size:12px}}
-  .rate{{display:inline-block;width:auto;text-align:left;font-size:13px}}
-  .bar{{display:none}}
-  .tag,.newlow,.first{{font-size:10px;margin-left:4px}}
-  .lowhint{{font-size:10.5px}}
-  .foot{{font-size:11px;line-height:1.8}}
-}}
-</style></head><body><div class="wrap">
-  <h1>值得买日报 · {H.escape(meta['date'])}</h1>
-  <div class="sub">抓取 {H.escape(meta['fetched_at'])}　请求 {meta['requests']} 次　
-    来源 smzdm.com（时点快照，价格与库存随时变动）
-    <a class="wishlink" href="./wishlist.html">⭐ 愿望单 <span id="wishCount" style="font-weight:400">{meta.get('watch_words', 0)} 个关键词</span></a>
-    <a class="wishlink" href="./db.html" style="background:#eef4ff;color:#1d5fbf;border-color:#cfdefb">📚 数据库</a></div>
-  {warn}{empty}
-  <div class="stats">
-    <div class="stat"><div class="k">折扣榜</div><div class="v">{len(hot)}<em> 条</em></div></div>
-    <div class="stat"><div class="k">好价榜</div><div class="v">{len(feed_top)}<em> 条</em></div></div>
-    <div class="stat"><div class="k">最低折</div><div class="v">{f"{zhe(hot[0]['discount_pct'])}<em>折</em>" if hot else "—"}</div></div>
-    <div class="stat"><div class="k">最高立省</div><div class="v">{f"¥{max(d['save'] for d in hot):,.0f}" if hot else "—"}</div></div>
-  </div>
-  {funnel}
-  <h2><span class="dot"></span>折扣榜 <span class="hint">按折扣力度排序 · 只收 {float(meta['min_disc']) / 10:.1f} 折以内</span></h2>
-  <table><thead><tr><th>#</th><th>商品</th><th>到手价</th><th>折扣</th></tr></thead>
-  <tbody>{''.join(row(d, i + 1) for i, d in enumerate(hot)) or '<tr><td colspan="4" style="color:#9aa0a8;padding:20px">无</td></tr>'}</tbody></table>
-  <h2><span class="dot"></span>好价榜 <span class="hint">{H.escape(meta.get('feed_name') or '')} 原始顺序 · 前 {len(feed_top)} 条</span></h2>
-  <table><thead><tr><th>#</th><th>商品</th><th>到手价</th><th>折扣</th></tr></thead>
-  <tbody>{''.join(row(d, i + 1) for i, d in enumerate(feed_top)) or '<tr><td colspan="4" style="color:#9aa0a8;padding:20px">无</td></tr>'}</tbody></table>
-  <div class="foot">页面版本 {H.escape(meta.get('build_at') or '')}<br>由 daily.py 自动生成 · <a href="./overview.html" style="color:#c8102e;text-decoration:none">运行概览</a> ·
-    数据源 {H.escape(meta.get('feed_name') or '')}（全部好价排行榜）·
-    仅抓列表页，未访问商品详情页 · 折扣按「现价/原价」计算，原价取自好价流描述，仅供参考。</div>
-</div>
-<script src="./watch.js"></script>
-</body></html>"""
+    try:
+        tpl = TEMPLATE.read_text(encoding="utf-8")
+    except OSError as e:
+        raise SystemExit(f"读不到 template.html（应与 daily.py 同目录）：{e}")
+    return _fill(tpl, values)
 
 
 def render_push(hot: list[dict], meta: dict) -> tuple[str, str]:
@@ -1117,9 +1044,9 @@ def main() -> int:
             log(f"探测失败 {type(e).__name__}: {e}")
             return 1
 
-    # --no-notify 是测试模式：本来就不会推送，所以没理由被「今天已推送」挡住。
-    # 冷却仍然生效（skip_reason 里冷却不受 force 影响）。
-    reason = skip_reason(args.force or args.no_notify)
+    # 只有风控冷却能挡住抓取。「今日已推送」不再挡——一天跑多次时，
+    # 每次都要刷新数据、商品池和报表，否则多跑毫无意义。
+    reason = cooldown_reason()
     if reason:
         log(f"跳过：{reason}")
         record_run("skipped", note=reason)
@@ -1230,11 +1157,13 @@ def main() -> int:
         catalog.save()
         export_db(catalog)
         log("推送已停用（[push] enabled = false），只更新日报")
-        # 仍然标记「今天已运行」。GitHub 的定时任务会延迟甚至整点丢失，
-        # 有了这个标记才能加备用时间点——先到的那次跑，后来的自动跳过。
-        MARK_PUSH.parent.mkdir(parents=True, exist_ok=True)
-        MARK_PUSH.write_text(now.strftime("%Y-%m-%d"), encoding="utf-8")
         record_run("disabled", meta, "推送已停用，仅更新日报")
+        return 0
+
+    # 一天跑多次时，抓取和报表每次都更新，但微信只发第一次。
+    if pushed_today() and not args.force:
+        log("今天已经推送过了，本次只更新日报和数据库")
+        record_run("skipped_push", meta, "今日已推送，仅更新数据")
         return 0
 
     # 推送只发「近期没推过」的，报表则展示完整榜单。
