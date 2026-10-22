@@ -47,5 +47,19 @@
   "status": "skipped",
   "pushed": false,
   "note": "今天已经推送过了（--force 可强制重跑）"
+ },
+ {
+  "date": "2026-10-22",
+  "time": "23:18",
+  "status": "test",
+  "pushed": false,
+  "note": "静默测试，未发送通知",
+  "source": 82,
+  "requests": 5,
+  "blocked": false,
+  "hot": 10,
+  "feed": 20,
+  "catalog": 320,
+  "min_disc": "35"
  }
 ]
