@@ -1,17 +1,16 @@
 [
  {
   "date": "2026-10-22",
-  "time": "14:48",
-  "status": "disabled",
+  "time": "21:39",
+  "status": "test",
   "pushed": false,
-  "note": "推送已停用，仅更新日报",
-  "source": 83,
+  "note": "静默测试，未发送通知",
+  "source": 79,
   "requests": 5,
   "blocked": false,
   "hot": 10,
   "feed": 20,
-  "catalog": 280,
-  "min_disc": "35",
-  "min_save": "40"
+  "catalog": 305,
+  "min_disc": "35"
  }
 ]

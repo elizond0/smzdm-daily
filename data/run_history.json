@@ -1,0 +1,16 @@
+[
+ {
+  "date": "2026-10-22",
+  "time": "21:39",
+  "status": "test",
+  "pushed": false,
+  "note": "静默测试，未发送通知",
+  "source": 79,
+  "requests": 5,
+  "blocked": false,
+  "hot": 10,
+  "feed": 20,
+  "catalog": 305,
+  "min_disc": "35"
+ }
+]
