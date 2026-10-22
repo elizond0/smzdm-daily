@@ -104,16 +104,17 @@ function render(hist) {
   }
   const recent = hist.slice(-20).reverse();
 
-  const okRate = Math.round(hist.filter(h => h.status === 'ok').length / hist.length * 100);
   const last = hist[hist.length - 1];
-  const srcs = hist.map(h => h.source || 0);
-  const avg = Math.round(srcs.reduce((a, b) => a + b, 0) / srcs.length);
+  // 运行成功率：只有 failed 算失败。skipped（风控冷却）和
+  // skipped_push（当天已推过）都是正常路径，不计入失败。
+  const failed = hist.filter(h => h.status === 'failed').length;
+  const okRate = hist.length ? Math.round((hist.length - failed) / hist.length * 100) : 0;
 
   const stats = [
     ['总运行次数', hist.length, ' 次'],
-    ['推送成功率', okRate, '%'],
-    ['最近数据源', fmt(last.source), ' 条'],
-    ['平均数据源', avg, ' 条']
+    ['运行成功率', okRate, '%'],
+    ['数据库总数', fmt(last.catalog), ' 条'],
+    ['最近数据源', fmt(last.source), ' 条']
   ];
   const box = document.getElementById('stats');
   box.innerHTML = '';
@@ -132,19 +133,22 @@ function render(hist) {
 
 function drawChart(points) {
   const host = document.getElementById('chart');
-  if (points.length < 2) {
+  // 被风控挡掉的运行没有 source，不能当 0 画进去（会把纵轴压平），
+  // 只取有数据的点。
+  const pts = points.filter(p => p.source != null);
+  if (pts.length < 2) {
     host.innerHTML = '<div class="muted">数据点不足，跑两次以上才会显示趋势。</div>';
     return;
   }
   const W = 940, H = 150, PAD = 26;
-  const vals = points.map(p => p.source || 0);
+  const vals = pts.map(p => p.source);
   const max = Math.max(...vals, 1), min = Math.min(...vals, 0);
   const span = Math.max(max - min, 1);
-  const x = i => PAD + i * (W - PAD * 2) / (points.length - 1);
+  const x = i => PAD + i * (W - PAD * 2) / (pts.length - 1);
   const y = v => H - PAD - (v - min) / span * (H - PAD * 2);
 
   let path = '', dots = '';
-  points.forEach((p, i) => {
+  pts.forEach((p, i) => {
     const cx = x(i), cy = y(p.source || 0);
     path += (i ? ' L' : 'M') + cx.toFixed(1) + ' ' + cy.toFixed(1);
     const bad = p.status === 'failed' || p.blocked;
