@@ -1230,6 +1230,10 @@ def main() -> int:
         catalog.save()
         export_db(catalog)
         log("推送已停用（[push] enabled = false），只更新日报")
+        # 仍然标记「今天已运行」。GitHub 的定时任务会延迟甚至整点丢失，
+        # 有了这个标记才能加备用时间点——先到的那次跑，后来的自动跳过。
+        MARK_PUSH.parent.mkdir(parents=True, exist_ok=True)
+        MARK_PUSH.write_text(now.strftime("%Y-%m-%d"), encoding="utf-8")
         record_run("disabled", meta, "推送已停用，仅更新日报")
         return 0
 
