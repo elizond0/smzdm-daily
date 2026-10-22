@@ -40,5 +40,12 @@
   "feed": 20,
   "catalog": 305,
   "min_disc": "35"
+ },
+ {
+  "date": "2026-10-22",
+  "time": "22:44",
+  "status": "skipped",
+  "pushed": false,
+  "note": "今天已经推送过了（--force 可强制重跑）"
  }
 ]
