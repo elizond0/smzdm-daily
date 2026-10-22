@@ -72,10 +72,6 @@ Token 放在 `.deploy.token`（已 gitignore），Actions 里用 `GITHUB_TOKEN`�
 | `data/` | 跨运行持久化：catalog.json、pool.json、run_history.json、state/ |
 | `.github/workflows/daily.yml` | 定时任务定义 |
 
-### 未被主程序引用的脚本
-
-`build_demo.py`、`make_sample.py`、`smzdm.py` 是早期探索留下的，`daily.py` 不 import 它们。可以删，但留着也不影响运行。
-
 ## 配置
 
 `config.example.ini` 是模板，Actions 每次用它生成 `config.ini`；本机用自己的 `config.ini`（已 gitignore）。
