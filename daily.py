@@ -207,7 +207,6 @@ def record_run(status: str, meta: dict | None = None, note: str = "",
             "feed": meta.get("feed_count", 0),
             "catalog": meta.get("catalog_count", 0),
             "min_disc": meta.get("min_disc", ""),
-            "min_save": meta.get("min_save", ""),
         })
     try:
         hist = json.loads(RUN_HISTORY.read_text(encoding="utf-8"))
@@ -409,13 +408,6 @@ def load_watchlist() -> list[str]:
     return out
 
 
-def watch_hits(items: list[dict], words: list[str]) -> list[dict]:
-    """在商品里找标题包含任一关注词的。"""
-    if not words:
-        return []
-    return [d for d in items if any(w in (d.get("title") or "") for w in words)]
-
-
 def decorate(d: dict, catalog: "Catalog", cutoff: str, drop_pct: float,
              keep_days: int) -> dict:
     """补上「首次见到 / 历史新低 / 近期推过」三个标记。
@@ -462,7 +454,6 @@ def pick(items: list[dict], cfg: configparser.ConfigParser,
     """
     max_items = cfg.getint("filter", "max_items", fallback=10)
     min_disc = cfg.getfloat("filter", "min_discount_pct", fallback=30)
-    min_save = cfg.getfloat("filter", "min_save_yuan", fallback=50)
     max_price = cfg.getfloat("filter", "max_price", fallback=0)
 
     cats = set(split_list(cfg.get("interest", "categories", fallback="")))
@@ -474,7 +465,7 @@ def pick(items: list[dict], cfg: configparser.ConfigParser,
 
     stat = {"total": len(items), "no_discount": 0, "block_kw": 0, "only_kw": 0,
             "category": 0, "quality": 0, "price": 0, "excluded": 0,
-            "dedup": 0, "price_drop": 0, "threshold": 0}
+            "dedup": 0, "price_drop": 0}
 
     keep_days = cfg.getint("dedup", "days", fallback=7)
     drop_pct = cfg.getfloat("dedup", "price_drop_pct", fallback=0)
@@ -530,7 +521,6 @@ def pick(items: list[dict], cfg: configparser.ConfigParser,
         d["_from_pool"] = True
     disc = [d for d in pool_items if d.get("discount_pct")]
     hot = [d for d in disc if d["discount_pct"] <= min_disc]
-    stat["threshold"] = len(disc) - len(hot)
     stat["pool_size"] = len(pool_items)
     hot.sort(key=lambda d: (d["discount_pct"], -(d.get("save") or 0)))
 
@@ -1193,7 +1183,6 @@ def main() -> int:
         "blocked": data.get("blocked", False),
         "stale": data.get("stale", False),
         "min_disc": cfg.get("filter", "min_discount_pct", fallback="30"),
-        "min_save": cfg.get("filter", "min_save_yuan", fallback="50"),
         "stat": stat,
         "cats": split_list(cfg.get("interest", "categories", fallback="")),
         "dedup_days": cfg.getint("dedup", "days", fallback=7),
@@ -1204,7 +1193,6 @@ def main() -> int:
         "watch_raw_url": cfg.get("watch", "raw_url", fallback=""),
         "watch_api_url": cfg.get("watch", "api_url", fallback=""),
         "build_at": datetime.now().strftime("%Y-%m-%d %H:%M"),
-        "feed_limit": cfg.getint("crawl", "top_n", fallback=50),
         "hot_count": len(hot),
         "feed_count": min(len(passed), feed_limit),
         "catalog_count": len(catalog.records),
