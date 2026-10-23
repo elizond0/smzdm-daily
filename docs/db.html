@@ -42,6 +42,12 @@ h1{font-size:21px;margin:0 0 4px}
 .pager button:disabled{opacity:.4;cursor:default}
 .pager button.on{background:#1d5fbf;border-color:#1d5fbf;color:#fff}
 .pager .gap{color:#a8adb5;padding:0 2px}
+.srcs{margin-top:14px;padding:13px 16px}
+.srcs .st{font-size:12px;color:#71767e;margin-bottom:7px}
+.srcs a{display:inline-block;margin:0 14px 5px 0;font-size:12.5px;color:#1d5fbf;
+  text-decoration:none;border-bottom:1px dotted #b9cdf0;word-break:break-all}
+.srcs a:hover{color:#164a99;border-bottom-style:solid}
+.srcs .none{color:#9aa0a8;font-size:12.5px}
 .foot{color:#9aa0a8;font-size:11.5px;margin-top:26px;line-height:1.9;text-align:center}
 @media (max-width:700px){
   html,body{overflow-x:hidden;max-width:100%}
@@ -76,6 +82,7 @@ h1{font-size:21px;margin:0 0 4px}
 
   <div id="list"></div>
   <div class="pager" id="pager"></div>
+  <div class="card srcs" id="srcs"></div>
 
   <div class="foot">
     数据来自每日抓取累积的数据库，记录每件商品的历史最低价与最低折扣。<br>
@@ -103,14 +110,9 @@ function zhe(p){ return p == null ? '' : (Math.round(p) / 10).toFixed(1) + ' 折
 function itemHtml(r, i){
   const disc = r.d == null ? '' :
     `<span>历史最低折扣 <span class="hl">${zhe(r.d)}</span></span>`;
-  // 来源：这条商品是从哪个排行榜页面抓到的，点开可核对当前价格
-  const src = r.g
-    ? `<span>来源 <a class="srclink" href="${esc(r.g)}" target="_blank" rel="noopener" title="${esc(r.g)}">${esc(r.g.replace(/^https?:\/\//, ''))}</a></span>`
-    : '';
   const tags = [
     r.c ? esc(r.c) : '',
     r.m ? esc(r.m) : '',
-    src,
     `出现 ${r.n || 0} 次`,
     r.s ? `最近 ${esc(r.s)}` : ''
   ].filter(Boolean).map(x => `<span>${x}</span>`).join('');
@@ -187,11 +189,32 @@ fetch('./db.json', { cache: 'no-store' })
     $('totalHint').textContent = `共 ${total} 件商品${updated ? ' · 更新于 ' + updated : ''}`;
     view = all.slice();
     render();
+    drawSources();
   })
   .catch(() => {
     $('list').innerHTML = '<div class="empty">数据库还没生成，等第一次抓取运行后就有了</div>';
     $('totalHint').textContent = '暂无数据';
   });
+
+// 底部来源区：把所有商品用到的拉取地址去重后列出来。
+// 逐条商品不再挂链接，点商品名即可跳到商品页。
+function drawSources() {
+  const host = document.getElementById('srcs');
+  if (!host) return;
+  const urls = [];
+  const seen = {};
+  all.forEach(r => {
+    if (r.g && !seen[r.g]) { seen[r.g] = 1; urls.push(r.g); }
+  });
+  urls.sort();
+  if (!urls.length) {
+    host.innerHTML = '<div class="st">数据来源</div><div class="none">暂无来源地址记录</div>';
+    return;
+  }
+  host.innerHTML = '<div class="st">数据来源 · 每次拉取的排行榜地址（' + urls.length + ' 个）</div>' +
+    urls.map(u => '<a href="' + esc(u) + '" target="_blank" rel="noopener">' +
+                  esc(u.replace(/^https?:\/\//, '')) + '</a>').join('');
+}
 
 let timer = null;
 $('q').addEventListener('input', e => {
