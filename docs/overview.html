@@ -80,11 +80,10 @@ a:hover{text-decoration:underline}
 </div>
 
 <script>
+// 状态只表示「抓取是否成功」。推送有没有执行、为何跳过，看最后一列备注。
 const LABEL = {
-  ok:      ['b-ok',   '已推送'],
-  test:    ['b-test', '静默测试'],
-  dry:     ['b-dry',  '仅报表'],
-  skipped: ['b-skip', '跳过'],
+  ok:      ['b-ok',   '成功'],
+  skipped: ['b-skip', '未运行'],
   failed:  ['b-fail', '失败']
 };
 
