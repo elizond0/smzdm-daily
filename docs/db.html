@@ -28,6 +28,8 @@ h1{font-size:21px;margin:0 0 4px}
 .prices s{color:#a8adb5}
 .hl{color:#1a7f42;font-weight:600}
 .tags{font-size:11.5px;color:#9aa0a8;display:flex;flex-wrap:wrap;gap:4px 10px}
+.tags a.srclink{color:#1d5fbf;text-decoration:none;border-bottom:1px dotted #b9cdf0}
+.tags a.srclink:hover{color:#164a99;border-bottom-style:solid}
 .badge{display:inline-block;padding:0 6px;border-radius:3px;font-size:11px;
   background:#fdf0f2;color:#c8102e;border:1px solid #f5d3d8;font-weight:600}
 .rk{display:inline-block;min-width:20px;color:#c3c7cd;font-size:11.5px;margin-right:4px}
@@ -52,7 +54,8 @@ h1{font-size:21px;margin:0 0 4px}
   .tt{font-size:13.5px}
   .prices{font-size:12px;gap:4px 11px}
   .prices b{font-size:14px}
-  .tags{font-size:11px}
+  .tags{font-size:11px;gap:3px 8px}
+  .tags a.srclink{word-break:break-all}
   .meta{font-size:11.5px}
 }
 </style>
@@ -100,9 +103,14 @@ function zhe(p){ return p == null ? '' : (Math.round(p) / 10).toFixed(1) + ' 折
 function itemHtml(r, i){
   const disc = r.d == null ? '' :
     `<span>历史最低折扣 <span class="hl">${zhe(r.d)}</span></span>`;
+  // 来源：这条商品是从哪个排行榜页面抓到的，点开可核对当前价格
+  const src = r.g
+    ? `<span>来源 <a class="srclink" href="${esc(r.g)}" target="_blank" rel="noopener" title="${esc(r.g)}">${esc(r.g.replace(/^https?:\/\//, ''))}</a></span>`
+    : '';
   const tags = [
     r.c ? esc(r.c) : '',
     r.m ? esc(r.m) : '',
+    src,
     `出现 ${r.n || 0} 次`,
     r.s ? `最近 ${esc(r.s)}` : ''
   ].filter(Boolean).map(x => `<span>${x}</span>`).join('');
