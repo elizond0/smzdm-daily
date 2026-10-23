@@ -885,8 +885,6 @@ def render_html(hot: list[dict], passed: list[dict], meta: dict) -> str:
             low_badge = '<span class="newlow">新低</span>'
         elif d.get("at_low"):
             low_badge = '<span class="atlow">史低</span>'
-        elif d.get("first_seen"):
-            low_badge = '<span class="first">首次</span>'
         elif d.get("low_price") is not None and d["price"] > d["low_price"] + 1e-9:
             low_hint = f'<div class="lowhint">历史低 ¥{d["low_price"]:g}</div>'
         pct = d.get("discount_pct")
