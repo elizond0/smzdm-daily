@@ -74,7 +74,7 @@ h1{font-size:21px;margin:0 0 4px}
 
   <div class="meta">
     <span id="range"></span>
-    <span id="sortHint">按历史最低折扣排序</span>
+    <span id="sortHint">按历史最低价格排序</span>
   </div>
 
   <div id="list"></div>
@@ -83,7 +83,7 @@ h1{font-size:21px;margin:0 0 4px}
 
   <div class="foot">
     数据来自每日抓取累积的数据库，记录每件商品的历史最低价与最低折扣。<br>
-    「历史最低折扣」= 它历史上到过的最低折扣，不代表现在还是这个价。
+    商品名后的「最低 ¥xx」是它历史上到过的最低价格，不代表现在还是这个价；列表按该价格排序。
   </div>
 </div>
 
@@ -102,11 +102,8 @@ function esc(s){
     .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 function yuan(v){ return v == null ? '—' : '¥' + (Math.round(v * 100) / 100); }
-function zhe(p){ return p == null ? '' : (Math.round(p) / 10).toFixed(1) + ' 折'; }
 
 function itemHtml(r, i){
-  const disc = r.d == null ? '' :
-    `<span>历史最低折扣 <span class="hl">${zhe(r.d)}</span></span>`;
   const tags = [
     r.c ? esc(r.c) : '',
     r.m ? esc(r.m) : '',
@@ -122,7 +119,6 @@ function itemHtml(r, i){
     <div class="prices">
       <span>现价 <b>${yuan(r.p)}</b></span>
       ${r.o ? `<s>${yuan(r.o)}</s>` : ''}
-      ${disc}
     </div>
     <div class="tags">${tags}</div>
   </div>`;
@@ -201,15 +197,20 @@ function drawSources() {
   const urls = [];
   const seen = {};
   all.forEach(r => {
-    if (r.g && !seen[r.g]) { seen[r.g] = 1; urls.push(r.g); }
+    // 先归一页码再去重，c0p1~c0p5 视为同一个来源
+    const g = r.g ? r.g.replace(/c0p\d+\/?$/, 'c0p') : '';
+    if (g && !seen[g]) { seen[g] = 1; urls.push(g); }
   });
   urls.sort();
   if (!urls.length) {
     host.innerHTML = '<div class="st">数据来源</div><div class="none">暂无来源地址记录</div>';
     return;
   }
-  host.innerHTML = '<div class="st">数据来源 · 每次拉取的排行榜地址（' + urls.length + ' 个）</div>' +
-    urls.map(u => '<a href="' + esc(u) + '" target="_blank" rel="noopener">' +
+  // 页码（c0p1~c0p5）只是翻页，归一成 c0p 后只列一个地址
+  const bare = urls.map(u => u.replace(/c0p\d+\/?$/, 'c0p'));
+  const uniq = bare.filter((u, i) => bare.indexOf(u) === i);
+  host.innerHTML = '<div class="st">数据来源 · 排行榜地址</div>' +
+    uniq.map(u => '<a href="' + esc(u) + '" target="_blank" rel="noopener">' +
                   esc(u.replace(/^https?:\/\//, '')) + '</a>').join('');
 }
 
