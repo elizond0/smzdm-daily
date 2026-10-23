@@ -164,6 +164,7 @@ def export_db(catalog: "Catalog") -> int:
             "l": rec.get("low"),
             "d": rec.get("low_disc"),
             "u": rec.get("url"),
+            "g": rec.get("feed_url"),
             "m": rec.get("mall"),
             "c": rec.get("category"),
             "n": rec.get("hits", 0),
@@ -351,6 +352,7 @@ def crawl(f: Fetcher, pages: int) -> dict:
             if aid:
                 seen.add(aid)
             it["source"] = FEED_NAME
+            it["feed_url"] = FEED_TPL.format(page)   # 来源列表页，数据库页要展示
             it["rank_no"] = len(data["deals"]) + 1
             data["deals"].append(it)
             fresh += 1
@@ -428,16 +430,21 @@ def decorate(d: dict, catalog: "Catalog", cutoff: str, drop_pct: float,
         d["first_seen"] = True
         d["low_price"] = None
         d["is_low"] = False
+        d["at_low"] = False
         return d
 
     d["first_seen"] = False
     low = rec.get("low")
     if low is not None:
         d["low_price"] = low
-        d["is_low"] = d["price"] < low - 1e-9   # 严格低于才算新低
+        d["is_low"] = d["price"] < low - 1e-9        # 比历史最低还低
+        # 持平历史最低同样算「当前就是历史最低价」，此前用严格小于，
+        # 导致同一个价格反复出现时反而打不上标（嘉顿苏打饼干就是这样）。
+        d["at_low"] = abs(d["price"] - low) <= 1e-9
     else:
         d["low_price"] = None
         d["is_low"] = False
+        d["at_low"] = False
 
     if keep_days > 0:
         pushed_on = rec.get("push_date")
@@ -515,6 +522,7 @@ def pick(items: list[dict], cfg: configparser.ConfigParser,
         if not d.get("discount_pct"):
             stat["no_discount"] += 1
         d["watched"] = any(w in title for w in words) if words else False
+        d["last_seen"] = now_str      # 好价榜取自本次抓取，也要能标出拉取时间
         cand.append(d)
         pool.put(d, now_str)   # 合格的才入池，供后续 24 小时内的日报使用
 
@@ -733,6 +741,7 @@ class Catalog:
                    "push_date": None, "push_price": None,
                    # 下面这几个是给「数据库」页面展示用的，随时更新成最近一次见到的样子
                    "url": None, "mall": None, "category": None,
+                   "feed_url": None,
                    "last_price": None, "last_origin": None, "low_disc": None}
             self.records[fp] = rec
         # 见过的 id 全收进池子，下次这个 id 就能直接命中
@@ -749,7 +758,7 @@ class Catalog:
 
         # 展示字段：始终保留最近一次见到的链接、商城、分类
         for k, v in (("url", d.get("url")), ("mall", d.get("mall")),
-                     ("category", d.get("category"))):
+                     ("category", d.get("category")), ("feed_url", d.get("feed_url"))):
             if v:
                 rec[k] = v
         if price:
@@ -781,7 +790,7 @@ class Pool:
 
     FIELDS = ("article_id", "title", "price", "origin_price", "discount_pct",
               "save", "url", "mall", "conds", "category", "zhi", "comments",
-              "source", "time", "rank_no")
+              "source", "time", "rank_no", "feed_url")
 
     def __init__(self, path: Path = POOL, hours: int = 24):
         self.path = path
@@ -857,6 +866,11 @@ def render_html(hot: list[dict], passed: list[dict], meta: dict) -> str:
                  d.get("source") or "", d.get("time") or ""]
         if d.get("zhi") or d.get("comments"):
             parts.append(f"值{d.get('zhi', 0)}/评{d.get('comments', 0)}")
+        # 折扣榜混了一天内的多轮抓取，标出这条最后一次见到的时间，
+        # 便于判断它是刚抓到的还是几小时前的
+        seen = (d.get("last_seen") or "")[:11]
+        if seen:
+            parts.append(f"拉取 {H.escape(seen)}")
         return " · ".join(H.escape(str(p)) for p in parts if p)
 
     def row(d, i):
@@ -869,6 +883,8 @@ def render_html(hot: list[dict], passed: list[dict], meta: dict) -> str:
         low_badge, low_hint = "", ""
         if d.get("is_low"):
             low_badge = '<span class="newlow">新低</span>'
+        elif d.get("at_low"):
+            low_badge = '<span class="atlow">史低</span>'
         elif d.get("first_seen"):
             low_badge = '<span class="first">首次</span>'
         elif d.get("low_price") is not None and d["price"] > d["low_price"] + 1e-9:
@@ -1138,7 +1154,7 @@ def main() -> int:
 
     if args.dry_run:
         log("--dry-run：跳过推送")
-        record_run("dry", meta, "只生成报表，未推送")
+        record_run("ok", meta, "只生成报表，未推送")
         return 0
 
     if args.no_notify:
@@ -1148,7 +1164,7 @@ def main() -> int:
         catalog.save()
         export_db(catalog)
         log(f"--no-notify：跳过所有通知（未记录已推送状态）· 目录共 {len(catalog.records)} 条")
-        record_run("test", meta, "静默测试，未发送通知")
+        record_run("ok", meta, "静默测试，未发送通知")
         return 0
 
     if not cfg.getboolean("push", "enabled", fallback=True):
@@ -1157,13 +1173,13 @@ def main() -> int:
         catalog.save()
         export_db(catalog)
         log("推送已停用（[push] enabled = false），只更新日报")
-        record_run("disabled", meta, "推送已停用，仅更新日报")
+        record_run("ok", meta, "推送已停用，仅更新日报")
         return 0
 
     # 一天跑多次时，抓取和报表每次都更新，但微信只发第一次。
     if pushed_today() and not args.force:
         log("今天已经推送过了，本次只更新日报和数据库")
-        record_run("skipped_push", meta, "今日已推送，仅更新数据")
+        record_run("ok", meta, "今日已推送，仅更新数据")
         return 0
 
     # 推送只发「近期没推过」的，报表则展示完整榜单。
