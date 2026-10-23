@@ -81,10 +81,16 @@ a:hover{text-decoration:underline}
 
 <script>
 // 状态只表示「抓取是否成功」。推送有没有执行、为何跳过，看最后一列备注。
+// 后面几个是旧版状态名，当时把「推送是否执行」混进了 status，
+// 保留映射只为让历史记录显示一致，新数据不会再产生。
 const LABEL = {
-  ok:      ['b-ok',   '成功'],
-  skipped: ['b-skip', '未运行'],
-  failed:  ['b-fail', '失败']
+  ok:            ['b-ok',   '成功'],
+  skipped:       ['b-skip', '未运行'],
+  failed:        ['b-fail', '失败'],
+  test:          ['b-ok',   '成功'],
+  dry:           ['b-ok',   '成功'],
+  disabled:      ['b-ok',   '成功'],
+  skipped_push:  ['b-ok',   '成功']
 };
 
 function el(tag, cls, text) {
