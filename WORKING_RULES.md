@@ -97,8 +97,75 @@ python daily.py --no-crawl --dry-run     # ❌ 会报「没有缓存数据，无
 
 ---
 
-## 七、变更记录
+## 七、每次对话的强制首尾动作（2026-10-24 新增）
+
+> 这一节优先级高于本文件其他所有内容。跨电脑、跨会话工作时，靠它保证"永远是同一份代码"。
+
+### 7.1 开场：先拉，再动手
+
+**任何一个新对话，在改任何文件之前，必须先同步 GitHub `main`。**
+
+```bash
+# 首选
+git pull --rebase --autostash origin main
+
+# 没有工作副本时
+git clone --depth 1 https://github.com/elizond0/smzdm-daily.git repo
+```
+
+`git clone` 在本沙箱会报 `Failure when receiving data from the peer`（实测），此时改用 zip 快照：
+
+```bash
+curl -sSL -o /tmp/main.zip \
+  "https://codeload.github.com/elizond0/smzdm-daily/zip/refs/heads/main"
+```
+
+拉完立刻验证，**不通过就不许开始改**：
+
+```bash
+python -m py_compile daily.py faxian.py probe.py
+ls .gitattributes .gitignore docs/.nojekyll
+```
+
+拉取用的 Token、两种路线的完整命令、故障处理，全部写在网盘根目录的
+**`部署与跨机同步-必读.md`**。本文档不重复贴 Token。
+
+### 7.2 收尾：必须推回去
+
+**对话结束前，代码改动必须回到 GitHub `main`，否则下一个设备看到的就是旧代码。**
+
+```bash
+git add -A
+git commit -m "<type>: <做了什么>"
+git push origin main
+```
+
+- 推送前先 `git status --short` 看清改了什么，**不要盲目 `git add -A` 把 `build/` 带进去**（已 gitignore，正常不会）
+- 被拒（`! [rejected]`）→ `git pull --rebase --autostash origin main` 再推
+- `git` 不通时用 Contents API 单文件提交（见 `SETUP.md` 第四节）
+- **例外**：只读操作（查数据、看报表、回答问题）不需要产生提交，但要报告"未做任何改动"
+
+### 7.3 谁都不许破坏的三条
+
+| 禁止 | 后果 |
+|---|---|
+| `git push --force` | 抹掉 `smzdm-bot` 刚推的抓取数据，且不可恢复 |
+| 手改 `data/` 或 `docs/` | 下次 Actions 运行时被覆盖，或污染低价历史 |
+| 把 Token 写进被追踪的文件（`.py` / `*.md` / `.bat`） | 仓库公开 → Token 立刻泄露 |
+
+Token 只允许存在于两处：**本机环境变量**、**网盘上那份 `部署与跨机同步-必读.md`**。
+
+### 7.4 改了纪律文档本身怎么办
+
+`WORKING_RULES.md` 和 `部署与跨机同步-必读.md` 有**两份**：GitHub 一份、网盘一份。
+
+改了任一份，**两份都要更新**，否则下次新对话会拿到互相矛盾的两套规则。
+
+---
+
+## 八、变更记录
 
 | 日期 | 变更 |
 |---|---|
 | 2026-10-24 | 建立本文件。依据：`daily.yml` 第 122–141 行自动提交逻辑、10-24 当日 4 次 `smzdm-bot` 提交、catalog 体积实测序列 |
+| 2026-10-24 | 新增第七节「每次对话的强制首尾动作」：开场先 `git pull`、收尾必须 `git push`、三条红线、双份文档同步。依据：用户提出跨电脑工作需求；实测本沙箱 `git clone` 失败而 `codeload` zip 成功 |
