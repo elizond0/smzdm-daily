@@ -7,6 +7,16 @@
 数据库：https://elizond0.github.io/smzdm-daily/db.html
 愿望单：https://elizond0.github.io/smzdm-daily/wishlist.html
 
+## 先读这份（跨设备 / 新会话必看）
+
+| 想知道什么 | 看哪里 |
+|---|---|
+| 拉代码、推代码、Token、每次对话的起止动作 | [`部署与跨机同步-必读.md`](部署与跨机同步-必读.md) |
+| 谁写 `data/` `docs/`、提交窗口、禁止事项 | [`WORKING_RULES.md`](WORKING_RULES.md) |
+| 云上从零部署（建仓库、Secrets、Pages） | [`云端部署说明.md`](云端部署说明.md) |
+
+**一句话规则**：开场先 `git pull`，收尾必须 `git push`。中间别碰 `data/` 和 `docs/`。
+
 ## 架构
 
 ```
@@ -92,6 +102,7 @@ PUT  /repos/{owner}/{repo}/contents/{path}        → base64 内容 + sha
 | `.github/workflows/daily.yml` | 定时任务定义 |
 | `WORKING_RULES.md` | **工作纪律**：文件归属、开工动作、禁止事项 |
 | `SETUP.md` | 首次部署与验证步骤 |
+| `部署与跨机同步-必读.md` | **跨设备接入**：Token、拉取/推送命令、每次对话的起止动作 |
 
 ## 配置
 
