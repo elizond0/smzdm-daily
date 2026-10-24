@@ -34,10 +34,27 @@ enabled = false          ; 微信推送开关
 
 ## 三、验证能跑
 
-不联网、只验证代码与模板是否完整：
+全新检出的目录**没有缓存文件**，`--no-crawl` 会因为缺 `build/cache/latest.json` 直接报
+「没有缓存数据，无法离线生成」。所以离线只能验证到「代码与模板完整」这一层：
 
 ```bash
-python daily.py --no-crawl --dry-run --force
+python -m py_compile daily.py faxian.py probe.py
+python -c "import daily; print('模板', len(daily.TEMPLATE.read_text(encoding='utf-8')), '字符')"
+```
+
+预期：
+
+```
+（py_compile 无输出即通过）
+模板 7759 字符
+```
+
+`py_compile` 无输出 + 模块能导入，说明依赖、语法、模板路径都对。
+
+要验证完整链路（抓取 → 筛选 → 出报表），需要能访问 `faxian.smzdm.com`：
+
+```bash
+python daily.py --no-notify
 ```
 
 预期输出：
@@ -47,7 +64,7 @@ python daily.py --no-crawl --dry-run --force
 报表已生成 .../build/reports/YYYY-MM-DD.html
 ```
 
-若报 `读不到 template.html`，说明克隆不完整，重新拉一遍。
+若报 `读不到 template.html`，说明包不完整，重新解压一遍。
 
 ## 四、要推 GitHub 时才需要的 Token
 
