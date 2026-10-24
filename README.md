@@ -30,15 +30,23 @@ GitHub Actions（每天 4 次：北京 7/12/17/22 点）
 ### 方式一：本机（可跑测试）
 
 ```bash
-cd 什么值得买优惠推送
-./build/venv/Scripts/python.exe daily.py --no-crawl --dry-run --force   # 用缓存数据演练
-./build/venv/Scripts/python.exe daily.py --no-crawl --no-notify         # 静默跑，不推送
+git clone https://github.com/elizond0/smzdm-daily.git
+cd smzdm-daily
+cp config.example.ini config.ini
+
+python -m py_compile daily.py faxian.py probe.py                        # 语法
+python daily.py --no-crawl --dry-run --force                            # 用缓存数据演练
+python daily.py --no-crawl --no-notify                                  # 静默跑，不推送
 ```
 
 - `--no-crawl` 用 `build/cache/latest.json` 的缓存数据，不打网络
 - `--dry-run` 只生成报表，不写状态
 - `--no-notify` 跳推送
 - `--force` 绕过「今天已推送」判断
+
+> **全新克隆没有 `build/cache/latest.json`**（`build/` 被 gitignore，只在真实抓取成功后生成）。
+> 所以此时 `--no-crawl` 会报「没有缓存数据，无法离线生成」，这是预期行为，不是故障。
+> 离线只能验证到「代码与模板完整」这一层，即上面的 `py_compile` 与模板导入。
 
 ### 方式二：云端（改代码最快）
 
@@ -50,14 +58,25 @@ cd 什么值得买优惠推送
 
 ## 从对话同步到 GitHub
 
-本机 `git push` 常因网络代理失败（`CONNECT tunnel failed`）。可改用 GitHub Contents API 直接写文件：
+> **推送不需要单独配 Token。** GitHub Actions 用仓库内置的 `GITHUB_TOKEN`（见 `daily.yml` 的
+> `permissions: contents: write`）自动提交数据，无需额外配置。
+
+人改代码后推送，按环境选一种：
+
+| 场景 | 方式 |
+|---|---|
+| 有 git 凭据的本机 | `git pull --rebase && git push` |
+| 网页端 | 仓库页按 `.` 进 github.dev，改完直接 commit |
+| 本机 `git push` 被代理挡住 | 用 GitHub Contents API 写单个文件（见下） |
+
+Contents API 备用通道（适用于少量文件，`{token}` 需有 `repo` 权限）：
 
 ```
 GET  /repos/{owner}/{repo}/contents/{path}        → 取 sha
 PUT  /repos/{owner}/{repo}/contents/{path}        → base64 内容 + sha
 ```
 
-Token 放在 `.deploy.token`（已 gitignore），Actions 里用 `GITHUB_TOKEN`。
+> 工作纪律见 [`WORKING_RULES.md`](WORKING_RULES.md)：`data/` 与 `docs/` 归机器人独占，不要手改。
 
 ## 文件说明
 
@@ -71,6 +90,8 @@ Token 放在 `.deploy.token`（已 gitignore），Actions 里用 `GITHUB_TOKEN`�
 | `docs/` | Pages 发布目录（生成的页面 + watch.js / db.html / wishlist.html / overview.html） |
 | `data/` | 跨运行持久化：catalog.json、pool.json、run_history.json、state/ |
 | `.github/workflows/daily.yml` | 定时任务定义 |
+| `WORKING_RULES.md` | **工作纪律**：文件归属、开工动作、禁止事项 |
+| `SETUP.md` | 首次部署与验证步骤 |
 
 ## 配置
 
