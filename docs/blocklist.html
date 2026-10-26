@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>屏蔽词 · 什么值得买优惠推送</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;padding:30px 20px;background:#f5f6f8;color:#16181c;
+  font:14px/1.65 -apple-system,"Segoe UI","Microsoft YaHei",sans-serif}
+.wrap{max-width:720px;margin:0 auto}
+h1{font-size:21px;margin:0 0 4px}
+.sub{color:#71767e;font-size:12.5px;margin-bottom:22px}
+.sub a{color:#c8102e;text-decoration:none}
+.card{background:#fff;border:1px solid #e6e8eb;border-radius:10px;padding:16px 18px;margin-bottom:16px}
+h2{font-size:13.5px;margin:0 0 12px;display:flex;align-items:center;gap:8px;font-weight:600}
+h2 .dot{width:3px;height:13px;background:#c8102e;border-radius:2px}
+.row{display:flex;gap:8px;align-items:center}
+input[type=text],input[type=password]{flex:1;min-width:0;padding:9px 11px;border:1px solid #dfe2e6;
+  border-radius:8px;font-size:14px;font-family:inherit;background:#fff}
+input:focus{outline:none;border-color:#c8102e;box-shadow:0 0 0 3px rgba(200,16,46,.08)}
+button{padding:9px 16px;border-radius:8px;border:1px solid transparent;font-size:13.5px;
+  font-family:inherit;cursor:pointer;white-space:nowrap}
+.btn-main{background:#c8102e;color:#fff}
+.btn-main:hover{background:#a90d26}
+.btn-ghost{background:#fff;border-color:#dfe2e6;color:#16181c}
+.btn-ghost:hover{background:#f7f8fa}
+.btn-del{background:transparent;border:0;color:#c0c4ca;font-size:17px;padding:4px 8px;cursor:pointer}
+.btn-del:hover{color:#c8102e}
+.list{margin-top:4px}
+.item{display:flex;gap:8px;align-items:center;padding:7px 0;border-bottom:1px solid #f2f3f5}
+.item:last-child{border-bottom:0}
+.item input{border-color:transparent;background:#fafbfc}
+.item input:focus{border-color:#c8102e;background:#fff}
+.item input.emptying{border-color:#f3c3c9;background:#fdf0f2;color:#a1404c}
+.item .fromidx{flex:none;font-size:11px;color:#a1404c;background:#fdecee;
+  border:1px solid #f3c3c9;border-radius:3px;padding:1px 6px}
+.empty{color:#9aa0a8;font-size:13px;padding:14px 0;text-align:center}
+.hint{color:#9aa0a8;font-size:11.5px;line-height:1.8;margin-top:10px}
+.hint code{background:#f2f3f5;padding:1px 5px;border-radius:3px;font-size:11px}
+.bar{display:flex;gap:8px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap}
+.dirtybar{display:flex;align-items:center;gap:8px;background:#fff8e6;border:1px solid #f3e2b8;
+  color:#8a6410;border-radius:8px;padding:9px 13px;font-size:12.5px;margin-bottom:12px}
+.dirtybar b{font-weight:600}
+.dirtybar .dot2{width:6px;height:6px;border-radius:50%;background:#d99b19;flex:none}
+.errbar{display:flex;align-items:center;gap:10px;background:#fdecee;border:1px solid #f3c3c9;
+  color:#a1404c;border-radius:8px;padding:10px 13px;font-size:12.5px;margin-bottom:12px}
+.errbar button{padding:5px 12px;font-size:12px;margin-left:auto}
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);
+  background:#16181c;color:#fff;padding:10px 18px;border-radius:8px;font-size:13px;
+  opacity:0;transition:.25s;pointer-events:none;max-width:88vw;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.err{background:#c8102e}
+.toast.ok{background:#1a7f42}
+@media (max-width:700px){
+  body{padding:18px 12px}
+  h1{font-size:18px}
+  .card{padding:13px 14px}
+  .row{flex-wrap:wrap}
+  .row input{width:100%}
+  .row button{width:100%}
+  .bar button{flex:1}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>屏蔽词</h1>
+  <div class="sub">命中的商品会从日报前端<b>隐藏</b>（爬取与数据库不受影响）　<a href="./index.html">← 回日报</a></div>
+
+  <div class="card">
+    <h2><span class="dot"></span>GitHub Token</h2>
+    <div class="row">
+      <input type="password" id="token" placeholder="粘贴 Token（只需填一次，存在本机浏览器）">
+      <button class="btn-ghost" id="saveToken">保存</button>
+    </div>
+    <div class="hint">
+      保存到仓库需要写入权限。去 <a href="https://github.com/settings/tokens" target="_blank">github.com/settings/tokens</a>
+      创建 <b>Classic token</b>，勾选 <code>repo</code> 即可。<br>
+      Token 只存在你当前浏览器的 localStorage，不会上传到任何地方；换设备需要重新填。
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="dot"></span>关键词 <span id="count" class="hint" style="margin:0"></span></h2>
+    <div class="errbar" id="errBar" style="display:none">
+      <span id="errText">读取失败</span>
+      <button class="btn-ghost" id="reloadBtn">重新加载</button>
+    </div>
+    <div class="dirtybar" id="dirtyBar" style="display:none">
+      <span class="dot2"></span><span id="dirtyText">有未保存的修改</span>
+    </div>
+    <div class="row">
+      <input type="text" id="newWord" placeholder="输入要屏蔽的关键词，比如 路由器" maxlength="30">
+      <button class="btn-main" id="addBtn">添加</button>
+    </div>
+    <div class="list" id="list"></div>
+    <div class="bar">
+      <button class="btn-ghost" id="resetBtn">放弃修改</button>
+      <button class="btn-main" id="saveBtn">保存到仓库</button>
+    </div>
+    <div class="hint">
+      匹配规则：商品标题包含关键词即隐藏（不区分大小写）。「耳机」会同时隐藏「蓝牙耳机」「有线耳机」，词越短屏蔽越广，注意误伤。<br>
+      <b>屏蔽只是前端隐藏</b>：爬取照常、数据库照常记录，历史数据不会丢，删掉屏蔽词后商品立刻恢复显示。<br>
+      在日报页点 <code>🚫</code> 按钮加入的词会出现在下面的列表里（标「来自日报页」），随本次保存一并写入。<br>
+      改动要点「保存到仓库」才会写回；<b>保存成功后刷新日报页即可生效</b>。
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const REPO = 'elizond0/smzdm-daily';
+const BRANCH = 'main';
+const FILE = 'blocklist.txt';
+const RAW = `https://raw.githubusercontent.com/${REPO}/${BRANCH}/${FILE}`;
+const API = `https://api.github.com/repos/${REPO}/contents/${FILE}`;
+const CACHE_KEY = 'block_words_cache';
+const PENDING_KEY = 'block_pending';
+
+let words = [];          // 当前编辑中的关键词
+let fromIndex = new Set(); // 来自日报页快捷屏蔽、尚未保存过的词
+let original = [];       // 上次加载的，用于「放弃修改」
+let dirty = false;
+
+const $ = id => document.getElementById(id);
+
+function toast(msg, type){
+  const t = $('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (type ? ' ' + type : '');
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => { t.className = 'toast'; }, 2600);
+}
+
+function utf8ToB64(s){
+  const bytes = new TextEncoder().encode(s);
+  let bin = '';
+  bytes.forEach(b => { bin += String.fromCharCode(b); });
+  return btoa(bin);
+}
+
+function b64ToUtf8(b64){
+  const bin = atob(String(b64).replace(/\n/g, ''));
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
+
+function parse(text){
+  return text.split('\n').map(s => s.trim())
+    .filter(s => s && !s.startsWith('#'));
+}
+
+function loadPending(){
+  try {
+    const arr = JSON.parse(localStorage.getItem(PENDING_KEY) || '[]');
+    return Array.isArray(arr) ? arr.filter(Boolean) : [];
+  } catch (e) { return []; }
+}
+
+function build(){
+  const head =
+    '# 屏蔽关键词 · 一行一个\n' +
+    '#\n' +
+    '# 由屏蔽词页面自动生成 · ' + new Date().toLocaleString('zh-CN') + '\n' +
+    '# 命中的商品只在日报前端隐藏，爬取与数据库不受影响。\n\n';
+  return head + words.join('\n') + '\n';
+}
+
+function changed(){
+  const a = words.map(s => s.trim()).filter(Boolean);
+  const b = original.map(s => s.trim()).filter(Boolean);
+  return JSON.stringify(a) !== JSON.stringify(b);
+}
+
+function updateState(){
+  const diff = changed();
+  $('dirtyBar').style.display = diff ? 'flex' : 'none';
+  if (diff){
+    $('dirtyText').innerHTML =
+      '有未保存的修改（当前 <b>' + words.filter(Boolean).length + '</b> 个关键词）· 点「保存到仓库」才会写回';
+  }
+}
+
+function render(){
+  const box = $('list');
+  box.innerHTML = '';
+  $('count').textContent = words.length ? `${words.length} 个` : '';
+  if (!words.length){
+    box.innerHTML = '<div class="empty">还没有屏蔽词，上面输入框添加一个吧</div>';
+    updateState();
+    return;
+  }
+  words.forEach((w, i) => {
+    const row = document.createElement('div');
+    row.className = 'item';
+    row.dataset.i = i;                 // 删除时按 DOM 上记的序号取，避免闭包里下标过期
+
+    const inp = document.createElement('input');
+    inp.type = 'text';
+    inp.value = w;
+    inp.maxLength = 30;
+    if (!w.trim()) inp.classList.add('emptying');
+    inp.addEventListener('input', () => {
+      words[+row.dataset.i] = inp.value.trim();
+      inp.classList.toggle('emptying', !inp.value.trim());
+      dirty = true;
+      updateState();
+    });
+    // 故意不监听 blur：点别处就删掉整行太容易误删（同愿望单页的教训）
+
+    row.appendChild(inp);
+    if (fromIndex.has(w)){
+      const tag = document.createElement('span');
+      tag.className = 'fromidx';
+      tag.textContent = '来自日报页';
+      row.appendChild(tag);
+    }
+
+    const del = document.createElement('button');
+    del.className = 'btn-del';
+    del.textContent = '×';
+    del.title = '删除';
+    del.addEventListener('click', () => {
+      const idx = +row.dataset.i;
+      if (!(idx >= 0 && idx < words.length)) return;   // 防重复触发
+      const removed = words[idx];
+      words.splice(idx, 1);
+      dirty = true;
+      render();
+      toast(`已移除「${removed}」，记得保存`, 'ok');
+    });
+
+    row.appendChild(del);
+    box.appendChild(row);
+  });
+  updateState();
+}
+
+/* ---------- 读取：API 优先，raw 兜底 ---------- */
+async function load(){
+  $('errBar').style.display = 'none';
+
+  const sources = [
+    async () => {
+      const r = await fetch(`${API}?ref=${BRANCH}&t=${Date.now()}`, { cache: 'no-store' });
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return b64ToUtf8((await r.json()).content || '');
+    },
+    async () => {
+      const r = await fetch(`${RAW}?t=${Date.now()}`, { cache: 'no-store' });
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.text();
+    },
+    async () => {
+      const r = await fetch(`./${FILE}?t=${Date.now()}`, { cache: 'no-store' });
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.text();
+    }
+  ];
+
+  let loaded = false;
+  for (const get of sources){
+    try {
+      const txt = await get();
+      words = parse(txt);
+      loaded = true;
+      break;
+    } catch (e) { /* 换下一个源 */ }
+  }
+  if (!loaded){
+    // 全部源都不通：退回本机缓存，至少能看能改
+    try {
+      const obj = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
+      if (obj && Array.isArray(obj.words)){
+        words = obj.words;
+        $('errText').textContent = '网络不通，显示的是本机缓存（可能不是最新）';
+        $('errBar').style.display = 'flex';
+        loaded = true;
+      }
+    } catch (e) {}
+  }
+  if (!loaded){
+    words = [];
+    $('list').innerHTML = '';
+    $('count').textContent = '';
+    $('errText').textContent = '读取 blocklist.txt 失败，点右侧重试';
+    $('errBar').style.display = 'flex';
+    return;
+  }
+
+  /* 合并日报页快捷屏蔽的词 */
+  const pending = loadPending();
+  for (const w of pending){
+    if (!words.includes(w)){
+      words.push(w);
+      fromIndex.add(w);
+    }
+  }
+  if (pending.length){
+    try { localStorage.removeItem(PENDING_KEY); } catch (e) {}
+    dirty = true;   // 合并进来的词还没写回仓库，视为有未保存修改
+    toast(`已并入 ${pending.length} 个来自日报页的屏蔽词，记得保存`, 'ok');
+  }
+  original = [...parse(words.join('\n'))];
+  dirty = dirty && changed();
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify({ words, ts: Date.now() }));
+  } catch (e) {}
+  render();
+}
+
+/* ---------- 保存：sha 失效时自动重取重试 ---------- */
+async function save(){
+  const token = ($('token').value || '').trim();
+  if (!token){ toast('先填 GitHub Token 才能保存', 'err'); $('token').focus(); return; }
+
+  const clean = words.map(s => s.trim()).filter(Boolean);
+  if (!clean.length && !confirm('屏蔽词会全部清空（日报恢复显示全部商品），确定吗？')) return;
+
+  $('saveBtn').disabled = true;
+  $('saveBtn').textContent = '保存中…';
+  try {
+    await putWithRetry(build(), 0);
+    localStorage.setItem('gh_token_blk', token);
+    try {
+      localStorage.setItem(CACHE_KEY, JSON.stringify({ words: clean, ts: Date.now() }));
+      localStorage.removeItem(PENDING_KEY);
+    } catch (e) {}
+    original = [...clean];
+    fromIndex.clear();
+    dirty = false;
+    updateState();
+    toast('已保存 · 刷新日报即可生效', 'ok');
+  } catch (e) {
+    toast(e.message || '保存失败', 'err');
+  } finally {
+    $('saveBtn').disabled = false;
+    $('saveBtn').textContent = '保存到仓库';
+  }
+}
+
+async function putWithRetry(content, attempt){
+  const headers = {
+    Authorization: 'token ' + ($('token').value || '').trim(),
+    Accept: 'application/vnd.github+json',
+    'Content-Type': 'application/json'
+  };
+  const g = await fetch(`${API}?ref=${BRANCH}&t=${Date.now()}`, { headers, cache: 'no-store' });
+  if (!g.ok){
+    throw new Error(g.status === 401 ? 'Token 无效或已过期' : '读取仓库失败 ' + g.status);
+  }
+  const meta = await g.json();
+
+  const res = await fetch(API, {
+    method: 'PUT',
+    headers,
+    body: JSON.stringify({
+      message: `chore: 更新屏蔽词（${parse(content).length} 个关键词）`,
+      content: utf8ToB64(content),
+      sha: meta.sha,
+      branch: BRANCH
+    })
+  });
+
+  // 409 = 仓库在我读 sha 之后又被改过，重取 sha 再试一次
+  if (res.status === 409 && attempt < 2){
+    await new Promise(r => setTimeout(r, 900));
+    return putWithRetry(content, attempt + 1);
+  }
+  if (!res.ok){
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.message || ('写入失败 ' + res.status));
+  }
+  return res.json();
+}
+
+$('addBtn').addEventListener('click', () => {
+  const inp = $('newWord');
+  const v = inp.value.trim();
+  if (!v) return;
+  if (words.some(w => w.trim() === v)){ toast('已经有这个关键词了'); inp.value = ''; return; }
+  words.push(v);
+  dirty = true;
+  inp.value = '';
+  render();
+  inp.focus();
+});
+
+$('newWord').addEventListener('keydown', e => { if (e.key === 'Enter') $('addBtn').click(); });
+
+$('saveToken').addEventListener('click', () => {
+  const v = ($('token').value || '').trim();
+  if (!v){ toast('请先填写 Token', 'err'); return; }
+  localStorage.setItem('gh_token_blk', v);
+  toast('Token 已存在本机', 'ok');
+});
+
+$('saveBtn').addEventListener('click', save);
+$('reloadBtn').addEventListener('click', load);
+
+$('resetBtn').addEventListener('click', () => {
+  if (dirty && !confirm('放弃未保存的修改？（来自日报页的词也会一并放弃）')) return;
+  words = [...original];
+  fromIndex.clear();
+  dirty = false;
+  render();
+  updateState();
+  toast('已恢复');
+});
+
+window.addEventListener('beforeunload', e => {
+  if (changed()){ e.preventDefault(); e.returnValue = ''; }
+});
+
+const saved = localStorage.getItem('gh_token_blk');
+if (saved) $('token').value = saved;
+
+load();
+</script>
+</body>
+</html>
