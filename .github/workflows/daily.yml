@@ -97,10 +97,14 @@ jobs:
             cp build/db.json docs/db.json
             echo "已更新 docs/db.json"
           fi
-          # 兜底数据源：wishlist 的实时读取失败时，页面退回读这个同域副本
+          # 兜底数据源：wishlist/blocklist 的实时读取失败时，页面退回读这个同域副本
           if [ -f watchlist.txt ]; then
             cp watchlist.txt docs/watchlist.txt
             echo "已同步 docs/watchlist.txt"
+          fi
+          if [ -f blocklist.txt ]; then
+            cp blocklist.txt docs/blocklist.txt
+            echo "已同步 docs/blocklist.txt"
           fi
           for f in last_push.txt cooldown_until.txt blocked_streak.txt; do
             if [ -f "build/state/$f" ]; then cp "build/state/$f" data/state/; fi
