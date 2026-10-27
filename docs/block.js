@@ -98,7 +98,7 @@
     var el = document.getElementById('blockCount');
     if (!el) return;
     el.style.display = '';
-    el.textContent = words.length + ' 个屏蔽词';
+    el.textContent = words.length;   /* 括号与「屏蔽（）」文案在模板里，这里只填数字 */
   }
 
   function apply(words) {
