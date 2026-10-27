@@ -119,23 +119,55 @@
         tr.style.display = '';
       }
     }
-    /* 「已屏蔽 N 条」提示条：0 条时彻底不渲染，不留痕迹 */
+    /* 「已屏蔽 N 条」提示条：0 条时彻底不渲染，不留痕迹。
+     * 做成可展开的：默认只报个数，点「看看是哪些」列出被隐藏的标题，
+     * 免得用户只看到「少了几条」却不知道是不是误伤。 */
     var bar = document.getElementById('blockBar');
     if (hidden > 0) {
       if (!bar) {
         bar = document.createElement('div');
         bar.id = 'blockBar';
+        bar.className = 'blockhit';
         var funnel = document.querySelector('.funnel');
         if (funnel) funnel.insertAdjacentElement('afterend', bar);
         else document.querySelector('.wrap').insertBefore(bar, document.querySelector('h2'));
       }
-      bar.style.cssText = 'background:#fdecee;border:1px solid #f3c3c9;color:#a1404c;'
-        + 'border-radius:8px;padding:9px 14px;font-size:12.5px;margin-bottom:16px';
-      bar.innerHTML = '🚫 已按屏蔽词隐藏 <b>' + hidden + '</b> 条商品（数据仍在数据库中，'
-        + '<a href="./blocklist.html" style="color:#a1404c">管理屏蔽词</a>）';
+      var items = '';
+      for (var k = 0; k < rows.length; k++) {
+        var t2 = rows[k].getAttribute('data-t') || '';
+        for (var j = 0; j < currentWords.length; j++) {
+          if (currentWords[j] && t2.indexOf(currentWords[j]) !== -1) {
+            items += '<li><b>' + esc(currentWords[j]) + '</b> · ' + esc(t2) + '</li>';
+            break;
+          }
+        }
+      }
+      var open = bar.getAttribute('data-open') === '1';
+      bar.innerHTML = '<div class="bh-head">'
+        + '<svg class="bh-ico" viewBox="0 0 16 16" aria-hidden="true">'
+        + '<circle cx="8" cy="8" r="6.2"/><path d="M3.8 12.2 12.2 3.8"/></svg>'
+        + '<span>已按屏蔽词隐藏 <b>' + hidden + '</b> 条商品</span>'
+        + '<button class="bh-toggle" type="button">' + (open ? '收起' : '看看是哪些')
+        + '</button>'
+        + '<a class="bh-link" href="./blocklist.html">管理屏蔽词</a>'
+        + '</div>'
+        + '<ul class="bh-list"' + (open ? '' : ' hidden') + '>' + items + '</ul>';
+      bar.querySelector('.bh-toggle').addEventListener('click', function () {
+        var ul = bar.querySelector('.bh-list');
+        var show = ul.hasAttribute('hidden');
+        if (show) ul.removeAttribute('hidden'); else ul.setAttribute('hidden', '');
+        bar.setAttribute('data-open', show ? '1' : '0');
+        this.textContent = show ? '收起' : '看看是哪些';
+      });
     } else if (bar) {
       bar.parentNode && bar.parentNode.removeChild(bar);
     }
+  }
+
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+    });
   }
 
   /* 1) 本机缓存：立即生效，之后仍异步拉最新保持跨设备同步 */
