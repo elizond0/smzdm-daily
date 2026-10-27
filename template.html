@@ -58,16 +58,24 @@ tbody tr:hover td{background:#fcfcfd}
   background:#e8f1fb;color:#1d5fbf;border:1px solid #c8dbf2;vertical-align:1px}
 .wish{display:inline-block;margin-left:5px;padding:0 6px;border-radius:3px;font-size:10.5px;
   background:#f3e8ff;color:#7c3aed;border:1px solid #e2d0fd;vertical-align:1px;font-weight:600}
-/* 快捷操作按钮：⭐关注 / 🚫屏蔽，由 watch.js 与 block.js 分别插入，
- * 紧跟商品标签之后（同一行内），不换行不挤占价格列 */
-.wishbtn,.blkbtn{margin-left:5px;padding:0 5px;border-radius:3px;background:#fff;
-  font-size:10.5px;cursor:pointer;vertical-align:1px;line-height:1.5;flex:none}
-.wishbtn{border:1px solid #e2d0fd;color:#c0a8e8}
-.wishbtn:hover{color:#7c3aed;background:#f3e8ff}
-.blkbtn{border:1px solid #f3c3c9;color:#c0c4ca}
-.blkbtn:hover{color:#c8102e;background:#fdecee}
-.wishlink{display:inline-block;margin-left:10px;padding:1px 9px;border-radius:20px;font-size:12px;
+/* 快捷操作按钮：关注 / 屏蔽，由 watch.js 与 block.js 分别插入，
+ * 紧跟商品标签之后（同一行内），不换行不挤占价格列。
+ * 图标用内联 SVG 而不是 emoji：emoji 依赖系统字体，Windows 上有概率渲染成 □ */
+.wishbtn,.blkbtn{display:inline-flex;align-items:center;gap:2px;margin-left:5px;
+  padding:1px 5px;border-radius:3px;font-size:10.5px;cursor:pointer;
+  vertical-align:1px;line-height:1.4;flex:none}
+.wishbtn svg,.blkbtn svg{width:10px;height:10px;display:block}
+.wishbtn{border:1px solid #e2d0fd;background:#faf5ff;color:#c0a8e8}
+.wishbtn svg{fill:none;stroke:currentColor;stroke-width:1.8}
+.wishbtn:hover{color:#7c3aed;background:#f3e8ff;border-color:#cbb6f7}
+.wishbtn:hover svg{fill:currentColor}
+.blkbtn{border:1px solid #f3c3c9;background:#fdf5f6;color:#c9ccd2}
+.blkbtn svg{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
+.blkbtn:hover{color:#c8102e;background:#fdecee;border-color:#f0aab3}
+.wishlink{display:inline-flex;align-items:center;gap:3px;margin-left:10px;padding:1px 9px;border-radius:20px;font-size:12px;
   background:#f3e8ff;color:#7c3aed;border:1px solid #e2d0fd;text-decoration:none;font-weight:600}
+.wishlink .ico{width:11px;height:11px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
+.wishlink[href*="wishlist"] .ico{fill:currentColor}
 .wishlink:hover{background:#e9d9ff;text-decoration:none}
 .lowhint{font-size:11px;color:#9aa0a8;margin-top:2px;font-weight:400}
 .legend{display:flex;flex-wrap:wrap;gap:5px 18px;font-size:11.5px;color:#71767e;
@@ -121,8 +129,8 @@ tbody tr:hover td{background:#fcfcfd}
   <h1>值得买日报 · {{date}}</h1>
   <div class="sub">抓取 {{fetched_at}}　请求 {{requests}} 次　
     来源 smzdm.com（时点快照，价格与库存随时变动）
-    <a class="wishlink" href="./wishlist.html">⭐ 愿望单 <span id="wishCount" style="font-weight:400">{{wish_count}} 个关键词</span></a>
-    <a class="wishlink" href="./blocklist.html" style="background:#fdecee;color:#a1404c;border-color:#f3c3c9">🚫 屏蔽词 <span id="blockCount" style="font-weight:400">0 个屏蔽词</span></a>
+    <a class="wishlink" href="./wishlist.html"><svg class="ico" viewBox="0 0 16 16"><path d="M8 2.2l1.75 3.55 3.92.57-2.84 2.77.67 3.9L8 11.16l-3.5 1.83.67-3.9L2.33 6.32l3.92-.57z"/></svg>愿望单 <span id="wishCount" style="font-weight:400">{{wish_count}} 个关键词</span></a>
+    <a class="wishlink" href="./blocklist.html" style="background:#fdecee;color:#a1404c;border-color:#f3c3c9"><svg class="ico" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.2"/><path d="M3.8 12.2 12.2 3.8"/></svg>屏蔽词 <span id="blockCount" style="font-weight:400">0 个屏蔽词</span></a>
     <a class="wishlink" href="./db.html" style="background:#eef4ff;color:#1d5fbf;border-color:#cfdefb">📚 数据库</a></div>
   {{warn}}{{empty}}
   <div class="stats">
