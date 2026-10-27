@@ -64,6 +64,7 @@
   }
 
   function insertButton(td, title) {
+    if (td.querySelector('.blkbtn')) return;   // 幂等：fetch 回调会反复 apply
     var btn = document.createElement('button');
     btn.className = 'blkbtn';
     btn.textContent = '🚫';
@@ -82,7 +83,11 @@
       apply(words);
       toast('已在本机屏蔽「' + word + '」，去屏蔽词页面「保存到仓库」才对其他设备生效');
     });
-    td.appendChild(btn);
+    /* 锚点 = 最后一个标签/徽章/⭐按钮，紧跟其后插入 → 不另起一行，且总排在 ⭐ 后面 */
+    var spans = td.querySelectorAll('span.tag,span.newlow,span.atlow,span.first,span.wish,.wishbtn');
+    var anchor = spans.length ? spans[spans.length - 1] : td.querySelector('a');
+    if (anchor) anchor.insertAdjacentElement('afterend', btn);
+    else td.appendChild(btn);
   }
 
   var currentWords = [];
@@ -104,7 +109,7 @@
       var title = td.getAttribute('data-t') || '';
       var tr = td.closest ? td.closest('tr') : td.parentNode;
       var hit = currentWords.some(function (w) { return title.indexOf(w) !== -1; });
-      if (!td.querySelector('.blkbtn')) insertButton(td, title);
+      insertButton(td, title);
       if (hit) {
         tr.style.display = 'none';
         hidden++;
