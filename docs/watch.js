@@ -18,12 +18,80 @@
   var API_URL = meta.getAttribute('data-api') || '';
   var LOCAL_URL = './watchlist.txt';
   var CACHE_KEY = 'watch_words_cache';
+  var PENDING_KEY = 'watch_pending';   // 日报页快捷关注、尚未保存到仓库的词
 
   function parse(txt) {
     return txt.split('\n')
       .map(function (s) { return s.trim(); })
       .filter(function (s) { return s && s.charAt(0) !== '#'; });
   }
+
+  function toast(msg) {
+    var t = document.getElementById('wchToast');
+    if (!t) {
+      t = document.createElement('div');
+      t.id = 'wchToast';
+      t.style.cssText = 'position:fixed;left:50%;bottom:26px;transform:translateX(-50%)'
+        + ';background:#16181c;color:#fff;padding:10px 18px;border-radius:8px;font-size:13px'
+        + ';opacity:0;transition:.25s;pointer-events:none;max-width:88vw;text-align:center;z-index:9';
+      document.body.appendChild(t);
+    }
+    t.textContent = msg;
+    t.style.opacity = '1';
+    t.style.transform = 'translateX(-50%) translateY(0)';
+    clearTimeout(toast._t);
+    toast._t = setTimeout(function () {
+      t.style.opacity = '0';
+      t.style.transform = 'translateX(-50%) translateY(20px)';
+    }, 2600);
+  }
+
+  /* 从展示标题提炼建议词：剥营销前缀，取前 12 个字符（与 block.js 同款） */
+  function suggestKeyword(title) {
+    var t = (title || '').replace(
+      /^(88VIP|今日必买|百亿补贴|国家补贴|PLUS会员|会员专享|白菜党|手慢无|必领神券|每日可领|绝对值|历史低价|过期|限时|售罄|淘金币[\d.]+元)[：:、\s]*/g, '');
+    return t.slice(0, 12) || (title || '').slice(0, 12);
+  }
+
+  function addPending(word) {
+    try {
+      var arr = JSON.parse(localStorage.getItem(PENDING_KEY) || '[]');
+      if (!Array.isArray(arr)) arr = [];
+      if (arr.indexOf(word) === -1) arr.push(word);
+      localStorage.setItem(PENDING_KEY, JSON.stringify(arr));
+    } catch (e) {}
+  }
+
+  /* 快捷「关注」按钮：点击后写入本机缓存并立即显示标签，
+   * 保存到仓库仍要去愿望单页（那里有 Token），与屏蔽按钮同一套交互。 */
+  function ensureWishButton(td, title) {
+    if (td.querySelector('.wishbtn')) return;
+    var btn = document.createElement('button');
+    btn.className = 'wishbtn';
+    btn.textContent = '⭐';
+    btn.title = '关注该商品（命中的会在日报打上愿望单标签，推送时优先）';
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      var word = prompt('要关注的关键词（标题包含它就打「愿望单」标签）：', suggestKeyword(title));
+      if (!word || !word.trim()) return;
+      word = word.trim();
+      var words = currentWords.slice();
+      if (words.indexOf(word) === -1) words.push(word);
+      currentWords = words;
+      try { localStorage.setItem(CACHE_KEY, JSON.stringify({ words: words, ts: Date.now() })); } catch (e2) {}
+      addPending(word);
+      apply(words);
+      toast('已在本机关注「' + word + '」，去愿望单页面「保存到仓库」才对其他设备生效');
+    });
+    /* 锚点 = 最后一个标签/徽章，紧跟其后插入 → 不另起一行 */
+    var spans = td.querySelectorAll('span.tag,span.newlow,span.atlow,span.first,span.wish');
+    var anchor = spans.length ? spans[spans.length - 1] : td.querySelector('a');
+    if (anchor) anchor.insertAdjacentElement('afterend', btn);
+    else td.appendChild(btn);
+  }
+
+  var currentWords = [];
 
   // 入口上的「N 个关键词」是服务端生成时烙进去的，用户改完词不会自动更新，
   // 这里跟着实时校正；读不到数据就藏起来，绝不显示一个不准的数字。
@@ -35,7 +103,8 @@
   }
 
   function apply(words) {
-    updateCount(words);
+    currentWords = words || [];
+    updateCount(currentWords);
     var rows = document.querySelectorAll('td.name[data-t]');
     for (var i = 0; i < rows.length; i++) {
       var td = rows[i];
@@ -56,6 +125,7 @@
       } else if (!hit && badge) {
         badge.parentNode.removeChild(badge);
       }
+      ensureWishButton(td, title);
     }
   }
 
