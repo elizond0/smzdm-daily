@@ -8,66 +8,68 @@
         data-api="{{watch_api}}">
 <style>
 *{box-sizing:border-box}
-body{margin:0;padding:38px 20px 56px;background:#f4f5f7;color:#16181c;
-  font:14px/1.65 -apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+body{margin:0;padding:40px 20px 60px;background:#f4f5f7;color:#16181c;
+  font:15px/1.68 -apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
   -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
-.wrap{max-width:1080px;margin:0 auto}
-h1{font-size:23px;line-height:1.35;margin:0 0 6px;letter-spacing:-.5px;font-weight:700}
+.wrap{max-width:1120px;margin:0 auto}
+h1{font-size:26px;line-height:1.35;margin:0 0 8px;letter-spacing:-.6px;font-weight:700}
 h1::after{content:"";display:none}
-.sub{color:#7c828b;font-size:12.5px;margin-bottom:22px;line-height:1.8}
+.sub{color:#7c828b;font-size:13.5px;margin-bottom:24px;line-height:1.8}
 .warn{background:#fff8e6;border:1px solid #f3e2b8;color:#8a6410;border-radius:10px;
-  padding:11px 15px;font-size:12.5px;margin-bottom:18px}
-.funnel{background:#fff;border:1px solid #e8eaed;border-radius:12px;padding:11px 16px;
-  font-size:12px;color:#71767e;margin-bottom:22px;line-height:1.85;
+  padding:12px 16px;font-size:13.5px;margin-bottom:18px}
+.funnel{background:#fff;border:1px solid #e8eaed;border-radius:12px;padding:12px 16px;
+  font-size:13px;color:#71767e;margin-bottom:24px;line-height:1.85;
   box-shadow:0 1px 2px rgba(16,20,28,.035)}
 .funnel b{color:#c8102e;font-weight:650}
 
 /* 四宫格：数字做主角，卡片更紧凑、带轻阴影 */
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:26px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px}
 .stat{position:relative;background:#fff;border:1px solid #e8eaed;border-radius:12px;
-  padding:14px 18px 15px;box-shadow:0 1px 2px rgba(16,20,28,.035);
+  padding:16px 18px 17px;box-shadow:0 1px 2px rgba(16,20,28,.035);
   overflow:hidden;transition:box-shadow .16s ease,transform .16s ease}
 .stat::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
   background:#eceef1;border-radius:12px 0 0 12px}
 .stat:first-child::before{background:#c8102e}
 .stat:hover{box-shadow:0 4px 14px rgba(16,20,28,.07)}
-.stat .k{font-size:11.5px;color:#7c828b;letter-spacing:.2px}
-.stat .v{font-size:25px;font-weight:700;letter-spacing:-.7px;margin-top:2px;
+.stat .k{font-size:12.5px;color:#7c828b;letter-spacing:.2px}
+.stat .v{font-size:28px;font-weight:700;letter-spacing:-.8px;margin-top:3px;
   font-variant-numeric:tabular-nums;line-height:1.2}
-.stat .v em{font-size:11.5px;font-style:normal;color:#9aa0a8;font-weight:400;
+.stat .v em{font-size:12.5px;font-style:normal;color:#9aa0a8;font-weight:400;
   margin-left:3px;letter-spacing:0}
 
-h2{font-size:15px;margin:30px 0 8px;display:flex;align-items:center;gap:9px;
+h2{font-size:16.5px;margin:34px 0 10px;display:flex;align-items:center;gap:10px;
   letter-spacing:-.2px;font-weight:650}
-h2 .dot{width:3px;height:14px;background:#c8102e;border-radius:2px;flex:none}
-h2 .hint{font-weight:400;color:#9aa0a8;font-size:12px;letter-spacing:0}
+h2 .dot{width:3px;height:16px;background:#c8102e;border-radius:2px;flex:none}
+h2 .hint{font-weight:400;color:#9aa0a8;font-size:13px;letter-spacing:0}
 
 /* 表格：更大圆角、表头更克制、行悬停有反馈、价格列右对齐 */
 table{width:100%;border-collapse:separate;border-spacing:0;background:#fff;
   border:1px solid #e8eaed;border-radius:12px;
   box-shadow:0 1px 2px rgba(16,20,28,.035)}
-th{text-align:left;font-size:11px;color:#8a9098;font-weight:600;background:#fafbfc;
-  padding:10px 14px;border-bottom:1px solid #eceef1;white-space:nowrap;
+th{text-align:left;font-size:12px;color:#8a9098;font-weight:600;background:#fafbfc;
+  padding:11px 14px;border-bottom:1px solid #eceef1;white-space:nowrap;
   letter-spacing:.3px}
 th:first-child{border-top-left-radius:12px}
 th:last-child{border-top-right-radius:12px;text-align:right}
-td{padding:13px 14px;border-bottom:1px solid #f2f3f5;vertical-align:middle}
+td{padding:14px 14px;border-bottom:1px solid #f2f3f5;vertical-align:middle}
 tbody tr:last-child td{border-bottom:0}
 tbody tr:last-child td:first-child{border-bottom-left-radius:12px}
 tbody tr:last-child td:last-child{border-bottom-right-radius:12px}
+tbody tr{transition:background .12s ease}
 tbody tr:hover td{background:#fafbfc}
-.idx{color:#b0b5bc;width:36px;font-variant-numeric:tabular-nums;font-size:12px;
+.idx{color:#b0b5bc;width:38px;font-variant-numeric:tabular-nums;font-size:13px;
   font-weight:500}
-.cat{color:#7c828b;font-size:12px;width:78px}
-.name a{color:#16181c;text-decoration:none;font-weight:550;letter-spacing:-.1px}
+.cat{color:#7c828b;font-size:13px;width:82px}
+.name a{color:#16181c;text-decoration:none;font-weight:600;font-size:14.5px;
+  letter-spacing:-.1px}
 .name a:hover{color:#c8102e;text-decoration:underline;text-underline-offset:2px}
-.meta{color:#9aa0a8;font-size:11px;margin-top:3px;letter-spacing:.1px}
-.num{white-space:nowrap;font-variant-numeric:tabular-nums;text-align:right;width:118px}
-.num b{color:#c8102e;font-size:15.5px;font-weight:700;letter-spacing:-.3px}
-.num s{color:#b6bac1;font-size:11.5px;margin-left:4px}
-.save{color:#7c828b;font-size:11.5px}
-.rate{width:84px;text-align:right;font-weight:700;color:#c8102e;
-  font-variant-numeric:tabular-nums;font-size:13px;letter-spacing:-.3px}
+.meta{color:#9aa0a8;font-size:12px;margin-top:4px;letter-spacing:.1px}
+.num{white-space:nowrap;font-variant-numeric:tabular-nums;text-align:right;width:124px}
+.num b{color:#c8102e;font-size:17px;font-weight:700;letter-spacing:-.35px}
+.num s{color:#b6bac1;font-size:12.5px;margin-left:5px}
+.save{color:#7c828b;font-size:12.5px}
+.rate{width:88px;text-align:right;font-weight:700;color:#c8102e;
+  font-variant-numeric:tabular-nums;font-size:14px;letter-spacing:-.3px}
 .rate small{font-size:11px;font-weight:400}
 /* 折扣进度条：宽度 4px、轨道加深一点，低折扣时也能看出「很划算」 */
 .bar{height:4px;background:#eef0f3;border-radius:99px;margin-top:6px;overflow:hidden}
@@ -88,83 +90,94 @@ tbody tr:hover td{background:#fafbfc}
 /* 快捷操作按钮：关注 / 屏蔽，由 watch.js 与 block.js 分别插入，
  * 紧跟商品标签之后（同一行内），不换行不挤占价格列。
  * 图标用内联 SVG 而不是 emoji：emoji 依赖系统字体，Windows 上有概率渲染成 □ */
-.wishbtn,.blkbtn{display:inline-flex;align-items:center;gap:2px;margin-left:5px;
-  padding:1px 5px;border-radius:3px;font-size:10.5px;cursor:pointer;
-  vertical-align:1px;line-height:1.4;flex:none}
-.wishbtn svg,.blkbtn svg{width:10px;height:10px;display:block}
-.wishbtn{border:1px solid #e2d0fd;background:#faf5ff;color:#c0a8e8}
+.wishbtn,.blkbtn{display:inline-flex;align-items:center;gap:3px;margin-left:6px;
+  padding:2px 7px;border-radius:5px;font-size:11.5px;cursor:pointer;
+  vertical-align:1px;line-height:1.45;flex:none;
+  transition:background .14s ease,color .14s ease,border-color .14s ease,
+             box-shadow .14s ease,transform .1s ease}
+.wishbtn svg,.blkbtn svg{width:11px;height:11px;display:block}
+/* 默认态就把底色做实，不再用「几乎等于白」的浅底（手机上看着像没样式） */
+.wishbtn{border:1px solid #dcc8fb;background:#f0e6ff;color:#8b5cf6}
 .wishbtn svg{fill:none;stroke:currentColor;stroke-width:1.8}
-.wishbtn:hover{color:#7c3aed;background:#f3e8ff;border-color:#cbb6f7}
-.wishbtn:hover svg{fill:currentColor}
-.blkbtn{border:1px solid #f3c3c9;background:#fdf5f6;color:#c9ccd2}
+.wishbtn:hover,.wishbtn:focus-visible{color:#fff;background:#7c3aed;
+  border-color:#7c3aed;box-shadow:0 2px 8px rgba(124,58,237,.3);outline:none}
+.wishbtn:hover svg,.wishbtn:focus-visible svg{fill:currentColor}
+.wishbtn:active{transform:scale(.96)}
+.blkbtn{border:1px solid #f2b3bd;background:#fde8eb;color:#d9576d}
 .blkbtn svg{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
-.blkbtn:hover{color:#c8102e;background:#fdecee;border-color:#f0aab3}
-/* 顶部三个入口：固定最小宽度 + 图标定宽 + 文字基线对齐，
- * 三者文字长度不同（关注/屏蔽 各 2 字 + 数字，数据库 3 字 + 数字），
- * 用 min-width 与 inline-flex 的统一 line-height 保证图标、文字在同一水平线上 */
-.wishlink{display:inline-flex;align-items:center;justify-content:center;gap:4px;
-  min-width:124px;margin-left:10px;padding:3px 12px;border-radius:20px;
-  font-size:12px;line-height:18px;box-sizing:border-box;
-  background:#f3e8ff;color:#7c3aed;border:1px solid #e2d0fd;
+.blkbtn:hover,.blkbtn:focus-visible{color:#fff;background:#c8102e;
+  border-color:#c8102e;box-shadow:0 2px 8px rgba(200,16,46,.28);outline:none}
+.blkbtn:active{transform:scale(.96)}
+/* 顶部三个入口：宽度随内容自适应（不设 min-width，避免撑成一整行），
+ * 用 inline-flex + 统一 line-height 让图标与文字严格同基线 */
+.wishlink{display:inline-flex;align-items:center;justify-content:center;gap:5px;
+  margin-left:8px;padding:4px 13px;border-radius:999px;
+  font-size:13px;line-height:16px;box-sizing:border-box;
+  background:#f3e8ff;color:#7c3aed;border:1px solid #ddd0fb;
   text-decoration:none;font-weight:600;vertical-align:middle;
-  font-variant-numeric:tabular-nums}
-.wishlink .ico{width:12px;height:12px;flex:none;fill:none;stroke:currentColor;
-  stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;
-  display:block;position:relative;top:0}
+  font-variant-numeric:tabular-nums;
+  transition:background .15s ease,border-color .15s ease,box-shadow .15s ease}
+.wishlink .ico{width:13px;height:13px;flex:none;fill:none;stroke:currentColor;
+  stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;display:block}
 .wishlink[href*="wishlist"] .ico{fill:currentColor}
-.wishlink:hover{background:#e9d9ff;text-decoration:none}
-.lowhint{font-size:11px;color:#9aa0a8;margin-top:2px;font-weight:400}
-.legend{display:flex;flex-wrap:wrap;gap:5px 18px;font-size:11.5px;color:#71767e;
-  margin:-2px 0 10px;line-height:1.7}
+.wishlink:hover{background:#e9d9ff;border-color:#c9b3f5;text-decoration:none;
+  box-shadow:0 1px 4px rgba(124,58,237,.16)}
+.wishlink.blk{background:#fdecee;color:#a1404c;border-color:#f3c3c9}
+.wishlink.blk:hover{background:#fbdde2;border-color:#eaa9b4;
+  box-shadow:0 1px 4px rgba(200,16,46,.14)}
+.wishlink.db{background:#eef4ff;color:#1d5fbf;border-color:#cfdefb}
+.wishlink.db:hover{background:#e3edfd;border-color:#b8cff7;
+  box-shadow:0 1px 4px rgba(29,95,191,.14)}
+.lowhint{font-size:11.5px;color:#9aa0a8;margin-top:2px;font-weight:400}
+.legend{display:flex;flex-wrap:wrap;gap:5px 18px;font-size:12px;color:#71767e;
+  margin:-2px 0 12px;line-height:1.7}
 .legend .sw{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:5px}
 .legend .sw-nl{background:#1a7f42}
 .legend .sw-al{background:#0f766e}
 .legend .sw-lh{background:#c3c7cd}
-.foot{color:#9aa0a8;font-size:11.5px;margin-top:24px;line-height:1.9}
+.foot{color:#9aa0a8;font-size:12px;margin-top:26px;line-height:1.9}
 /* ---------- 手机端：表格拆成卡片，避免窄屏把商品名挤成竖排 ---------- */
 @media (max-width:700px){
   html,body{overflow-x:hidden;max-width:100%}
-  body{padding:14px 10px 24px;font-size:14px;-webkit-text-size-adjust:100%;
+  body{padding:14px 10px 26px;font-size:15px;-webkit-text-size-adjust:100%;
     background:#f2f3f5;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
-  .wrap{max-width:100%}
 
-  h1{font-size:17.5px;letter-spacing:-.2px;margin:0 0 3px;font-weight:700}
+  h1{font-size:19px;letter-spacing:-.3px;margin:0 0 4px;font-weight:700}
 
-  /* 顶部：说明文字独占一行，三个入口三等分铺满下一行 */
-  .sub{font-size:10.5px;margin-bottom:12px;line-height:1.7;color:#8a8f97;
+  /* 顶部：说明文字独占一行，三个入口自适应宽度并排（不铺满，避免大色块） */
+  .sub{font-size:12px;margin-bottom:13px;line-height:1.7;color:#8a8f97;
     word-break:break-word;overflow-wrap:anywhere;
-    display:flex;flex-wrap:wrap;align-items:center;gap:8px 0;
-    justify-content:space-between}
-  .sub>a.wishlink{display:flex;width:calc(33.333% - 5.34px);min-width:0;flex:none;
-    align-items:center;justify-content:center;gap:3px;padding:6px 2px;
-    font-size:10.5px;border-radius:8px;margin:0;font-weight:500;
-    line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .sub>a.wishlink .ico{width:9px;height:9px;flex:none}
-  .sub>a.wishlink span{font-size:9.5px;opacity:.72;margin-left:1px}
+    display:flex;flex-wrap:wrap;align-items:center;gap:8px 6px}
+  .sub>a.wishlink{display:inline-flex;width:auto;min-width:0;flex:0 0 auto;
+    align-items:center;justify-content:center;gap:4px;padding:6px 11px;
+    font-size:12.5px;border-radius:999px;margin:0;font-weight:600;
+    line-height:16px;white-space:nowrap}
+  .sub>a.wishlink .ico{width:12px;height:12px;flex:none}
+  .sub>a.wishlink span{font-size:12px;opacity:.8;margin-left:0}
 
-  /* 四宫格统计：数字更醒目，圆角加大 */
-  .stats{grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:14px}
-  .stat{padding:11px 13px;border-radius:12px;border-color:#e9ebee;
+  /* 四宫格统计 */
+  .stats{grid-template-columns:repeat(2,1fr);gap:9px;margin-bottom:15px}
+  .stat{padding:12px 14px;border-radius:12px;border-color:#e9ebee;
     box-shadow:0 1px 2px rgba(16,20,28,.04)}
-  .stat .k{font-size:10.5px;color:#8a8f97;margin-bottom:2px}
-  .stat .v{font-size:20px;font-weight:700;letter-spacing:-.4px;line-height:1.25}
-  .stat .v em{font-size:10.5px;font-weight:400;color:#8a8f97}
+  .stat .k{font-size:12px;color:#8a8f97;margin-bottom:2px}
+  .stat .v{font-size:23px;font-weight:700;letter-spacing:-.5px;line-height:1.25}
+  .stat .v em{font-size:11.5px;font-weight:400;color:#8a8f97}
 
-  .funnel{font-size:11px;padding:9px 11px;line-height:1.85;border-radius:10px;
-    word-break:break-word;margin-bottom:14px;color:#71767e}
-  .warn{font-size:11.5px;padding:9px 11px;border-radius:10px;margin-bottom:12px}
+  .funnel{font-size:12px;padding:10px 12px;line-height:1.9;border-radius:10px;
+    word-break:break-word;margin-bottom:15px;color:#71767e}
+  .warn{font-size:12.5px;padding:10px 12px;border-radius:10px;margin-bottom:12px}
 
-  /* 分节标题：去掉冗余小字，留出呼吸感 */
-  h2{font-size:13.5px;margin:18px 0 8px;gap:6px;font-weight:600}
-  h2 .dot{width:3px;height:12px;border-radius:2px}
-  h2 .hint{font-size:10.5px;color:#9aa0a8;font-weight:400;display:block;
-    margin-left:9px;margin-top:-2px}
+  /* 分节标题 */
+  h2{font-size:15px;margin:20px 0 9px;gap:7px;font-weight:650}
+  h2 .dot{width:3px;height:13px;border-radius:2px}
+  h2 .hint{font-size:11.5px;color:#9aa0a8;font-weight:400;display:block;
+    margin-left:10px;margin-top:-2px}
 
   /* 图例：允许换行（横滑看不到全部，反而更难用），压成小字两行内 */
-  .legend{flex-wrap:wrap;gap:3px 12px;font-size:10px;margin:0 0 8px;
+  .legend{flex-wrap:wrap;gap:3px 12px;font-size:11.5px;margin:0 0 9px;
     line-height:1.6;color:#8a8f97}
   .legend>span{white-space:nowrap;flex:none}
-  .legend .sw{width:7px;height:7px;margin-right:4px}
+  .legend .sw{width:8px;height:8px;margin-right:5px}
 
   /* ---------- 卡片 ---------- */
   table,tbody,tr,td{display:block;width:auto}
@@ -180,53 +193,58 @@ tbody tr:hover td{background:#fafbfc}
   td{border:0;padding:0}
 
   /* 序号做成左上角小圆片 */
-  .idx{position:absolute;left:11px;top:12px;width:17px;height:17px;
+  .idx{position:absolute;left:11px;top:13px;width:19px;height:19px;
     display:flex;align-items:center;justify-content:center;
-    background:#f2f3f5;color:#9aa0a8;border-radius:5px;font-size:10px;
+    background:#f2f3f5;color:#8a8f97;border-radius:6px;font-size:11px;
     font-weight:600;font-variant-numeric:tabular-nums;line-height:1}
   /* 商品名与标签同段落流式排布：标题后紧跟标签/按钮，超长才换行 */
-  .name{padding-left:24px;margin-bottom:7px;line-height:1.6;word-break:break-word}
-  .name a{font-size:13.5px;font-weight:600;color:#16181c;letter-spacing:-.1px;
+  .name{padding-left:27px;margin-bottom:8px;line-height:1.62;word-break:break-word}
+  .name a{font-size:15px;font-weight:600;color:#16181c;letter-spacing:-.1px;
     display:inline;text-decoration:none;word-break:break-word}
-  .meta{font-size:10px;line-height:1.55;margin-top:5px;color:#9aa0a8;
+  .meta{font-size:11.5px;line-height:1.6;margin-top:6px;color:#9aa0a8;
     word-break:break-word;overflow-wrap:anywhere;letter-spacing:-.1px}
 
-  /* 标签与快捷按钮：自然换行，不再挤成一团 */
-  .tag,.newlow,.atlow,.first,.wish{font-size:9.5px;margin-left:4px;padding:1px 5px;
+  /* 标签与快捷按钮：自然换行，不再挤成一团。手机上按钮也做实底，
+   * 触摸没有 hover，改用 :active 给即时反馈 */
+  .tag,.newlow,.atlow,.first,.wish{font-size:10.5px;margin-left:5px;padding:1px 6px;
     border-radius:4px;vertical-align:1.5px;white-space:nowrap}
-  .wishbtn,.blkbtn{margin-left:4px;padding:2px 6px;border-radius:5px;vertical-align:1.5px}
-  .wishbtn svg,.blkbtn svg{width:9px;height:9px}
+  .wishbtn,.blkbtn{margin-left:5px;padding:3px 8px;border-radius:6px;font-size:11.5px;
+    vertical-align:1.5px}
+  .wishbtn svg,.blkbtn svg{width:11px;height:11px}
+  .wishbtn:active,.blkbtn:active{transform:scale(.94)}
+  .wishbtn:active{background:#7c3aed;border-color:#7c3aed;color:#fff}
+  .wishbtn:active svg{fill:currentColor}
+  .blkbtn:active{background:#c8102e;border-color:#c8102e;color:#fff}
 
   /* 底部价格区：flex 两端对齐，价格在左、折扣在右，同一行不再折行 */
   tr{display:flex;flex-wrap:wrap;align-items:flex-start}
   tr>.idx{flex:0 0 auto}
   tr>.name{flex:1 1 100%;width:100%}
   tr>.num{flex:1 1 auto;min-width:0;display:flex;align-items:baseline;flex-wrap:wrap;
-    gap:0 5px;order:2;font-size:12px;white-space:normal;text-align:left;
-    margin-top:7px;padding-top:6px;border-top:1px dashed #f0f1f3}
-  tr>.rate{flex:0 0 auto;order:3;margin-top:7px;padding-top:6px;
+    gap:0 5px;order:2;font-size:13px;white-space:normal;text-align:left;
+    margin-top:8px;padding-top:7px;border-top:1px dashed #f0f1f3}
+  tr>.rate{flex:0 0 auto;order:3;margin-top:8px;padding-top:7px;
     border-top:1px dashed #f0f1f3;text-align:right;align-self:stretch;
     display:flex;align-items:baseline;justify-content:flex-end}
-  .num b{font-size:18px;letter-spacing:-.5px;font-variant-numeric:tabular-nums;
+  .num b{font-size:21px;letter-spacing:-.5px;font-variant-numeric:tabular-nums;
     color:#c8102e;line-height:1.2}
-  .num s{font-size:10.5px;color:#b6bac1}
-  .num .atlow,.num .newlow{font-size:9.5px;vertical-align:2px}
-  .lowhint{flex:1 1 100%;font-size:9.5px;margin:-1px 0 0;color:#9aa0a8;
+  .num s{font-size:11.5px;color:#b6bac1}
+  .num .atlow,.num .newlow{font-size:10.5px;vertical-align:2px}
+  .lowhint{flex:1 1 100%;font-size:11px;margin:0 0 0;color:#9aa0a8;
     letter-spacing:-.1px}
-  .save{display:inline-block;margin:0;font-size:10.5px;color:#8a8f97}
-  .rate{font-size:12px;font-weight:700;color:#c8102e;letter-spacing:-.2px}
-  .rate small{font-size:9.5px;font-weight:400}
+  .save{display:inline-block;margin:0;font-size:12px;color:#8a8f97}
+  .rate{font-size:14px;font-weight:700;color:#c8102e;letter-spacing:-.2px}
+  .rate small{font-size:10.5px;font-weight:400}
   .bar{display:none}
 
-  .legend{font-size:10.5px}
-  .foot{font-size:10.5px;line-height:1.85;margin-top:18px;padding:0 2px;color:#9aa0a8}
+  .foot{font-size:11.5px;line-height:1.85;margin-top:18px;padding:0 2px;color:#9aa0a8}
   .foot br{display:none}
 }
 @media (max-width:380px){
   body{padding:12px 8px 20px}
-  .stat .v{font-size:18px}
-  .name a{font-size:13px}
-  .num b{font-size:16px}
+  .stat .v{font-size:21px}
+  .name a{font-size:14px}
+  .num b{font-size:19px}
 }
 </style>
 </head>
@@ -236,8 +254,8 @@ tbody tr:hover td{background:#fafbfc}
   <div class="sub">抓取 {{fetched_at}}　请求 {{requests}} 次　
     来源 smzdm.com（时点快照，价格与库存随时变动）
     <a class="wishlink" href="./wishlist.html"><svg class="ico" viewBox="0 0 16 16"><path d="M8 2.2l1.75 3.55 3.92.57-2.84 2.77.67 3.9L8 11.16l-3.5 1.83.67-3.9L2.33 6.32l3.92-.57z"/></svg>关注（<span id="wishCount">{{wish_count}}</span>）</a>
-    <a class="wishlink" href="./blocklist.html" style="background:#fdecee;color:#a1404c;border-color:#f3c3c9"><svg class="ico" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.2"/><path d="M3.8 12.2 12.2 3.8"/></svg>屏蔽（<span id="blockCount">0</span>）</a>
-    <a class="wishlink" href="./db.html" style="background:#eef4ff;color:#1d5fbf;border-color:#cfdefb"><svg class="ico" viewBox="0 0 16 16"><ellipse cx="8" cy="4" rx="5.6" ry="2.2"/><path d="M2.4 4v3.2c0 1.2 2.5 2.2 5.6 2.2s5.6-1 5.6-2.2V4"/><path d="M2.4 7.2v3.2c0 1.2 2.5 2.2 5.6 2.2s5.6-1 5.6-2.2V7.2"/></svg>数据库（{{db_count}}）</a></div>
+    <a class="wishlink blk" href="./blocklist.html"><svg class="ico" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.2"/><path d="M3.8 12.2 12.2 3.8"/></svg>屏蔽（<span id="blockCount">0</span>）</a>
+    <a class="wishlink db" href="./db.html"><svg class="ico" viewBox="0 0 16 16"><ellipse cx="8" cy="4" rx="5.6" ry="2.2"/><path d="M2.4 4v3.2c0 1.2 2.5 2.2 5.6 2.2s5.6-1 5.6-2.2V4"/><path d="M2.4 7.2v3.2c0 1.2 2.5 2.2 5.6 2.2s5.6-1 5.6-2.2V7.2"/></svg>数据库（{{db_count}}）</a></div>
   {{warn}}{{empty}}
   <div class="stats">
     <div class="stat"><div class="k">折扣榜</div><div class="v">{{hot_count}}<em> 条</em></div></div>
