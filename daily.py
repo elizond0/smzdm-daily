@@ -429,11 +429,15 @@ def decorate(d: dict, catalog: "Catalog", cutoff: str, drop_pct: float,
     if rec is None:
         d["first_seen"] = True
         d["low_price"] = None
+        d["high_price"] = None
+        d["first_date"] = None
         d["is_low"] = False
         d["at_low"] = False
         return d
 
     d["first_seen"] = False
+    d["first_date"] = rec.get("first")
+    d["high_price"] = rec.get("high")
     low = rec.get("low")
     if low is not None:
         d["low_price"] = low
@@ -744,7 +748,7 @@ class Catalog:
             nt = norm_title(d.get("title", ""))
             rec = {"norm": nt, "specs": specs(nt),
                    "title": d.get("title", ""), "ids": [],
-                   "low": None, "low_date": None,
+                   "low": None, "low_date": None, "high": None,
                    "first": today, "last": today, "hits": 0,
                    "push_date": None, "push_price": None,
                    # 下面这几个是给「数据库」页面展示用的，随时更新成最近一次见到的样子
@@ -763,6 +767,11 @@ class Catalog:
             if lo is None or price < lo - 1e-9:
                 rec["low"] = price
                 rec["low_date"] = today          # 低点日期：出现新低时记下
+            hi = rec.get("high")
+            # 历史高点只用于日报里那条「价格区间轴」的右端标尺，
+            # 缺了它轴线会失真，所以每次见到都顺手刷新一下
+            if hi is None or price > hi + 1e-9:
+                rec["high"] = price
         rec["last"] = today
         rec["hits"] = rec.get("hits", 0) + 1
 
@@ -893,7 +902,25 @@ def render_html(hot: list[dict], passed: list[dict], meta: dict) -> str:
             parts.append(f"拉取 {H.escape(seen)}")
         return " · ".join(H.escape(str(p)) for p in parts if p)
 
-    def row(d, i):
+    def price_axis(d, sid):
+        """价格区间轴：把「历史低 — 现价 — 历史高」画成一根 92px 的细线。
+
+        纯粹是视觉辅助，省得为了比较要不要等下一个低价去心算。
+        数据不全（老记录没有 high）就返回空串，宁可不画也不画错。
+        """
+        lo, hi, cur = d.get("low_price"), d.get("high_price"), d.get("price")
+        if not lo or not hi or cur is None or hi <= lo:
+            return ""
+        span = hi - lo
+        # 现价可能比历史低更低（新低）或比历史高更高，统一夹到 2%~98%，
+        # 免得圆点贴边看不出来
+        pos = min(98.0, max(2.0, (cur - lo) / span * 100.0))
+        cheap = pos <= 20          # 落在区间最便宜的五分之一，标成红色强调
+        cls = "axis hot" if cheap else "axis"
+        return (f'<span class="{cls}" title="历史低 ¥{lo:g} · 现价 ¥{cur:g} · 历史高 ¥{hi:g}">'
+                f'<i style="left:{pos:.1f}%"></i></span>')
+
+    def row(d, i, sid=""):
         conds = "".join(
             f'<span class="tag{" warn" if c in WARN_CONDS else ""}">{H.escape(c)}</span>'
             for c in d["conds"])
@@ -907,19 +934,24 @@ def render_html(hot: list[dict], passed: list[dict], meta: dict) -> str:
             low_badge = '<span class="atlow">史低</span>'
         elif d.get("low_price") is not None and d["price"] > d["low_price"] + 1e-9:
             ld = (d.get("low_date") or "")[5:10]     # YYYY-MM-DD → MM-DD
-            low_hint = (f'<div class="lowhint">历史低 ¥{d["low_price"]:g}'
-                        + (f'（{H.escape(ld)}）' if ld else "") + '</div>')
+            low_hint = (f'<span class="lowhint">历史低 ¥{d["low_price"]:g}'
+                        + (f'（{H.escape(ld)}）' if ld else "") + '</span>')
         pct = d.get("discount_pct")
         if pct:
             rate = (f'{zhe(pct)}<small>折</small>'
                     f'<div class="bar"><i style="width:{max(4, pct)}%"></i></div>')
         else:
             rate = '<span class="muted">无原价</span>'
-        return f"""<tr>
+        # 轴和历史低提示同一行：左边文字说「离低点还差多少」，右边轴说「贵在区间哪一段」
+        axis = price_axis(d, sid)
+        if axis:
+            axis = '<div class="axisrow">' + low_hint + axis + '</div>'
+            low_hint = ""
+        return f"""<tr data-sid="{sid}">
   <td class="idx">{i}</td>
   <td class="name" data-t="{H.escape(d['title'])}"><a href="{d.get('url') or '#'}" target="_blank">{H.escape(display_title(d['title']))}</a>{conds}
     <div class="meta">{meta_line(d)}</div></td>
-  <td class="num"><b>¥{d['price']:g}</b> {origin}{low_badge}{low_hint}</td>
+  <td class="num"><b>¥{d['price']:g}</b> {origin}{low_badge}{low_hint}{axis}</td>
   <td class="rate">{rate}</td>
 </tr>"""
 
@@ -955,9 +987,37 @@ def render_html(hot: list[dict], passed: list[dict], meta: dict) -> str:
                   f'24 小时池 <b>{st.get("pool_size", 0)}</b> 条 → '
                   f'折扣榜 <b>{len(hot)}</b> 条{note}</div>')
 
-    empty = "" if hot else '<div class="warn">今天没有符合力度阈值的商品，可以调低 config.ini 里的门槛。</div>'
     feed_top = passed  # pick 已按「去掉折扣榜重合 + 前 N 名」截好
-    no_row = '<tr><td colspan="4" style="color:#9aa0a8;padding:20px">无</td></tr>'
+
+    def empty_state(kind, threshold):
+        """榜单为空时的插图 + 一句人话。
+
+        以前只有一行灰字，看起来像「页面坏了」；给张图 + 明确的调参位置，
+        一眼就知道是「今天确实没好价」而不是故障。
+        插图用内联 SVG，不额外请求资源，也不怕图挂了。
+        """
+        icon = (
+            '<svg viewBox="0 0 72 72" aria-hidden="true">'
+            '<path d="M14 20h30l6 34H8z"/><path d="M22 20a8 8 0 0 1 16 0"/>'
+            '<circle cx="24" cy="34" r="1.6" fill="currentColor" stroke="none"/>'
+            '<circle cx="36" cy="34" r="1.6" fill="currentColor" stroke="none"/>'
+            '<path d="M26 42c1.8 2.2 4 2.2 5.8 0"/>'
+            '<path d="M54 14l0 10M49 19l10 0" opacity=".55"/>'
+            '</svg>')
+        if kind == "hot":
+            t = "今天没有够力度的大促"
+            d = (f"折扣榜只收 <b>{threshold}</b> 折以内的商品，本轮抓到的都没达成。"
+                 "想放宽就调 <code>config.ini</code> 里的 "
+                 "<code>min_discount_pct</code>（越小越宽松）。")
+        else:
+            t = "好价榜今天也是空的"
+            d = (f"数据源里没有通过筛选的商品。看看上面的漏斗，"
+                 "哪一步减得多就调哪一项；热度门槛是 <code>min_zhi</code> / "
+                 "<code>min_comment</code>。")
+        return f'<div class="empty"><div class="icon">{icon}</div><div class="t">{t}</div><div class="d">{d}</div></div>'
+
+    empty = ""   # 空态插图放在榜单原位置（{{hot_empty}} / {{feed_empty}}），顶部不再重复
+    no_row = ""
 
     values = {
         "date": H.escape(meta["date"]),
@@ -975,8 +1035,12 @@ def render_html(hot: list[dict], passed: list[dict], meta: dict) -> str:
         "max_save": f"¥{max(d['save'] for d in hot):,.0f}" if hot else "—",
         "funnel": funnel,
         "min_disc": f"{float(meta['min_disc']) / 10:.1f}",
-        "hot_rows": "".join(row(d, i + 1) for i, d in enumerate(hot)) or no_row,
-        "feed_rows": "".join(row(d, i + 1) for i, d in enumerate(feed_top)) or no_row,
+        "hot_rows": "".join(row(d, i + 1, f"h{i}") for i, d in enumerate(hot)) or no_row,
+        "feed_rows": "".join(row(d, i + 1, f"f{i}") for i, d in enumerate(feed_top)) or no_row,
+        "hot_empty_cls": "" if hot else " is-empty",
+        "feed_empty_cls": "" if feed_top else " is-empty",
+        "hot_empty": "" if hot else empty_state("hot", f"{float(meta['min_disc']) / 10:.1f}"),
+        "feed_empty": "" if feed_top else empty_state("feed", ""),
         "feed_name": H.escape(meta.get("feed_name") or ""),
         "build_at": H.escape(meta.get("build_at") or ""),
     }
