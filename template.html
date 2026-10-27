@@ -58,9 +58,13 @@ tbody tr:hover td{background:#fcfcfd}
   background:#e8f1fb;color:#1d5fbf;border:1px solid #c8dbf2;vertical-align:1px}
 .wish{display:inline-block;margin-left:5px;padding:0 6px;border-radius:3px;font-size:10.5px;
   background:#f3e8ff;color:#7c3aed;border:1px solid #e2d0fd;vertical-align:1px;font-weight:600}
-/* 屏蔽按钮：日报页每行商品名右侧的小 🚫，由 block.js 动态插入 */
-.blkbtn{margin-left:7px;padding:0 5px;border:1px solid #f3c3c9;border-radius:3px;
-  background:#fff;color:#c0c4ca;font-size:10.5px;cursor:pointer;vertical-align:1px;line-height:1.5}
+/* 快捷操作按钮：⭐关注 / 🚫屏蔽，由 watch.js 与 block.js 分别插入，
+ * 紧跟商品标签之后（同一行内），不换行不挤占价格列 */
+.wishbtn,.blkbtn{margin-left:5px;padding:0 5px;border-radius:3px;background:#fff;
+  font-size:10.5px;cursor:pointer;vertical-align:1px;line-height:1.5;flex:none}
+.wishbtn{border:1px solid #e2d0fd;color:#c0a8e8}
+.wishbtn:hover{color:#7c3aed;background:#f3e8ff}
+.blkbtn{border:1px solid #f3c3c9;color:#c0c4ca}
 .blkbtn:hover{color:#c8102e;background:#fdecee}
 .wishlink{display:inline-block;margin-left:10px;padding:1px 9px;border-radius:20px;font-size:12px;
   background:#f3e8ff;color:#7c3aed;border:1px solid #e2d0fd;text-decoration:none;font-weight:600}
