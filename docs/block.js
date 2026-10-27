@@ -67,7 +67,9 @@
     if (td.querySelector('.blkbtn')) return;   // 幂等：fetch 回调会反复 apply
     var btn = document.createElement('button');
     btn.className = 'blkbtn';
-    btn.textContent = '🚫';
+    /* 内联 SVG 代替 🚫 emoji：emoji 依赖系统彩色字体，Windows 上偶发渲染成 □ */
+    btn.innerHTML = '<svg viewBox="0 0 16 16" aria-hidden="true">'
+      + '<circle cx="8" cy="8" r="6.2"/><path d="M3.8 12.2 12.2 3.8"/></svg>';
     btn.title = '屏蔽该商品（命中标题即从日报隐藏，数据库照常记录）';
     btn.addEventListener('click', function (e) {
       e.preventDefault();
