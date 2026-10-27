@@ -68,7 +68,9 @@
     if (td.querySelector('.wishbtn')) return;
     var btn = document.createElement('button');
     btn.className = 'wishbtn';
-    btn.textContent = '⭐';
+    /* 内联 SVG 星形代替 ⭐ emoji：不依赖系统彩色字体，各端一致 */
+    btn.innerHTML = '<svg viewBox="0 0 16 16" aria-hidden="true">'
+      + '<path d="M8 2.2l1.75 3.55 3.92.57-2.84 2.77.67 3.9L8 11.16l-3.5 1.83.67-3.9L2.33 6.32l3.92-.57z"/></svg>';
     btn.title = '关注该商品（命中的会在日报打上愿望单标签，推送时优先）';
     btn.addEventListener('click', function (e) {
       e.preventDefault();
