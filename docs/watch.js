@@ -95,13 +95,13 @@
 
   var currentWords = [];
 
-  // 入口上的「N 个关键词」是服务端生成时烙进去的，用户改完词不会自动更新，
-  // 这里跟着实时校正；读不到数据就藏起来，绝不显示一个不准的数字。
+  // 入口上的数字是服务端生成时烙进去的，用户改完词不会自动更新，
+  // 这里跟着实时校正；读不到数据时回退成服务端值，绝不显示一个不准的数字。
   function updateCount(words) {
     var el = document.getElementById('wishCount');
     if (!el) return;
     el.style.display = '';
-    el.textContent = words.length + ' 个关键词';
+    el.textContent = words.length;   /* 括号与「关注（）」文案在模板里，这里只填数字 */
   }
 
   function apply(words) {
@@ -157,10 +157,9 @@
     })
     .then(function (txt) { apply(parse(txt)); })
     .catch(function () {
-      var el = document.getElementById('wishCount');
-      if (el) el.style.display = 'none';
+      /* 读不到就保持服务端渲染的原始数字，不去改成 0（0 会被误读成「没有关注」） */
       if (window.console) {
-        console.warn('[watch] 关键词读取失败，已隐藏计数');
+        console.warn('[watch] 关键词读取失败，沿用服务端计数');
       }
     });
 })();
