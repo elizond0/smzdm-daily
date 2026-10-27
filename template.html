@@ -8,44 +8,71 @@
         data-api="{{watch_api}}">
 <style>
 *{box-sizing:border-box}
-body{margin:0;padding:34px 20px;background:#f5f6f8;color:#16181c;
-  font:14px/1.65 -apple-system,"Segoe UI","Microsoft YaHei",sans-serif}
-.wrap{max-width:1000px;margin:0 auto}
-h1{font-size:21px;margin:0 0 4px}
-.sub{color:#71767e;font-size:12.5px;margin-bottom:22px}
-.warn{background:#fff8e6;border:1px solid #f3e2b8;color:#8a6410;border-radius:8px;
-  padding:10px 14px;font-size:13px;margin-bottom:18px}
-.funnel{background:#fff;border:1px solid #e6e8eb;border-radius:8px;padding:9px 14px;
-  font-size:12px;color:#71767e;margin-bottom:20px;line-height:1.8}
-.funnel b{color:#c8102e;font-weight:600}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:26px}
-.stat{background:#fff;border:1px solid #e6e8eb;border-radius:10px;padding:13px 16px}
-.stat .k{font-size:11.5px;color:#71767e}
-.stat .v{font-size:21px;font-weight:600;margin-top:1px}
-.stat .v em{font-size:12px;font-style:normal;color:#71767e;font-weight:400;margin-left:2px}
-h2{font-size:14px;margin:28px 0 10px;display:flex;align-items:center;gap:8px}
-h2 .dot{width:3px;height:13px;background:#c8102e;border-radius:2px}
-h2 .hint{font-weight:400;color:#8a8f97;font-size:12px}
-table{width:100%;border-collapse:collapse;background:#fff;border:1px solid #e6e8eb;
-  border-radius:10px;overflow:hidden}
-th{text-align:left;font-size:11.5px;color:#71767e;font-weight:500;background:#fafbfc;
-  padding:9px 12px;border-bottom:1px solid #e6e8eb;white-space:nowrap}
-td{padding:11px 12px;border-bottom:1px solid #f2f3f5;vertical-align:middle}
-tr:last-child td{border-bottom:0}
-tbody tr:hover td{background:#fcfcfd}
-.idx{color:#a8adb5;width:32px;font-variant-numeric:tabular-nums;font-size:12.5px}
-.cat{color:#71767e;font-size:12px;width:78px}
-.name a{color:#16181c;text-decoration:none}
-.name a:hover{color:#c8102e;text-decoration:underline}
-.meta{color:#9aa0a8;font-size:11.5px;margin-top:2px}
-.num{white-space:nowrap;font-variant-numeric:tabular-nums;text-align:right;width:110px}
-.num b{color:#c8102e;font-size:14.5px}
-.num s{color:#b6bac1;font-size:12px;margin-left:4px}
-.save{color:#71767e;font-size:12px}
-.rate{width:76px;text-align:right;font-weight:600;color:#c8102e;font-variant-numeric:tabular-nums}
+body{margin:0;padding:38px 20px 56px;background:#f4f5f7;color:#16181c;
+  font:14px/1.65 -apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+.wrap{max-width:1080px;margin:0 auto}
+h1{font-size:23px;line-height:1.35;margin:0 0 6px;letter-spacing:-.5px;font-weight:700}
+h1::after{content:"";display:none}
+.sub{color:#7c828b;font-size:12.5px;margin-bottom:22px;line-height:1.8}
+.warn{background:#fff8e6;border:1px solid #f3e2b8;color:#8a6410;border-radius:10px;
+  padding:11px 15px;font-size:12.5px;margin-bottom:18px}
+.funnel{background:#fff;border:1px solid #e8eaed;border-radius:12px;padding:11px 16px;
+  font-size:12px;color:#71767e;margin-bottom:22px;line-height:1.85;
+  box-shadow:0 1px 2px rgba(16,20,28,.035)}
+.funnel b{color:#c8102e;font-weight:650}
+
+/* 四宫格：数字做主角，卡片更紧凑、带轻阴影 */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:26px}
+.stat{position:relative;background:#fff;border:1px solid #e8eaed;border-radius:12px;
+  padding:14px 18px 15px;box-shadow:0 1px 2px rgba(16,20,28,.035);
+  overflow:hidden;transition:box-shadow .16s ease,transform .16s ease}
+.stat::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:#eceef1;border-radius:12px 0 0 12px}
+.stat:first-child::before{background:#c8102e}
+.stat:hover{box-shadow:0 4px 14px rgba(16,20,28,.07)}
+.stat .k{font-size:11.5px;color:#7c828b;letter-spacing:.2px}
+.stat .v{font-size:25px;font-weight:700;letter-spacing:-.7px;margin-top:2px;
+  font-variant-numeric:tabular-nums;line-height:1.2}
+.stat .v em{font-size:11.5px;font-style:normal;color:#9aa0a8;font-weight:400;
+  margin-left:3px;letter-spacing:0}
+
+h2{font-size:15px;margin:30px 0 8px;display:flex;align-items:center;gap:9px;
+  letter-spacing:-.2px;font-weight:650}
+h2 .dot{width:3px;height:14px;background:#c8102e;border-radius:2px;flex:none}
+h2 .hint{font-weight:400;color:#9aa0a8;font-size:12px;letter-spacing:0}
+
+/* 表格：更大圆角、表头更克制、行悬停有反馈、价格列右对齐 */
+table{width:100%;border-collapse:separate;border-spacing:0;background:#fff;
+  border:1px solid #e8eaed;border-radius:12px;
+  box-shadow:0 1px 2px rgba(16,20,28,.035)}
+th{text-align:left;font-size:11px;color:#8a9098;font-weight:600;background:#fafbfc;
+  padding:10px 14px;border-bottom:1px solid #eceef1;white-space:nowrap;
+  letter-spacing:.3px}
+th:first-child{border-top-left-radius:12px}
+th:last-child{border-top-right-radius:12px;text-align:right}
+td{padding:13px 14px;border-bottom:1px solid #f2f3f5;vertical-align:middle}
+tbody tr:last-child td{border-bottom:0}
+tbody tr:last-child td:first-child{border-bottom-left-radius:12px}
+tbody tr:last-child td:last-child{border-bottom-right-radius:12px}
+tbody tr:hover td{background:#fafbfc}
+.idx{color:#b0b5bc;width:36px;font-variant-numeric:tabular-nums;font-size:12px;
+  font-weight:500}
+.cat{color:#7c828b;font-size:12px;width:78px}
+.name a{color:#16181c;text-decoration:none;font-weight:550;letter-spacing:-.1px}
+.name a:hover{color:#c8102e;text-decoration:underline;text-underline-offset:2px}
+.meta{color:#9aa0a8;font-size:11px;margin-top:3px;letter-spacing:.1px}
+.num{white-space:nowrap;font-variant-numeric:tabular-nums;text-align:right;width:118px}
+.num b{color:#c8102e;font-size:15.5px;font-weight:700;letter-spacing:-.3px}
+.num s{color:#b6bac1;font-size:11.5px;margin-left:4px}
+.save{color:#7c828b;font-size:11.5px}
+.rate{width:84px;text-align:right;font-weight:700;color:#c8102e;
+  font-variant-numeric:tabular-nums;font-size:13px;letter-spacing:-.3px}
 .rate small{font-size:11px;font-weight:400}
-.bar{height:3px;background:#f1f2f4;border-radius:2px;margin-top:4px;overflow:hidden}
-.bar i{display:block;height:100%;background:#c8102e;border-radius:2px}
+/* 折扣进度条：宽度 4px、轨道加深一点，低折扣时也能看出「很划算」 */
+.bar{height:4px;background:#eef0f3;border-radius:99px;margin-top:6px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:99px;
+  background:linear-gradient(90deg,#e8455f,#c8102e)}
 .tag{display:inline-block;margin-left:5px;padding:0 5px;border-radius:3px;font-size:10.5px;
   background:#fff4e5;color:#a86a12;border:1px solid #f5e0c3;vertical-align:1px}
 .tag.warn{background:#fdecee;color:#c8102e;border-color:#f3c3c9}
