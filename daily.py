@@ -684,7 +684,12 @@ class Catalog:
             for aid in rec.get("ids", []):
                 self._id_index[aid] = fp
 
-    def save(self, keep_days: int = 90) -> None:
+    def save(self, keep_days: int = 365) -> None:
+        """落盘前清掉「最后一次见到」早于 keep_days 天的记录。
+
+        365 天：跨年的大件（家电、数码）来年再降价时，历史低价仍可参考；
+        90 天会把季节商品的低点记录洗掉，历史低就失真了。
+        """
         cutoff = (datetime.now() - timedelta(days=keep_days)).strftime("%Y-%m-%d")
         self.records = {fp: rec for fp, rec in self.records.items()
                         if (rec.get("last") or "") >= cutoff}
