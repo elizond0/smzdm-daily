@@ -88,39 +88,109 @@ tbody tr:hover td{background:#fcfcfd}
 /* ---------- 手机端：表格拆成卡片，避免窄屏把商品名挤成竖排 ---------- */
 @media (max-width:700px){
   html,body{overflow-x:hidden;max-width:100%}
-  body{padding:18px 12px}
-  h1{font-size:18px}
-  .sub{font-size:11.5px;margin-bottom:16px;line-height:1.7}
-  .stats{grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:16px}
-  .stat{padding:10px 12px}
-  .stat .k{font-size:11px}
-  .stat .v{font-size:18px}
-  .funnel{font-size:11.5px;padding:8px 10px;line-height:1.8;word-break:break-word}
-  h2{font-size:13px;margin:20px 0 8px}
-  h2 .hint{font-size:11px}
+  body{padding:14px 10px 24px;font-size:14px;-webkit-text-size-adjust:100%;
+    background:#f2f3f5;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+  .wrap{max-width:100%}
+
+  h1{font-size:17.5px;letter-spacing:-.2px;margin:0 0 3px;font-weight:700}
+
+  /* 顶部：说明文字独占一行，三个入口三等分铺满下一行 */
+  .sub{font-size:10.5px;margin-bottom:12px;line-height:1.7;color:#8a8f97;
+    word-break:break-word;overflow-wrap:anywhere;
+    display:flex;flex-wrap:wrap;align-items:center;gap:8px 0;
+    justify-content:space-between}
+  .sub>a.wishlink{display:flex;width:calc(33.333% - 5.34px);flex:none;
+    align-items:center;justify-content:center;gap:3px;padding:6px 2px;
+    font-size:10.5px;border-radius:8px;margin:0;font-weight:500;
+    line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .sub>a.wishlink .ico{width:9px;height:9px;flex:none}
+  .sub>a.wishlink span{font-size:9.5px;opacity:.72;margin-left:1px}
+
+  /* 四宫格统计：数字更醒目，圆角加大 */
+  .stats{grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:14px}
+  .stat{padding:11px 13px;border-radius:12px;border-color:#e9ebee;
+    box-shadow:0 1px 2px rgba(16,20,28,.04)}
+  .stat .k{font-size:10.5px;color:#8a8f97;margin-bottom:2px}
+  .stat .v{font-size:20px;font-weight:700;letter-spacing:-.4px;line-height:1.25}
+  .stat .v em{font-size:10.5px;font-weight:400;color:#8a8f97}
+
+  .funnel{font-size:11px;padding:9px 11px;line-height:1.85;border-radius:10px;
+    word-break:break-word;margin-bottom:14px;color:#71767e}
+  .warn{font-size:11.5px;padding:9px 11px;border-radius:10px;margin-bottom:12px}
+
+  /* 分节标题：去掉冗余小字，留出呼吸感 */
+  h2{font-size:13.5px;margin:18px 0 8px;gap:6px;font-weight:600}
+  h2 .dot{width:3px;height:12px;border-radius:2px}
+  h2 .hint{font-size:10.5px;color:#9aa0a8;font-weight:400;display:block;
+    margin-left:9px;margin-top:-2px}
+
+  /* 图例：允许换行（横滑看不到全部，反而更难用），压成小字两行内 */
+  .legend{flex-wrap:wrap;gap:3px 12px;font-size:10px;margin:0 0 8px;
+    line-height:1.6;color:#8a8f97}
+  .legend>span{white-space:nowrap;flex:none}
+  .legend .sw{width:7px;height:7px;margin-right:4px}
+
+  /* ---------- 卡片 ---------- */
   table,tbody,tr,td{display:block;width:auto}
   table{border:0;background:transparent;border-radius:0}
   thead{display:none}
-  tr{position:relative;background:#fff;border:1px solid #e6e8eb;border-radius:10px;
-     padding:12px;margin-bottom:9px}
+  tbody{display:block}
+  tr{position:relative;background:#fff;border:1px solid #e9ebee;border-radius:13px;
+     padding:12px 13px 10px;margin-bottom:9px;
+     box-shadow:0 1px 2px rgba(16,20,28,.04);
+     transition:box-shadow .15s ease}
   tr:last-child{margin-bottom:0}
   tbody tr:hover td{background:transparent}
   td{border:0;padding:0}
-  .idx{position:absolute;left:12px;top:12px;color:#c3c7cd;font-size:11px;width:auto}
-  .name{padding-left:19px;margin-bottom:7px;line-height:1.55;word-break:break-word}
-  .name a{font-size:14px}
-  .meta{font-size:11px;line-height:1.6;margin-top:3px}
-  .num{display:inline-block;width:auto;text-align:left;white-space:normal;
-        margin-right:10px;font-size:13px}
-  .num b{font-size:16px}
-  .num s{font-size:11.5px}
-  .save{display:inline-block;margin-right:8px;font-size:12px}
-  .rate{display:inline-block;width:auto;text-align:left;font-size:13px}
+
+  /* 序号做成左上角小圆片 */
+  .idx{position:absolute;left:11px;top:12px;width:17px;height:17px;
+    display:flex;align-items:center;justify-content:center;
+    background:#f2f3f5;color:#9aa0a8;border-radius:5px;font-size:10px;
+    font-weight:600;font-variant-numeric:tabular-nums;line-height:1}
+  /* 商品名与标签同段落流式排布：标题后紧跟标签/按钮，超长才换行 */
+  .name{padding-left:24px;margin-bottom:7px;line-height:1.6;word-break:break-word}
+  .name a{font-size:13.5px;font-weight:600;color:#16181c;letter-spacing:-.1px;
+    display:inline;text-decoration:none;word-break:break-word}
+  .meta{font-size:10px;line-height:1.55;margin-top:5px;color:#9aa0a8;
+    word-break:break-word;overflow-wrap:anywhere;letter-spacing:-.1px}
+
+  /* 标签与快捷按钮：自然换行，不再挤成一团 */
+  .tag,.newlow,.atlow,.first,.wish{font-size:9.5px;margin-left:4px;padding:1px 5px;
+    border-radius:4px;vertical-align:1.5px;white-space:nowrap}
+  .wishbtn,.blkbtn{margin-left:4px;padding:2px 6px;border-radius:5px;vertical-align:1.5px}
+  .wishbtn svg,.blkbtn svg{width:9px;height:9px}
+
+  /* 底部价格区：flex 两端对齐，价格在左、折扣在右，同一行不再折行 */
+  tr{display:flex;flex-wrap:wrap;align-items:flex-start}
+  tr>.idx{flex:0 0 auto}
+  tr>.name{flex:1 1 100%;width:100%}
+  tr>.num{flex:1 1 auto;min-width:0;display:flex;align-items:baseline;flex-wrap:wrap;
+    gap:0 5px;order:2;font-size:12px;white-space:normal;text-align:left;
+    margin-top:7px;padding-top:6px;border-top:1px dashed #f0f1f3}
+  tr>.rate{flex:0 0 auto;order:3;margin-top:7px;padding-top:6px;
+    border-top:1px dashed #f0f1f3;text-align:right;align-self:stretch;
+    display:flex;align-items:baseline;justify-content:flex-end}
+  .num b{font-size:18px;letter-spacing:-.5px;font-variant-numeric:tabular-nums;
+    color:#c8102e;line-height:1.2}
+  .num s{font-size:10.5px;color:#b6bac1}
+  .num .atlow,.num .newlow{font-size:9.5px;vertical-align:2px}
+  .lowhint{flex:1 1 100%;font-size:9.5px;margin:-1px 0 0;color:#9aa0a8;
+    letter-spacing:-.1px}
+  .save{display:inline-block;margin:0;font-size:10.5px;color:#8a8f97}
+  .rate{font-size:12px;font-weight:700;color:#c8102e;letter-spacing:-.2px}
+  .rate small{font-size:9.5px;font-weight:400}
   .bar{display:none}
-  .tag,.newlow,.atlow,.first{font-size:10px;margin-left:4px}
-  .lowhint{font-size:10.5px}
-  .legend{font-size:11px;gap:4px 12px;margin-bottom:9px}
-  .foot{font-size:11px;line-height:1.8}
+
+  .legend{font-size:10.5px}
+  .foot{font-size:10.5px;line-height:1.85;margin-top:18px;padding:0 2px;color:#9aa0a8}
+  .foot br{display:none}
+}
+@media (max-width:380px){
+  body{padding:12px 8px 20px}
+  .stat .v{font-size:18px}
+  .name a{font-size:13px}
+  .num b{font-size:16px}
 }
 </style>
 </head>
