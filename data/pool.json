@@ -23,7 +23,8 @@
   "is_low": false,
   "_from_pool": true,
   "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p1/",
-  "at_low": false
+  "at_low": false,
+  "low_date": "2026-10-21"
  },
  "H:652c158d3dd7d9a0": {
   "article_id": "184098149",
@@ -34,11 +35,11 @@
   "conds": [],
   "category": "食品生鲜",
   "zhi": 200,
-  "comments": 811,
+  "comments": 812,
   "source": "12H最热",
   "time": "10-26 21:45",
   "rank_no": 1,
-  "last_seen": "2026-10-27 09:21",
+  "last_seen": "2026-10-27 09:37",
   "first_seen": false,
   "pushed_before": false,
   "price_dropped": false,
@@ -46,7 +47,8 @@
   "is_low": false,
   "_from_pool": true,
   "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p1/",
-  "at_low": true
+  "at_low": true,
+  "low_date": "2026-10-19"
  },
  "H:ad2a9b8a5c93c3bb": {
   "article_id": "184311963",
@@ -71,7 +73,8 @@
   "is_low": false,
   "_from_pool": true,
   "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p1/",
-  "at_low": true
+  "at_low": true,
+  "low_date": "2026-10-21"
  },
  "H:09de3ffd56754e23": {
   "article_id": "184502908",
@@ -96,7 +99,8 @@
   "is_low": false,
   "_from_pool": true,
   "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p1/",
-  "at_low": true
+  "at_low": true,
+  "low_date": "2026-10-22"
  },
  "H:ca571a0cdee608a5": {
   "article_id": "184554542",
@@ -107,19 +111,20 @@
   "conds": [],
   "category": "其他",
   "zhi": 124,
-  "comments": 494,
+  "comments": 495,
   "source": "12H最热",
   "time": "10-26 21:45",
   "rank_no": 4,
   "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p1/",
-  "last_seen": "2026-10-27 09:21",
+  "last_seen": "2026-10-27 09:37",
   "first_seen": false,
   "pushed_before": false,
   "price_dropped": false,
   "low_price": 74.9,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-24"
  },
  "H:2996202698d55b36": {
   "article_id": "184499677",
@@ -147,7 +152,8 @@
   "low_price": 428.98,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-24"
  },
  "H:d531008a79eb98c0": {
   "article_id": "184553049",
@@ -158,19 +164,20 @@
   "conds": [],
   "category": "食品生鲜",
   "zhi": 155,
-  "comments": 631,
+  "comments": 632,
   "source": "12H最热",
   "time": "10-26 21:45",
   "rank_no": 3,
   "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p1/",
-  "last_seen": "2026-10-27 09:21",
+  "last_seen": "2026-10-27 09:37",
   "first_seen": false,
   "pushed_before": false,
   "price_dropped": false,
   "low_price": 107.0,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-24"
  },
  "H:a9012b8783931385": {
   "article_id": "184637657",
@@ -182,20 +189,21 @@
    "需券"
   ],
   "category": "其他",
-  "zhi": 83,
-  "comments": 345,
+  "zhi": 85,
+  "comments": 349,
   "source": "12H最热",
   "time": "10-26 21:45",
-  "rank_no": 5,
+  "rank_no": 6,
   "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p1/",
-  "last_seen": "2026-10-27 09:21",
+  "last_seen": "2026-10-27 09:37",
   "first_seen": false,
   "pushed_before": false,
   "price_dropped": false,
   "low_price": 77.99,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-24"
  },
  "H:a21a009d5e328c34": {
   "article_id": "184559661",
@@ -221,7 +229,8 @@
   "low_price": 22.68,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-24"
  },
  "H:69a0a86129a6e167": {
   "article_id": "184493322",
@@ -249,7 +258,8 @@
   "low_price": 262.2,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-24"
  },
  "H:079cee8928a3114f": {
   "article_id": "184641235",
@@ -276,7 +286,8 @@
   "low_price": 142.94,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-24"
  },
  "H:40dd672652934c3f": {
   "article_id": "184644707",
@@ -294,14 +305,15 @@
   "time": "10-26 21:45",
   "rank_no": 10,
   "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p1/",
-  "last_seen": "2026-10-27 09:21",
+  "last_seen": "2026-10-27 09:37",
   "first_seen": false,
   "pushed_before": false,
   "price_dropped": false,
   "low_price": 19.99,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-24"
  },
  "H:e09b5039d02089cd": {
   "article_id": "184670529",
@@ -326,7 +338,8 @@
   "low_price": 65.3,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-25"
  },
  "H:d4061e66201c7c29": {
   "article_id": "184642961",
@@ -342,14 +355,15 @@
   "time": "10-26 21:45",
   "rank_no": 8,
   "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p1/",
-  "last_seen": "2026-10-27 09:21",
+  "last_seen": "2026-10-27 09:37",
   "first_seen": false,
   "pushed_before": false,
   "price_dropped": false,
   "low_price": 17.14,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-25"
  },
  "H:ba57e0a1ab646517": {
   "article_id": "184650354",
@@ -375,7 +389,8 @@
   "low_price": 26.72,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-25"
  },
  "H:cc7c1987a36d6a23": {
   "article_id": "184675096",
@@ -400,7 +415,8 @@
   "low_price": 6.98,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-25"
  },
  "H:5d859d13bfe35fab": {
   "article_id": "184599926",
@@ -423,7 +439,8 @@
   "low_price": 2.85,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-24"
  },
  "H:58e43d01377c7466": {
   "article_id": "184701336",
@@ -448,7 +465,8 @@
   "low_price": 19.96,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-25"
  },
  "H:36163c890e78bd1b": {
   "article_id": "184698427",
@@ -471,7 +489,8 @@
   "low_price": 513.0,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-25"
  },
  "H:505138ec0a902b34": {
   "article_id": "184698656",
@@ -496,7 +515,8 @@
   "low_price": 799.2,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-25"
  },
  "H:fb5fa3e4dddb2902": {
   "article_id": "184634948",
@@ -523,7 +543,8 @@
   "is_low": false,
   "at_low": true,
   "_from_pool": true,
-  "watched": false
+  "watched": false,
+  "low_date": "2026-10-25"
  },
  "H:4ee12fc484332dfe": {
   "article_id": "184716502",
@@ -546,7 +567,8 @@
   "low_price": 35.23,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-22"
  },
  "H:5f7b1c504cbee8f2": {
   "article_id": "184552810",
@@ -569,7 +591,8 @@
   "low_price": 44.1,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-24"
  },
  "H:8fd003f94f8cb976": {
   "article_id": "184413168",
@@ -599,7 +622,8 @@
   "low_price": 26.01,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-23"
  },
  "H:48e33c48264068eb": {
   "article_id": "184715337",
@@ -629,7 +653,8 @@
   "is_low": false,
   "at_low": true,
   "_from_pool": true,
-  "watched": false
+  "watched": false,
+  "low_date": "2026-10-25"
  },
  "H:719fc72fe8a4f59a": {
   "article_id": "184680144",
@@ -652,7 +677,8 @@
   "low_price": 6.58,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-25"
  },
  "H:7232b9d6c599e683": {
   "article_id": "184685875",
@@ -675,7 +701,8 @@
   "low_price": 1173.31,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-25"
  },
  "H:dc0a8a8d40e5556e": {
   "article_id": "184698025",
@@ -701,7 +728,8 @@
   "low_price": 30.39,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-25"
  },
  "H:f7414a9f6c43e62d": {
   "article_id": "184764432",
@@ -724,7 +752,8 @@
   "low_price": 55.09,
   "is_low": false,
   "at_low": false,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-21"
  },
  "H:5cbd5c49684b78bf": {
   "article_id": "184733521",
@@ -740,16 +769,17 @@
   "comments": 31,
   "source": "12H最热",
   "time": "10-26 21:45",
-  "rank_no": 12,
+  "rank_no": 13,
   "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p1/",
-  "last_seen": "2026-10-27 09:21",
+  "last_seen": "2026-10-27 09:37",
   "first_seen": false,
   "pushed_before": false,
   "price_dropped": false,
   "low_price": 63.4,
   "is_low": false,
   "at_low": false,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-21"
  },
  "H:8c24265b6e5414ce": {
   "article_id": "184683433",
@@ -775,7 +805,8 @@
   "low_price": 27.87,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-21"
  },
  "H:132d5f4317ae3c2f": {
   "article_id": "184701331",
@@ -789,16 +820,17 @@
   "comments": 65,
   "source": "12H最热",
   "time": "10-26 21:45",
-  "rank_no": 18,
-  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p2/",
-  "last_seen": "2026-10-27 09:21",
+  "rank_no": 17,
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p1/",
+  "last_seen": "2026-10-27 09:37",
   "first_seen": false,
   "pushed_before": false,
   "price_dropped": false,
   "low_price": 49.99,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-26"
  },
  "H:bee1d46356e47dfd": {
   "article_id": "184513066",
@@ -823,7 +855,8 @@
   "low_price": 225.0,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-21"
  },
  "H:a027cc22d8d2ef10": {
   "article_id": "183731201",
@@ -848,7 +881,8 @@
   "low_price": 196.0,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-21"
  },
  "H:29cabeb2fb7de7d8": {
   "article_id": "184738660",
@@ -874,7 +908,8 @@
   "low_price": 682.91,
   "is_low": false,
   "at_low": false,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-22"
  },
  "H:711cc6d7a90495fe": {
   "article_id": "184701257",
@@ -890,14 +925,15 @@
   "time": "10-26 21:45",
   "rank_no": 21,
   "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p2/",
-  "last_seen": "2026-10-27 09:21",
+  "last_seen": "2026-10-27 09:37",
   "first_seen": false,
   "pushed_before": false,
   "price_dropped": false,
   "low_price": 29.99,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-26"
  },
  "H:d159b2ee940ebe83": {
   "article_id": "184733608",
@@ -923,7 +959,8 @@
   "low_price": 155.89,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-26"
  },
  "H:fe9d69c012d55358": {
   "article_id": "184733542",
@@ -946,7 +983,8 @@
   "low_price": 34.86,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-26"
  },
  "H:4a21bdbe6a492928": {
   "article_id": "184733763",
@@ -972,7 +1010,8 @@
   "low_price": 32.05,
   "is_low": false,
   "at_low": false,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-26"
  },
  "H:75819d928526334a": {
   "article_id": "184740405",
@@ -1000,7 +1039,8 @@
   "low_price": 40.8,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-26"
  },
  "H:234a5a4f2760f054": {
   "article_id": "184228506",
@@ -1025,7 +1065,8 @@
   "low_price": 148.0,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-23"
  },
  "H:8a2f89b8f55dd5b4": {
   "article_id": "184565294",
@@ -1055,7 +1096,8 @@
   "is_low": false,
   "at_low": false,
   "_from_pool": true,
-  "watched": false
+  "watched": false,
+  "low_date": "2026-10-23"
  },
  "H:3eead7d1d3b76fb6": {
   "article_id": "184324908",
@@ -1081,7 +1123,8 @@
   "low_price": 36.5,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-23"
  },
  "H:db5d0f112e2b97f2": {
   "article_id": "184017491",
@@ -1109,7 +1152,8 @@
   "low_price": 232.0,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-22"
  },
  "H:6ea4dee17bdfff98": {
   "article_id": "184160130",
@@ -1135,7 +1179,8 @@
   "low_price": 233.9,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-26"
  },
  "H:b7121d984eb5c086": {
   "article_id": "184320440",
@@ -1161,7 +1206,8 @@
   "low_price": 629.15,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-21"
  },
  "H:35905b9779128f9b": {
   "article_id": "184010257",
@@ -1189,7 +1235,8 @@
   "low_price": 103.0,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-21"
  },
  "H:3e88286c250523dd": {
   "article_id": "184018251",
@@ -1217,7 +1264,8 @@
   "low_price": 134.5,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-22"
  },
  "H:99d1f4b771f40392": {
   "article_id": "184234725",
@@ -1240,7 +1288,8 @@
   "low_price": 134.0,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-22"
  },
  "H:024fe337a351c3d7": {
   "article_id": "184610520",
@@ -1265,7 +1314,8 @@
   "low_price": 149.25,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-24"
  },
  "H:a7fb621d36ec1dc6": {
   "article_id": "184766109",
@@ -1291,7 +1341,8 @@
   "low_price": 45.01,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-23"
  },
  "H:4202ba5b5897624d": {
   "article_id": "184757513",
@@ -1314,7 +1365,8 @@
   "low_price": 34.4,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-26"
  },
  "H:4f647f326f368037": {
   "article_id": "184661961",
@@ -1324,20 +1376,21 @@
   "mall": "京东",
   "conds": [],
   "category": "其他",
-  "zhi": 71,
-  "comments": 94,
+  "zhi": 73,
+  "comments": 95,
   "source": "12H最热",
   "time": "10-26 21:45",
   "rank_no": 7,
   "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p1/",
-  "last_seen": "2026-10-27 09:21",
+  "last_seen": "2026-10-27 09:37",
   "first_seen": false,
   "pushed_before": false,
   "price_dropped": false,
   "low_price": 136.0,
   "is_low": false,
   "at_low": false,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-22"
  },
  "H:a5407f45a59cbc28": {
   "article_id": "183743071",
@@ -1360,7 +1413,8 @@
   "low_price": 1998.9,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-26"
  },
  "H:da439624a8862a0f": {
   "article_id": "184577392",
@@ -1385,7 +1439,8 @@
   "low_price": 2018.0,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-26"
  },
  "H:d2d659226851965b": {
   "article_id": "184747664",
@@ -1408,7 +1463,8 @@
   "low_price": 2647.0,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-21"
  },
  "H:c733fbe54bdf2069": {
   "article_id": "184516455",
@@ -1434,7 +1490,8 @@
   "low_price": 59.98,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-26"
  },
  "H:b8a51c06115a13fa": {
   "article_id": "184319924",
@@ -1457,7 +1514,8 @@
   "low_price": 379.0,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-22"
  },
  "H:6b8007218f24bfbc": {
   "article_id": "184775198",
@@ -1482,7 +1540,8 @@
   "low_price": 56.88,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-26"
  },
  "H:c17be00c8a794c25": {
   "article_id": "184762450",
@@ -1505,7 +1564,8 @@
   "low_price": 38.5,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-26"
  },
  "H:d1fb51b65529adbb": {
   "article_id": "184763440",
@@ -1532,7 +1592,8 @@
   "is_low": false,
   "at_low": true,
   "_from_pool": true,
-  "watched": false
+  "watched": false,
+  "low_date": "2026-10-26"
  },
  "H:f8c8351e3b9b30f6": {
   "article_id": "183881699",
@@ -1555,7 +1616,8 @@
   "low_price": 11.0,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-22"
  },
  "H:f21577b7095f27ee": {
   "article_id": "184594665",
@@ -1582,7 +1644,8 @@
   "is_low": false,
   "at_low": true,
   "_from_pool": true,
-  "watched": false
+  "watched": false,
+  "low_date": "2026-10-26"
  },
  "H:7231806e41ddb99c": {
   "article_id": "184443333",
@@ -1608,7 +1671,8 @@
   "low_price": 280.0,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-26"
  },
  "H:6125dccc5009a1a4": {
   "article_id": "184742797",
@@ -1634,7 +1698,8 @@
   "low_price": 156.0,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-26"
  },
  "H:5eb1caee6f4046dc": {
   "article_id": "184701962",
@@ -1659,7 +1724,8 @@
   "low_price": 9.9,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-26"
  },
  "H:b10c3d8a964a2b59": {
   "article_id": "184234221",
@@ -1687,7 +1753,8 @@
   "low_price": 231.0,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-26"
  },
  "H:4a916811c5dfc5af": {
   "article_id": "184568745",
@@ -1712,7 +1779,8 @@
   "low_price": 513.15,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-26"
  },
  "H:1fc7f0f6995b91a6": {
   "article_id": "184582908",
@@ -1735,7 +1803,8 @@
   "low_price": 242.5,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-24"
  },
  "H:9c5457621d752d6a": {
   "article_id": "184748847",
@@ -1761,7 +1830,8 @@
   "low_price": 5.5,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-26"
  },
  "H:f26dad12ba79058c": {
   "article_id": "184641623",
@@ -1786,7 +1856,8 @@
   "low_price": 1626.06,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-26"
  },
  "H:da22701e71298b3a": {
   "article_id": "184594934",
@@ -1814,7 +1885,8 @@
   "low_price": 1548.7,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-26"
  },
  "H:2100b1581df0ada0": {
   "article_id": "184765876",
@@ -1837,7 +1909,8 @@
   "low_price": 58.8,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-26"
  },
  "H:42d1a7d0cbda96f7": {
   "article_id": "184730110",
@@ -1866,7 +1939,8 @@
   "is_low": false,
   "at_low": true,
   "_from_pool": true,
-  "watched": false
+  "watched": false,
+  "low_date": "2026-10-26"
  },
  "H:603b0247295aafbf": {
   "article_id": "184681636",
@@ -1892,7 +1966,8 @@
   "low_price": 799.0,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-26"
  },
  "H:a4f11f36f91cf081": {
   "article_id": "184710365",
@@ -1920,7 +1995,8 @@
   "low_price": 12.72,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-26"
  },
  "H:c47857e4a11a997c": {
   "article_id": "184765779",
@@ -1946,7 +2022,8 @@
   "low_price": 11.51,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-26"
  },
  "H:64fd969e07c5b4de": {
   "article_id": "184105007",
@@ -1969,7 +2046,8 @@
   "low_price": 1999.0,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-26"
  },
  "H:db765213dd2cb90c": {
   "article_id": "184764463",
@@ -1994,7 +2072,8 @@
   "low_price": 16.99,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-26"
  },
  "H:fb984e401b833389": {
   "article_id": "184757077",
@@ -2023,7 +2102,8 @@
   "is_low": false,
   "at_low": true,
   "_from_pool": true,
-  "watched": false
+  "watched": false,
+  "low_date": "2026-10-26"
  },
  "H:13f852ad55275958": {
   "article_id": "184709464",
@@ -2049,7 +2129,8 @@
   "low_price": 16.5,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-26"
  },
  "H:451f5b5a5c784421": {
   "article_id": "184783161",
@@ -2072,7 +2153,8 @@
   "low_price": 14.4,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-26"
  },
  "H:50c22a75f261eea7": {
   "article_id": "183743071",
@@ -2095,7 +2177,8 @@
   "low_price": 1998.9,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-26"
  },
  "H:63991f69a46db07a": {
   "article_id": "184785508",
@@ -2118,7 +2201,8 @@
   "low_price": 78.0,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-24"
  },
  "H:23233e54722a8cae": {
   "article_id": "184766089",
@@ -2147,7 +2231,8 @@
   "is_low": false,
   "at_low": true,
   "_from_pool": true,
-  "watched": false
+  "watched": false,
+  "low_date": "2026-10-25"
  },
  "H:6fc936afeb4ccdcb": {
   "article_id": "184787214",
@@ -2172,7 +2257,8 @@
   "low_price": 154.13,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-26"
  },
  "H:8826fdd50a33f8bb": {
   "article_id": "184780708",
@@ -2197,7 +2283,8 @@
   "low_price": 89.7,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-26"
  },
  "H:24d03e0d4771e3a2": {
   "article_id": "184560462",
@@ -2223,7 +2310,8 @@
   "low_price": 27.9,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-26"
  },
  "H:a58207c08b5133db": {
   "article_id": "184772052",
@@ -2253,7 +2341,8 @@
   "is_low": false,
   "at_low": false,
   "_from_pool": true,
-  "watched": false
+  "watched": false,
+  "low_date": "2026-10-26"
  },
  "H:ae2d5931854a22c7": {
   "article_id": "184558207",
@@ -2276,7 +2365,8 @@
   "low_price": 31.38,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-26"
  },
  "H:3b668c609f37d12c": {
   "article_id": "184780958",
@@ -2301,7 +2391,8 @@
   "low_price": 151.07,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-26"
  },
  "H:4374b87ad5a3d281": {
   "article_id": "184740405",
@@ -2329,7 +2420,8 @@
   "low_price": 40.8,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-26"
  },
  "H:329d7a35ef39ada2": {
   "article_id": "184770577",
@@ -2359,7 +2451,8 @@
   "is_low": false,
   "at_low": true,
   "_from_pool": true,
-  "watched": false
+  "watched": false,
+  "low_date": "2026-10-26"
  },
  "H:0accaa27c4f3dc9f": {
   "article_id": "184763728",
@@ -2386,7 +2479,8 @@
   "is_low": false,
   "at_low": false,
   "_from_pool": true,
-  "watched": false
+  "watched": false,
+  "low_date": "2026-10-19"
  },
  "H:9e13d399ff01413a": {
   "article_id": "184659179",
@@ -2409,7 +2503,8 @@
   "low_price": 113.57,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-26"
  },
  "H:371b892e72967c71": {
   "article_id": "184764871",
@@ -2435,7 +2530,8 @@
   "low_price": 49.88,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-26"
  },
  "H:2b8faba33ada4706": {
   "article_id": "184794486",
@@ -2460,7 +2556,8 @@
   "low_price": 8.19,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-26"
  },
  "H:e4e96e7265dc1443": {
   "article_id": "184723488",
@@ -2489,7 +2586,8 @@
   "is_low": false,
   "at_low": true,
   "_from_pool": true,
-  "watched": false
+  "watched": false,
+  "low_date": "2026-10-23"
  },
  "H:4257db2241e9b478": {
   "article_id": "184786719",
@@ -2515,7 +2613,8 @@
   "low_price": 2647.0,
   "is_low": false,
   "at_low": false,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-21"
  },
  "H:b78c18ab0163bb33": {
   "article_id": "184547100",
@@ -2540,7 +2639,8 @@
   "low_price": 40.21,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-26"
  },
  "H:96e4c67da87353ee": {
   "article_id": "184789129",
@@ -2566,7 +2666,8 @@
   "low_price": 1815.35,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-26"
  },
  "H:1d98b0b6dbac0cc4": {
   "article_id": "184798642",
@@ -2589,11 +2690,12 @@
   "first_seen": false,
   "pushed_before": false,
   "price_dropped": false,
-  "low_price": 16.34,
+  "low_price": 15.52,
   "is_low": false,
-  "at_low": true,
+  "at_low": false,
   "_from_pool": true,
-  "watched": false
+  "watched": false,
+  "low_date": "2026-10-26"
  },
  "H:6bc7a758bda4766f": {
   "article_id": "184793702",
@@ -2616,7 +2718,8 @@
   "low_price": 23.0,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-26"
  },
  "H:4e64888219ea3f75": {
   "article_id": "184788803",
@@ -2645,7 +2748,8 @@
   "is_low": false,
   "at_low": true,
   "_from_pool": true,
-  "watched": false
+  "watched": false,
+  "low_date": "2026-10-26"
  },
  "H:26f3c59b7902a9b1": {
   "article_id": "184722553",
@@ -2671,7 +2775,8 @@
   "low_price": 38.88,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-26"
  },
  "H:8d686c2297a2f2d7": {
   "article_id": "184795141",
@@ -2699,7 +2804,8 @@
   "low_price": 1405.1,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-19"
  },
  "H:81e43414b793d5a6": {
   "article_id": "184570982",
@@ -2724,7 +2830,8 @@
   "low_price": 356.06,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-26"
  },
  "H:527dbcb32f62676d": {
   "article_id": "184775356",
@@ -2747,7 +2854,8 @@
   "low_price": 18.9,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-26"
  },
  "H:d5b01fc829d3aec2": {
   "article_id": "184769834",
@@ -2770,7 +2878,8 @@
   "low_price": 31.74,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-26"
  },
  "H:05b92277abc54543": {
   "article_id": "184764783",
@@ -2795,7 +2904,8 @@
   "low_price": 27.9,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-26"
  },
  "H:59ca4b6de5e2c8a5": {
   "article_id": "184308224",
@@ -2823,7 +2933,8 @@
   "low_price": 96.9,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-26"
  },
  "H:28229c0af87fa1f3": {
   "article_id": "184338140",
@@ -2849,7 +2960,8 @@
   "low_price": 2120.39,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-26"
  },
  "H:cb789dfc667f6a0f": {
   "article_id": "184787862",
@@ -2875,7 +2987,8 @@
   "low_price": 13.44,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-27"
  },
  "H:c6de96452f5ebe45": {
   "article_id": "184804942",
@@ -2890,20 +3003,21 @@
    "需券"
   ],
   "category": "电脑数码",
-  "zhi": 29,
+  "zhi": 33,
   "comments": 1,
   "source": "12H最热",
   "time": "10-26 21:24",
   "rank_no": 2,
   "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p1/",
-  "last_seen": "2026-10-27 09:21",
+  "last_seen": "2026-10-27 09:37",
   "first_seen": false,
   "pushed_before": false,
   "price_dropped": false,
   "low_price": 56.98,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-23"
  },
  "H:69d388aad5438370": {
   "article_id": "184804975",
@@ -2914,19 +3028,20 @@
   "conds": [],
   "category": "电脑数码",
   "zhi": 19,
-  "comments": 534,
+  "comments": 562,
   "source": "12H最热",
   "time": "10-26 21:25",
-  "rank_no": 6,
+  "rank_no": 5,
   "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p1/",
-  "last_seen": "2026-10-27 09:21",
+  "last_seen": "2026-10-27 09:37",
   "first_seen": false,
   "pushed_before": false,
   "price_dropped": false,
   "low_price": 47.8,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-23"
  },
  "H:8babadb4f7f57710": {
   "article_id": "184789210",
@@ -2949,7 +3064,8 @@
   "low_price": 1790.04,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-27"
  },
  "H:308444585678f4b0": {
   "article_id": "184803428",
@@ -2961,20 +3077,21 @@
    "需券"
   ],
   "category": "食品生鲜",
-  "zhi": 34,
-  "comments": 71,
+  "zhi": 36,
+  "comments": 72,
   "source": "12H最热",
   "time": "10-26 20:56",
   "rank_no": 11,
   "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p1/",
-  "last_seen": "2026-10-27 09:21",
+  "last_seen": "2026-10-27 09:37",
   "first_seen": false,
   "pushed_before": false,
   "price_dropped": false,
   "low_price": 226.18,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-27"
  },
  "H:281798f44f5997e6": {
   "article_id": "184785775",
@@ -3000,7 +3117,8 @@
   "low_price": 320.18,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-27"
  },
  "H:8f6ab86b6abd2790": {
   "article_id": "184772824",
@@ -3025,7 +3143,8 @@
   "low_price": 104.28,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-24"
  },
  "H:c424544cc5971ae4": {
   "article_id": "184790587",
@@ -3050,7 +3169,8 @@
   "low_price": 31.7,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-27"
  },
  "H:4b8787dc17ab6be2": {
   "article_id": "184804590",
@@ -3064,16 +3184,17 @@
   "comments": 31,
   "source": "12H最热",
   "time": "10-26 21:12",
-  "rank_no": 13,
+  "rank_no": 12,
   "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p1/",
-  "last_seen": "2026-10-27 09:21",
+  "last_seen": "2026-10-27 09:37",
   "first_seen": false,
   "pushed_before": false,
   "price_dropped": false,
   "low_price": 27.43,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-27"
  },
  "H:99552833be09b4c6": {
   "article_id": "184775960",
@@ -3083,20 +3204,21 @@
   "mall": "亚马逊中国",
   "conds": [],
   "category": "其他",
-  "zhi": 83,
-  "comments": 56,
+  "zhi": 89,
+  "comments": 57,
   "source": "12H最热",
   "time": "10-26 21:45",
   "rank_no": 15,
   "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p1/",
-  "last_seen": "2026-10-27 09:21",
+  "last_seen": "2026-10-27 09:37",
   "first_seen": false,
   "pushed_before": false,
   "price_dropped": false,
   "low_price": 341.39,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-27"
  },
  "H:cf81f5bd10d3b073": {
   "article_id": "184789158",
@@ -3122,7 +3244,8 @@
   "low_price": 1930.77,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-27"
  },
  "H:973d90b9970e8f06": {
   "article_id": "184777235",
@@ -3152,7 +3275,8 @@
   "is_low": false,
   "at_low": true,
   "_from_pool": true,
-  "watched": false
+  "watched": false,
+  "low_date": "2026-10-27"
  },
  "H:34b8827a3192e633": {
   "article_id": "184785170",
@@ -3181,7 +3305,8 @@
   "is_low": false,
   "at_low": true,
   "_from_pool": true,
-  "watched": false
+  "watched": false,
+  "low_date": "2026-10-27"
  },
  "H:c486f23106d1f915": {
   "article_id": "184763502",
@@ -3192,19 +3317,20 @@
   "conds": [],
   "category": "食品生鲜",
   "zhi": 26,
-  "comments": 32,
+  "comments": 34,
   "source": "12H最热",
   "time": "10-26 21:45",
   "rank_no": 22,
   "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p2/",
-  "last_seen": "2026-10-27 09:21",
+  "last_seen": "2026-10-27 09:37",
   "first_seen": false,
   "pushed_before": false,
   "price_dropped": false,
   "low_price": 9.99,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-27"
  },
  "H:f5870cc69cd44699": {
   "article_id": "184799243",
@@ -3234,7 +3360,8 @@
   "is_low": false,
   "at_low": true,
   "_from_pool": true,
-  "watched": false
+  "watched": false,
+  "low_date": "2026-10-27"
  },
  "H:a2391fc2e6b49be1": {
   "article_id": "184729452",
@@ -3260,7 +3387,8 @@
   "low_price": 40.6,
   "is_low": false,
   "at_low": false,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-22"
  },
  "H:105cb5e916f9021a": {
   "article_id": "184740039",
@@ -3285,7 +3413,8 @@
   "low_price": 33.8,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-25"
  },
  "H:1f2460ea19551ce9": {
   "article_id": "184650610",
@@ -3310,7 +3439,8 @@
   "low_price": 19.7,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-25"
  },
  "H:f48f13456d644587": {
   "article_id": "184793903",
@@ -3333,7 +3463,8 @@
   "low_price": 114.13,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-27"
  },
  "H:a0b94383cb5859aa": {
   "article_id": "184797913",
@@ -3361,7 +3492,8 @@
   "low_price": 85.47,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-27"
  },
  "H:52ae0de8d868257a": {
   "article_id": "184604107",
@@ -3387,7 +3519,8 @@
   "low_price": 75.4,
   "is_low": false,
   "at_low": false,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-19"
  },
  "H:77193377b7857bd9": {
   "article_id": "184799205",
@@ -3414,7 +3547,8 @@
   "is_low": false,
   "at_low": true,
   "_from_pool": true,
-  "watched": false
+  "watched": false,
+  "low_date": "2026-10-27"
  },
  "H:12dbe9f14ea70ff5": {
   "article_id": "184333526",
@@ -3443,7 +3577,8 @@
   "is_low": false,
   "at_low": true,
   "_from_pool": true,
-  "watched": false
+  "watched": false,
+  "low_date": "2026-10-27"
  },
  "H:c9ebe6f7473cbe7c": {
   "article_id": "184704950",
@@ -3470,7 +3605,8 @@
   "low_price": 34.4,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-27"
  },
  "H:00adfd7cda6312f7": {
   "article_id": "184765041",
@@ -3493,7 +3629,8 @@
   "low_price": 17.8,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-27"
  },
  "H:792778990aa16162": {
   "article_id": "184795583",
@@ -3521,7 +3658,8 @@
   "low_price": 57.02,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-23"
  },
  "H:52a2dfd5c89d9bd9": {
   "article_id": "184805189",
@@ -3543,7 +3681,7 @@
   "time": "10-26 21:32",
   "rank_no": 24,
   "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p2/",
-  "last_seen": "2026-10-27 09:21",
+  "last_seen": "2026-10-27 09:37",
   "first_seen": false,
   "pushed_before": false,
   "price_dropped": false,
@@ -3551,7 +3689,8 @@
   "is_low": false,
   "at_low": true,
   "_from_pool": true,
-  "watched": false
+  "watched": false,
+  "low_date": "2026-10-27"
  },
  "H:8c1aca398baa53eb": {
   "article_id": "184785557",
@@ -3577,7 +3716,8 @@
   "low_price": 56.4,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-27"
  },
  "H:a7ce0de5188f44bb": {
   "article_id": "184761281",
@@ -3590,19 +3730,20 @@
   ],
   "category": "其他",
   "zhi": 18,
-  "comments": 29,
+  "comments": 30,
   "source": "12H最热",
   "time": "10-26 21:45",
-  "rank_no": 30,
+  "rank_no": 29,
   "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p2/",
-  "last_seen": "2026-10-27 09:21",
+  "last_seen": "2026-10-27 09:37",
   "first_seen": false,
   "pushed_before": false,
   "price_dropped": false,
   "low_price": 69.9,
   "is_low": false,
   "at_low": false,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-19"
  },
  "H:c3e34f44d2ddc97c": {
   "article_id": "184794866",
@@ -3632,7 +3773,8 @@
   "low_price": 876.53,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-27"
  },
  "H:de876afcfd4be48b": {
   "article_id": "184785109",
@@ -3661,7 +3803,8 @@
   "is_low": false,
   "at_low": false,
   "_from_pool": true,
-  "watched": false
+  "watched": false,
+  "low_date": "2026-10-23"
  },
  "H:f5259b66f51f1aee": {
   "article_id": "184788512",
@@ -3684,7 +3827,8 @@
   "low_price": 18.3,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-27"
  },
  "H:89aa9bd6239dad9a": {
   "article_id": "184800211",
@@ -3710,7 +3854,8 @@
   "low_price": 286.07,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-27"
  },
  "H:03ca456cd396c6ba": {
   "article_id": "184799713",
@@ -3736,7 +3881,8 @@
   "low_price": 41.87,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-27"
  },
  "H:97b763d6756ee379": {
   "article_id": "184771252",
@@ -3759,10 +3905,11 @@
   "first_seen": false,
   "pushed_before": false,
   "price_dropped": false,
-  "low_price": 77.17,
+  "low_price": 74.17,
   "is_low": false,
-  "at_low": true,
-  "_from_pool": true
+  "at_low": false,
+  "_from_pool": true,
+  "low_date": "2026-10-22"
  },
  "H:ea62b30662c7efaa": {
   "article_id": "184782311",
@@ -3787,7 +3934,8 @@
   "low_price": 286.07,
   "is_low": false,
   "at_low": false,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-27"
  },
  "H:251f02c6687a6ed5": {
   "article_id": "184659178",
@@ -3810,7 +3958,8 @@
   "low_price": 2.07,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-27"
  },
  "H:74eec0a7cc366f71": {
   "article_id": "184806297",
@@ -3823,20 +3972,21 @@
   "mall": "拼多多",
   "conds": [],
   "category": "食品生鲜",
-  "zhi": 4,
-  "comments": 87,
+  "zhi": 6,
+  "comments": 96,
   "source": "12H最热",
   "time": "10-26 21:59",
-  "rank_no": 25,
+  "rank_no": 23,
   "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p2/",
-  "last_seen": "2026-10-27 09:21",
-  "first_seen": true,
+  "last_seen": "2026-10-27 09:37",
+  "first_seen": false,
   "pushed_before": false,
   "price_dropped": false,
-  "low_price": null,
+  "low_price": 23.73,
   "is_low": false,
-  "at_low": false,
-  "_from_pool": true
+  "at_low": true,
+  "_from_pool": true,
+  "low_date": "2026-10-27"
  },
  "H:3bfc54ddfac499d0": {
   "article_id": "184806009",
@@ -3850,16 +4000,17 @@
   "comments": 36,
   "source": "12H最热",
   "time": "10-26 21:55",
-  "rank_no": 26,
+  "rank_no": 25,
   "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p2/",
-  "last_seen": "2026-10-27 09:21",
-  "first_seen": true,
+  "last_seen": "2026-10-27 09:37",
+  "first_seen": false,
   "pushed_before": false,
   "price_dropped": false,
-  "low_price": null,
+  "low_price": 39.9,
   "is_low": false,
-  "at_low": false,
-  "_from_pool": true
+  "at_low": true,
+  "_from_pool": true,
+  "low_date": "2026-10-27"
  },
  "H:63324aa66b891d19": {
   "article_id": "184799987",
@@ -3881,14 +4032,15 @@
   "rank_no": 28,
   "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p2/",
   "last_seen": "2026-10-27 09:21",
-  "first_seen": true,
+  "first_seen": false,
   "pushed_before": false,
   "price_dropped": false,
-  "low_price": null,
+  "low_price": 172.46,
   "is_low": false,
-  "at_low": false,
+  "at_low": true,
   "_from_pool": true,
-  "watched": false
+  "watched": false,
+  "low_date": "2026-10-27"
  },
  "H:f5a978e1bf37197f": {
   "article_id": "184815679",
@@ -3904,16 +4056,17 @@
   "comments": 17,
   "source": "12H最热",
   "time": "01:37",
-  "rank_no": 29,
+  "rank_no": 28,
   "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p2/",
-  "last_seen": "2026-10-27 09:21",
-  "first_seen": true,
+  "last_seen": "2026-10-27 09:37",
+  "first_seen": false,
   "pushed_before": false,
   "price_dropped": false,
-  "low_price": null,
+  "low_price": 199.0,
   "is_low": false,
-  "at_low": false,
-  "_from_pool": true
+  "at_low": true,
+  "_from_pool": true,
+  "low_date": "2026-10-27"
  },
  "H:0030b96c8afaa59a": {
   "article_id": "184810700",
@@ -3928,20 +4081,21 @@
    "凑单"
   ],
   "category": "电脑数码",
-  "zhi": 1,
-  "comments": 74,
+  "zhi": 3,
+  "comments": 79,
   "source": "12H最热",
   "time": "10-26 23:59",
-  "rank_no": 31,
+  "rank_no": 26,
   "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p2/",
-  "last_seen": "2026-10-27 09:21",
-  "first_seen": true,
+  "last_seen": "2026-10-27 09:37",
+  "first_seen": false,
   "pushed_before": false,
   "price_dropped": false,
-  "low_price": null,
+  "low_price": 200.6,
   "is_low": false,
-  "at_low": false,
-  "_from_pool": true
+  "at_low": true,
+  "_from_pool": true,
+  "low_date": "2026-10-27"
  },
  "H:67072ed9ae3c61ba": {
   "article_id": "184790519",
@@ -3960,16 +4114,17 @@
   "comments": 13,
   "source": "12H最热",
   "time": "10-26 17:37",
-  "rank_no": 33,
+  "rank_no": 31,
   "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p2/",
-  "last_seen": "2026-10-27 09:21",
+  "last_seen": "2026-10-27 09:37",
   "first_seen": false,
   "pushed_before": false,
   "price_dropped": false,
-  "low_price": 102.0,
-  "is_low": true,
-  "at_low": false,
-  "_from_pool": true
+  "low_price": 99.0,
+  "is_low": false,
+  "at_low": true,
+  "_from_pool": true,
+  "low_date": "2026-10-26"
  },
  "H:cfc17782ae0791c1": {
   "article_id": "184800923",
@@ -3986,13 +4141,14 @@
   "rank_no": 34,
   "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p3/",
   "last_seen": "2026-10-27 09:21",
-  "first_seen": true,
+  "first_seen": false,
   "pushed_before": false,
   "price_dropped": false,
-  "low_price": null,
+  "low_price": 299.0,
   "is_low": false,
-  "at_low": false,
-  "_from_pool": true
+  "at_low": true,
+  "_from_pool": true,
+  "low_date": "2026-10-27"
  },
  "H:20e0250587dac254": {
   "article_id": "184804624",
@@ -4007,21 +4163,22 @@
    "需券"
   ],
   "category": "家用电器",
-  "zhi": 4,
+  "zhi": 6,
   "comments": 33,
   "source": "12H最热",
   "time": "10-26 21:13",
-  "rank_no": 36,
-  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p3/",
-  "last_seen": "2026-10-27 09:21",
+  "rank_no": 32,
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p2/",
+  "last_seen": "2026-10-27 09:37",
   "first_seen": false,
   "pushed_before": false,
   "price_dropped": false,
-  "low_price": 848.45,
-  "is_low": true,
-  "at_low": false,
+  "low_price": 817.68,
+  "is_low": false,
+  "at_low": true,
   "_from_pool": true,
-  "watched": false
+  "watched": false,
+  "low_date": "2026-10-24"
  },
  "H:5c2c4b64859d55c8": {
   "article_id": "184804518",
@@ -4040,17 +4197,18 @@
   "comments": 16,
   "source": "12H最热",
   "time": "10-26 21:10",
-  "rank_no": 37,
-  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p3/",
-  "last_seen": "2026-10-27 09:21",
-  "first_seen": true,
+  "rank_no": 33,
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p2/",
+  "last_seen": "2026-10-27 09:37",
+  "first_seen": false,
   "pushed_before": false,
   "price_dropped": false,
-  "low_price": null,
+  "low_price": 4.51,
   "is_low": false,
-  "at_low": false,
+  "at_low": true,
   "_from_pool": true,
-  "watched": false
+  "watched": false,
+  "low_date": "2026-10-27"
  },
  "H:3e92356c8f55f257": {
   "article_id": "184806497",
@@ -4069,16 +4227,17 @@
   "comments": 23,
   "source": "12H最热",
   "time": "10-26 21:58",
-  "rank_no": 38,
+  "rank_no": 35,
   "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p3/",
-  "last_seen": "2026-10-27 09:21",
-  "first_seen": true,
+  "last_seen": "2026-10-27 09:37",
+  "first_seen": false,
   "pushed_before": false,
   "price_dropped": false,
-  "low_price": null,
+  "low_price": 12.42,
   "is_low": false,
-  "at_low": false,
-  "_from_pool": true
+  "at_low": true,
+  "_from_pool": true,
+  "low_date": "2026-10-27"
  },
  "H:50a345f866d42b0d": {
   "article_id": "184806815",
@@ -4095,19 +4254,20 @@
   ],
   "category": "其他",
   "zhi": 12,
-  "comments": 23,
+  "comments": 24,
   "source": "12H最热",
   "time": "10-26 22:02",
-  "rank_no": 40,
+  "rank_no": 34,
   "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p3/",
-  "last_seen": "2026-10-27 09:21",
-  "first_seen": true,
+  "last_seen": "2026-10-27 09:37",
+  "first_seen": false,
   "pushed_before": false,
   "price_dropped": false,
-  "low_price": null,
+  "low_price": 2743.0,
   "is_low": false,
-  "at_low": false,
-  "_from_pool": true
+  "at_low": true,
+  "_from_pool": true,
+  "low_date": "2026-10-27"
  },
  "H:52095428937dab97": {
   "article_id": "184804957",
@@ -4135,7 +4295,8 @@
   "low_price": 14.98,
   "is_low": false,
   "at_low": false,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-19"
  },
  "H:3d88834da3c24950": {
   "article_id": "184801945",
@@ -4157,14 +4318,15 @@
   "rank_no": 43,
   "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p3/",
   "last_seen": "2026-10-27 09:21",
-  "first_seen": true,
+  "first_seen": false,
   "pushed_before": false,
   "price_dropped": false,
-  "low_price": null,
+  "low_price": 44.8,
   "is_low": false,
-  "at_low": false,
+  "at_low": true,
   "_from_pool": true,
-  "watched": false
+  "watched": false,
+  "low_date": "2026-10-27"
  },
  "H:8d08846d3d391555": {
   "article_id": "184804717",
@@ -4178,41 +4340,43 @@
   "comments": 33,
   "source": "12H最热",
   "time": "10-26 21:17",
-  "rank_no": 44,
+  "rank_no": 39,
   "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p3/",
-  "last_seen": "2026-10-27 09:21",
+  "last_seen": "2026-10-27 09:37",
   "first_seen": false,
   "pushed_before": false,
   "price_dropped": false,
-  "low_price": 7.9,
-  "is_low": true,
-  "at_low": false,
-  "_from_pool": true
+  "low_price": 6.9,
+  "is_low": false,
+  "at_low": true,
+  "_from_pool": true,
+  "low_date": "2026-10-19"
  },
  "H:fc6197b10d3ffbec": {
-  "article_id": "184805008",
+  "article_id": "184791486",
   "title": "京农超 山东正宗秋月梨 净重4.5斤精品果 产地直发",
-  "price": 15.8,
-  "url": "https://www.smzdm.com/p/184805008/",
+  "price": 15.9,
+  "url": "https://www.smzdm.com/p/184791486/",
   "mall": "京东",
   "conds": [
    "需券"
   ],
   "category": "其他",
-  "zhi": 3,
-  "comments": 19,
+  "zhi": 4,
+  "comments": 25,
   "source": "12H最热",
-  "time": "10-26 21:28",
-  "rank_no": 73,
-  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p5/",
-  "last_seen": "2026-10-27 09:21",
-  "first_seen": true,
+  "time": "10-26 17:44",
+  "rank_no": 43,
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p3/",
+  "last_seen": "2026-10-27 09:37",
+  "first_seen": false,
   "pushed_before": false,
   "price_dropped": false,
-  "low_price": null,
+  "low_price": 15.8,
   "is_low": false,
   "at_low": false,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-27"
  },
  "H:579ba0efb6a698ea": {
   "article_id": "184809188",
@@ -4228,19 +4392,20 @@
   ],
   "category": "其他",
   "zhi": 4,
-  "comments": 13,
+  "comments": 14,
   "source": "12H最热",
   "time": "10-26 23:08",
-  "rank_no": 47,
+  "rank_no": 41,
   "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p3/",
-  "last_seen": "2026-10-27 09:21",
-  "first_seen": true,
+  "last_seen": "2026-10-27 09:37",
+  "first_seen": false,
   "pushed_before": false,
   "price_dropped": false,
-  "low_price": null,
+  "low_price": 227.0,
   "is_low": false,
-  "at_low": false,
-  "_from_pool": true
+  "at_low": true,
+  "_from_pool": true,
+  "low_date": "2026-10-27"
  },
  "H:cbc933cd216e8d84": {
   "article_id": "184815680",
@@ -4256,16 +4421,17 @@
   "comments": 15,
   "source": "12H最热",
   "time": "01:37",
-  "rank_no": 50,
-  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p4/",
-  "last_seen": "2026-10-27 09:21",
-  "first_seen": true,
+  "rank_no": 42,
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p3/",
+  "last_seen": "2026-10-27 09:37",
+  "first_seen": false,
   "pushed_before": false,
   "price_dropped": false,
-  "low_price": null,
+  "low_price": 138.0,
   "is_low": false,
-  "at_low": false,
-  "_from_pool": true
+  "at_low": true,
+  "_from_pool": true,
+  "low_date": "2026-10-27"
  },
  "H:3c3c2a63f7c74f77": {
   "article_id": "184803419",
@@ -4282,17 +4448,18 @@
   "comments": 12,
   "source": "12H最热",
   "time": "10-26 20:55",
-  "rank_no": 51,
-  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p4/",
-  "last_seen": "2026-10-27 09:21",
+  "rank_no": 44,
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p3/",
+  "last_seen": "2026-10-27 09:37",
   "first_seen": false,
   "pushed_before": false,
   "price_dropped": false,
-  "low_price": 16.34,
-  "is_low": true,
-  "at_low": false,
+  "low_price": 15.52,
+  "is_low": false,
+  "at_low": true,
   "_from_pool": true,
-  "watched": false
+  "watched": false,
+  "low_date": "2026-10-26"
  },
  "H:6ddbdd87d23c4f2b": {
   "article_id": "184765056",
@@ -4306,16 +4473,17 @@
   "comments": 27,
   "source": "12H最热",
   "time": "10-26 11:10",
-  "rank_no": 53,
+  "rank_no": 45,
   "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p4/",
-  "last_seen": "2026-10-27 09:21",
-  "first_seen": true,
+  "last_seen": "2026-10-27 09:37",
+  "first_seen": false,
   "pushed_before": false,
   "price_dropped": false,
-  "low_price": null,
+  "low_price": 38.93,
   "is_low": false,
-  "at_low": false,
-  "_from_pool": true
+  "at_low": true,
+  "_from_pool": true,
+  "low_date": "2026-10-27"
  },
  "H:c6eb412a1d59e146": {
   "article_id": "184807150",
@@ -4335,17 +4503,18 @@
   "comments": 16,
   "source": "12H最热",
   "time": "10-26 22:22",
-  "rank_no": 55,
+  "rank_no": 48,
   "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p4/",
-  "last_seen": "2026-10-27 09:21",
-  "first_seen": true,
+  "last_seen": "2026-10-27 09:37",
+  "first_seen": false,
   "pushed_before": false,
   "price_dropped": false,
-  "low_price": null,
+  "low_price": 10.77,
   "is_low": false,
-  "at_low": false,
+  "at_low": true,
   "_from_pool": true,
-  "watched": false
+  "watched": false,
+  "low_date": "2026-10-27"
  },
  "H:e0e59999e5595ca4": {
   "article_id": "184806030",
@@ -4361,16 +4530,17 @@
   "comments": 11,
   "source": "12H最热",
   "time": "10-26 21:55",
-  "rank_no": 56,
+  "rank_no": 49,
   "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p4/",
-  "last_seen": "2026-10-27 09:21",
-  "first_seen": true,
+  "last_seen": "2026-10-27 09:37",
+  "first_seen": false,
   "pushed_before": false,
   "price_dropped": false,
-  "low_price": null,
+  "low_price": 19.79,
   "is_low": false,
-  "at_low": false,
-  "_from_pool": true
+  "at_low": true,
+  "_from_pool": true,
+  "low_date": "2026-10-27"
  },
  "H:fe8a0a82c71b3e22": {
   "article_id": "184807365",
@@ -4382,20 +4552,21 @@
    "需券"
   ],
   "category": "食品生鲜",
-  "zhi": 2,
+  "zhi": 4,
   "comments": 17,
   "source": "12H最热",
   "time": "10-26 22:16",
-  "rank_no": 59,
+  "rank_no": 56,
   "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p4/",
-  "last_seen": "2026-10-27 09:21",
-  "first_seen": true,
+  "last_seen": "2026-10-27 09:37",
+  "first_seen": false,
   "pushed_before": false,
   "price_dropped": false,
-  "low_price": null,
+  "low_price": 2549.15,
   "is_low": false,
-  "at_low": false,
-  "_from_pool": true
+  "at_low": true,
+  "_from_pool": true,
+  "low_date": "2026-10-27"
  },
  "H:ecd09d4b1b94f6dc": {
   "article_id": "184805174",
@@ -4414,16 +4585,17 @@
   "comments": 14,
   "source": "12H最热",
   "time": "10-26 21:31",
-  "rank_no": 60,
+  "rank_no": 57,
   "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p4/",
-  "last_seen": "2026-10-27 09:21",
-  "first_seen": true,
+  "last_seen": "2026-10-27 09:37",
+  "first_seen": false,
   "pushed_before": false,
   "price_dropped": false,
-  "low_price": null,
+  "low_price": 79.3,
   "is_low": false,
-  "at_low": false,
-  "_from_pool": true
+  "at_low": true,
+  "_from_pool": true,
+  "low_date": "2026-10-27"
  },
  "H:fd17fa70d3a99f22": {
   "article_id": "184793790",
@@ -4446,10 +4618,11 @@
   "first_seen": false,
   "pushed_before": false,
   "price_dropped": false,
-  "low_price": 9.23,
-  "is_low": true,
-  "at_low": false,
-  "_from_pool": true
+  "low_price": 8.98,
+  "is_low": false,
+  "at_low": true,
+  "_from_pool": true,
+  "low_date": "2026-10-19"
  },
  "H:88fc87f0d0fc38be": {
   "article_id": "184815666",
@@ -4462,19 +4635,20 @@
   ],
   "category": "其他",
   "zhi": 2,
-  "comments": 14,
+  "comments": 15,
   "source": "12H最热",
   "time": "01:37",
-  "rank_no": 62,
+  "rank_no": 58,
   "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p4/",
-  "last_seen": "2026-10-27 09:21",
-  "first_seen": true,
+  "last_seen": "2026-10-27 09:37",
+  "first_seen": false,
   "pushed_before": false,
   "price_dropped": false,
-  "low_price": null,
+  "low_price": 31.48,
   "is_low": false,
-  "at_low": false,
-  "_from_pool": true
+  "at_low": true,
+  "_from_pool": true,
+  "low_date": "2026-10-27"
  },
  "H:9453c1eb1d83628a": {
   "article_id": "184809348",
@@ -4486,20 +4660,21 @@
    "需券"
   ],
   "category": "其他",
-  "zhi": 11,
-  "comments": 17,
+  "zhi": 13,
+  "comments": 18,
   "source": "12H最热",
   "time": "10-26 23:15",
-  "rank_no": 63,
-  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p5/",
-  "last_seen": "2026-10-27 09:21",
-  "first_seen": true,
+  "rank_no": 51,
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p4/",
+  "last_seen": "2026-10-27 09:37",
+  "first_seen": false,
   "pushed_before": false,
   "price_dropped": false,
-  "low_price": null,
+  "low_price": 879.0,
   "is_low": false,
-  "at_low": false,
-  "_from_pool": true
+  "at_low": true,
+  "_from_pool": true,
+  "low_date": "2026-10-27"
  },
  "H:67881f4569622696": {
   "article_id": "184824810",
@@ -4515,19 +4690,20 @@
   ],
   "category": "其他",
   "zhi": 2,
-  "comments": 28,
+  "comments": 30,
   "source": "12H最热",
   "time": "08:10",
-  "rank_no": 65,
-  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p5/",
-  "last_seen": "2026-10-27 09:21",
-  "first_seen": true,
+  "rank_no": 52,
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p4/",
+  "last_seen": "2026-10-27 09:37",
+  "first_seen": false,
   "pushed_before": false,
   "price_dropped": false,
-  "low_price": null,
+  "low_price": 1681.47,
   "is_low": false,
-  "at_low": false,
-  "_from_pool": true
+  "at_low": true,
+  "_from_pool": true,
+  "low_date": "2026-10-27"
  },
  "H:376b4b075c34555d": {
   "article_id": "184798707",
@@ -4546,13 +4722,14 @@
   "rank_no": 67,
   "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p5/",
   "last_seen": "2026-10-27 09:21",
-  "first_seen": true,
+  "first_seen": false,
   "pushed_before": false,
   "price_dropped": false,
-  "low_price": null,
+  "low_price": 19.9,
   "is_low": false,
-  "at_low": false,
-  "_from_pool": true
+  "at_low": true,
+  "_from_pool": true,
+  "low_date": "2026-10-27"
  },
  "H:3fd3ef8a5ced7231": {
   "article_id": "184797315",
@@ -4569,16 +4746,17 @@
   "comments": 14,
   "source": "12H最热",
   "time": "10-26 19:16",
-  "rank_no": 68,
+  "rank_no": 63,
   "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p5/",
-  "last_seen": "2026-10-27 09:21",
-  "first_seen": true,
+  "last_seen": "2026-10-27 09:37",
+  "first_seen": false,
   "pushed_before": false,
   "price_dropped": false,
-  "low_price": null,
+  "low_price": 29.23,
   "is_low": false,
-  "at_low": false,
-  "_from_pool": true
+  "at_low": true,
+  "_from_pool": true,
+  "low_date": "2026-10-27"
  },
  "H:24fb890dfd99a8b9": {
   "article_id": "184800766",
@@ -4595,13 +4773,14 @@
   "rank_no": 69,
   "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p5/",
   "last_seen": "2026-10-27 09:21",
-  "first_seen": true,
+  "first_seen": false,
   "pushed_before": false,
   "price_dropped": false,
-  "low_price": null,
+  "low_price": 1908.04,
   "is_low": false,
-  "at_low": false,
-  "_from_pool": true
+  "at_low": true,
+  "_from_pool": true,
+  "low_date": "2026-10-27"
  },
  "H:1604f72ff6657083": {
   "article_id": "184800762",
@@ -4614,19 +4793,20 @@
   ],
   "category": "电脑数码",
   "zhi": 3,
-  "comments": 33,
+  "comments": 34,
   "source": "12H最热",
   "time": "10-26 20:31",
-  "rank_no": 71,
-  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p5/",
-  "last_seen": "2026-10-27 09:21",
+  "rank_no": 59,
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p4/",
+  "last_seen": "2026-10-27 09:37",
   "first_seen": false,
   "pushed_before": false,
   "price_dropped": false,
   "low_price": 9.9,
   "is_low": false,
   "at_low": true,
-  "_from_pool": true
+  "_from_pool": true,
+  "low_date": "2026-10-26"
  },
  "H:b3c7ead0f6e19c0e": {
   "article_id": "184804800",
@@ -4640,16 +4820,17 @@
   "comments": 25,
   "source": "12H最热",
   "time": "10-26 21:20",
-  "rank_no": 75,
+  "rank_no": 69,
   "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p5/",
-  "last_seen": "2026-10-27 09:21",
-  "first_seen": true,
+  "last_seen": "2026-10-27 09:37",
+  "first_seen": false,
   "pushed_before": false,
   "price_dropped": false,
-  "low_price": null,
+  "low_price": 145.48,
   "is_low": false,
-  "at_low": false,
-  "_from_pool": true
+  "at_low": true,
+  "_from_pool": true,
+  "low_date": "2026-10-27"
  },
  "H:a24610fad803043f": {
   "article_id": "184797706",
@@ -4665,15 +4846,144 @@
   "comments": 12,
   "source": "12H最热",
   "time": "10-26 19:28",
-  "rank_no": 79,
+  "rank_no": 73,
   "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p5/",
-  "last_seen": "2026-10-27 09:21",
+  "last_seen": "2026-10-27 09:37",
+  "first_seen": false,
+  "pushed_before": false,
+  "price_dropped": false,
+  "low_price": 59.9,
+  "is_low": false,
+  "at_low": true,
+  "_from_pool": true,
+  "low_date": "2026-10-27"
+ },
+ "H:90c62eaae49b884d": {
+  "article_id": "184828282",
+  "title": "倍思 小冰充100W氮化镓折叠快充充电器 iPhone 18 充电器",
+  "price": 44.34,
+  "origin_price": 44.34,
+  "save": 0.0,
+  "url": "https://www.smzdm.com/p/184828282/",
+  "mall": "拼多多",
+  "conds": [],
+  "category": "电脑数码",
+  "zhi": 4,
+  "comments": 33,
+  "source": "12H最热",
+  "time": "08:48",
+  "rank_no": 54,
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p4/",
+  "last_seen": "2026-10-27 09:37",
   "first_seen": true,
   "pushed_before": false,
   "price_dropped": false,
   "low_price": null,
   "is_low": false,
   "at_low": false,
+  "_from_pool": true
+ },
+ "H:36bb588b1ce6ab3e": {
+  "article_id": "184811854",
+  "title": "恒洁 全智能马桶H35Pro泡沫盾+零压劲冲+智控翻盖+随心贴+易洁釉面 包安装包拆旧",
+  "price": 1384.15,
+  "origin_price": 4614.0,
+  "discount_pct": 30.0,
+  "save": 3229.85,
+  "url": "https://www.smzdm.com/p/184811854/",
+  "mall": "天猫精选",
+  "conds": [
+   "需券"
+  ],
+  "category": "其他",
+  "zhi": 2,
+  "comments": 15,
+  "source": "12H最热",
+  "time": "00:10",
+  "rank_no": 65,
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p5/",
+  "last_seen": "2026-10-27 09:37",
+  "first_seen": true,
+  "pushed_before": false,
+  "price_dropped": false,
+  "low_price": null,
+  "is_low": false,
+  "at_low": false,
+  "_from_pool": true,
+  "watched": false
+ },
+ "H:44720bab636039e4": {
+  "article_id": "184808768",
+  "title": "狮王 原装进口趣净系列 泡沫绵密洗手液 西柚+青芒 200ml 共6袋",
+  "price": 45.8,
+  "url": "https://www.smzdm.com/p/184808768/",
+  "mall": "京东",
+  "conds": [
+   "需券"
+  ],
+  "category": "日用百货",
+  "zhi": 10,
+  "comments": 15,
+  "source": "12H最热",
+  "time": "10-26 22:58",
+  "rank_no": 71,
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p5/",
+  "last_seen": "2026-10-27 09:37",
+  "first_seen": true,
+  "pushed_before": false,
+  "price_dropped": false,
+  "low_price": null,
+  "is_low": false,
+  "at_low": false,
+  "_from_pool": true
+ },
+ "H:6bf1795b375c4898": {
+  "article_id": "184768877",
+  "title": "百亿补贴：小米 15 5G手机",
+  "price": 2268.0,
+  "url": "https://www.smzdm.com/p/184768877/",
+  "mall": "天猫精选",
+  "conds": [
+   "需券"
+  ],
+  "category": "食品生鲜",
+  "zhi": 4,
+  "comments": 16,
+  "source": "12H最热",
+  "time": "10-26 11:46",
+  "rank_no": 74,
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p5/",
+  "last_seen": "2026-10-27 09:37",
+  "first_seen": true,
+  "pushed_before": false,
+  "price_dropped": false,
+  "low_price": null,
+  "is_low": false,
+  "at_low": false,
+  "_from_pool": true
+ },
+ "H:fb3a7e832eb17bce": {
+  "article_id": "184776684",
+  "title": "镜邦 1.56 极速感光变色镜片+1073黑色超轻钛架/合金/TR多款可选",
+  "price": 59.0,
+  "url": "https://www.smzdm.com/p/184776684/",
+  "mall": "京东",
+  "conds": [],
+  "category": "其他",
+  "zhi": 6,
+  "comments": 21,
+  "source": "12H最热",
+  "time": "07:55",
+  "rank_no": 75,
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p5/",
+  "last_seen": "2026-10-27 09:37",
+  "first_seen": false,
+  "pushed_before": false,
+  "price_dropped": false,
+  "low_price": 59.0,
+  "low_date": "2026-10-25",
+  "is_low": false,
+  "at_low": true,
   "_from_pool": true
  }
 }
