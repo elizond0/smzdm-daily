@@ -4,3 +4,6 @@
 # Windows 本地仍用 CRLF
 *.bat text eol=crlf
 *.ps1 text eol=crlf
+
+# bash 脚本必须 LF：CRLF 会让 bash 报 $'\r': command not found
+*.sh text eol=lf
