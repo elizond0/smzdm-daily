@@ -88,46 +88,116 @@ tbody tr:hover td{background:#fcfcfd}
 /* ---------- 手机端：表格拆成卡片，避免窄屏把商品名挤成竖排 ---------- */
 @media (max-width:700px){
   html,body{overflow-x:hidden;max-width:100%}
-  body{padding:18px 12px}
-  h1{font-size:18px}
-  .sub{font-size:11.5px;margin-bottom:16px;line-height:1.7}
-  .stats{grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:16px}
-  .stat{padding:10px 12px}
-  .stat .k{font-size:11px}
-  .stat .v{font-size:18px}
-  .funnel{font-size:11.5px;padding:8px 10px;line-height:1.8;word-break:break-word}
-  h2{font-size:13px;margin:20px 0 8px}
-  h2 .hint{font-size:11px}
+  body{padding:14px 10px 24px;font-size:14px;-webkit-text-size-adjust:100%;
+    background:#f2f3f5;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+  .wrap{max-width:100%}
+
+  h1{font-size:17.5px;letter-spacing:-.2px;margin:0 0 3px;font-weight:700}
+
+  /* 顶部：说明文字独占一行，三个入口三等分铺满下一行 */
+  .sub{font-size:10.5px;margin-bottom:12px;line-height:1.7;color:#8a8f97;
+    word-break:break-word;overflow-wrap:anywhere;
+    display:flex;flex-wrap:wrap;align-items:center;gap:8px 0;
+    justify-content:space-between}
+  .sub>a.wishlink{display:flex;width:calc(33.333% - 5.34px);flex:none;
+    align-items:center;justify-content:center;gap:3px;padding:6px 2px;
+    font-size:10.5px;border-radius:8px;margin:0;font-weight:500;
+    line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .sub>a.wishlink .ico{width:9px;height:9px;flex:none}
+  .sub>a.wishlink span{font-size:9.5px;opacity:.72;margin-left:1px}
+
+  /* 四宫格统计：数字更醒目，圆角加大 */
+  .stats{grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:14px}
+  .stat{padding:11px 13px;border-radius:12px;border-color:#e9ebee;
+    box-shadow:0 1px 2px rgba(16,20,28,.04)}
+  .stat .k{font-size:10.5px;color:#8a8f97;margin-bottom:2px}
+  .stat .v{font-size:20px;font-weight:700;letter-spacing:-.4px;line-height:1.25}
+  .stat .v em{font-size:10.5px;font-weight:400;color:#8a8f97}
+
+  .funnel{font-size:11px;padding:9px 11px;line-height:1.85;border-radius:10px;
+    word-break:break-word;margin-bottom:14px;color:#71767e}
+  .warn{font-size:11.5px;padding:9px 11px;border-radius:10px;margin-bottom:12px}
+
+  /* 分节标题：去掉冗余小字，留出呼吸感 */
+  h2{font-size:13.5px;margin:18px 0 8px;gap:6px;font-weight:600}
+  h2 .dot{width:3px;height:12px;border-radius:2px}
+  h2 .hint{font-size:10.5px;color:#9aa0a8;font-weight:400;display:block;
+    margin-left:9px;margin-top:-2px}
+
+  /* 图例：允许换行（横滑看不到全部，反而更难用），压成小字两行内 */
+  .legend{flex-wrap:wrap;gap:3px 12px;font-size:10px;margin:0 0 8px;
+    line-height:1.6;color:#8a8f97}
+  .legend>span{white-space:nowrap;flex:none}
+  .legend .sw{width:7px;height:7px;margin-right:4px}
+
+  /* ---------- 卡片 ---------- */
   table,tbody,tr,td{display:block;width:auto}
   table{border:0;background:transparent;border-radius:0}
   thead{display:none}
-  tr{position:relative;background:#fff;border:1px solid #e6e8eb;border-radius:10px;
-     padding:12px;margin-bottom:9px}
+  tbody{display:block}
+  tr{position:relative;background:#fff;border:1px solid #e9ebee;border-radius:13px;
+     padding:12px 13px 10px;margin-bottom:9px;
+     box-shadow:0 1px 2px rgba(16,20,28,.04);
+     transition:box-shadow .15s ease}
   tr:last-child{margin-bottom:0}
   tbody tr:hover td{background:transparent}
   td{border:0;padding:0}
-  .idx{position:absolute;left:12px;top:12px;color:#c3c7cd;font-size:11px;width:auto}
-  .name{padding-left:19px;margin-bottom:7px;line-height:1.55;word-break:break-word}
-  .name a{font-size:14px}
-  .meta{font-size:11px;line-height:1.6;margin-top:3px}
-  .num{display:inline-block;width:auto;text-align:left;white-space:normal;
-        margin-right:10px;font-size:13px}
-  .num b{font-size:16px}
-  .num s{font-size:11.5px}
-  .save{display:inline-block;margin-right:8px;font-size:12px}
-  .rate{display:inline-block;width:auto;text-align:left;font-size:13px}
+
+  /* 序号做成左上角小圆片 */
+  .idx{position:absolute;left:11px;top:12px;width:17px;height:17px;
+    display:flex;align-items:center;justify-content:center;
+    background:#f2f3f5;color:#9aa0a8;border-radius:5px;font-size:10px;
+    font-weight:600;font-variant-numeric:tabular-nums;line-height:1}
+  /* 商品名与标签同段落流式排布：标题后紧跟标签/按钮，超长才换行 */
+  .name{padding-left:24px;margin-bottom:7px;line-height:1.6;word-break:break-word}
+  .name a{font-size:13.5px;font-weight:600;color:#16181c;letter-spacing:-.1px;
+    display:inline;text-decoration:none;word-break:break-word}
+  .meta{font-size:10px;line-height:1.55;margin-top:5px;color:#9aa0a8;
+    word-break:break-word;overflow-wrap:anywhere;letter-spacing:-.1px}
+
+  /* 标签与快捷按钮：自然换行，不再挤成一团 */
+  .tag,.newlow,.atlow,.first,.wish{font-size:9.5px;margin-left:4px;padding:1px 5px;
+    border-radius:4px;vertical-align:1.5px;white-space:nowrap}
+  .wishbtn,.blkbtn{margin-left:4px;padding:2px 6px;border-radius:5px;vertical-align:1.5px}
+  .wishbtn svg,.blkbtn svg{width:9px;height:9px}
+
+  /* 底部价格区：flex 两端对齐，价格在左、折扣在右，同一行不再折行 */
+  tr{display:flex;flex-wrap:wrap;align-items:flex-start}
+  tr>.idx{flex:0 0 auto}
+  tr>.name{flex:1 1 100%;width:100%}
+  tr>.num{flex:1 1 auto;min-width:0;display:flex;align-items:baseline;flex-wrap:wrap;
+    gap:0 5px;order:2;font-size:12px;white-space:normal;text-align:left;
+    margin-top:7px;padding-top:6px;border-top:1px dashed #f0f1f3}
+  tr>.rate{flex:0 0 auto;order:3;margin-top:7px;padding-top:6px;
+    border-top:1px dashed #f0f1f3;text-align:right;align-self:stretch;
+    display:flex;align-items:baseline;justify-content:flex-end}
+  .num b{font-size:18px;letter-spacing:-.5px;font-variant-numeric:tabular-nums;
+    color:#c8102e;line-height:1.2}
+  .num s{font-size:10.5px;color:#b6bac1}
+  .num .atlow,.num .newlow{font-size:9.5px;vertical-align:2px}
+  .lowhint{flex:1 1 100%;font-size:9.5px;margin:-1px 0 0;color:#9aa0a8;
+    letter-spacing:-.1px}
+  .save{display:inline-block;margin:0;font-size:10.5px;color:#8a8f97}
+  .rate{font-size:12px;font-weight:700;color:#c8102e;letter-spacing:-.2px}
+  .rate small{font-size:9.5px;font-weight:400}
   .bar{display:none}
-  .tag,.newlow,.atlow,.first{font-size:10px;margin-left:4px}
-  .lowhint{font-size:10.5px}
-  .legend{font-size:11px;gap:4px 12px;margin-bottom:9px}
-  .foot{font-size:11px;line-height:1.8}
+
+  .legend{font-size:10.5px}
+  .foot{font-size:10.5px;line-height:1.85;margin-top:18px;padding:0 2px;color:#9aa0a8}
+  .foot br{display:none}
+}
+@media (max-width:380px){
+  body{padding:12px 8px 20px}
+  .stat .v{font-size:18px}
+  .name a{font-size:13px}
+  .num b{font-size:16px}
 }
 </style>
 </head>
 <body>
 <div class="wrap">
   <h1>值得买日报 · 2026-10-27</h1>
-  <div class="sub">抓取 2026-10-27 13:46　请求 5 次　
+  <div class="sub">抓取 2026-10-27 14:16　请求 5 次　
     来源 smzdm.com（时点快照，价格与库存随时变动）
     <a class="wishlink" href="./wishlist.html"><svg class="ico" viewBox="0 0 16 16"><path d="M8 2.2l1.75 3.55 3.92.57-2.84 2.77.67 3.9L8 11.16l-3.5 1.83.67-3.9L2.33 6.32l3.92-.57z"/></svg>愿望单 <span id="wishCount" style="font-weight:400">0 个关键词</span></a>
     <a class="wishlink" href="./blocklist.html" style="background:#fdecee;color:#a1404c;border-color:#f3c3c9"><svg class="ico" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.2"/><path d="M3.8 12.2 12.2 3.8"/></svg>屏蔽词 <span id="blockCount" style="font-weight:400">0 个屏蔽词</span></a>
@@ -139,7 +209,7 @@ tbody tr:hover td{background:#fcfcfd}
     <div class="stat"><div class="k">最低折</div><div class="v">1.4<em>折</em></div></div>
     <div class="stat"><div class="k">最高立省</div><div class="v">¥3,301</div></div>
   </div>
-  <div class="funnel">数据源 74 条 → 热度不足 −1 → 价超限 −3 → 降价放行 +1 → 好价榜 <b>20</b> 条（无原价 36 条）　|　24 小时池 <b>222</b> 条 → 折扣榜 <b>10</b> 条</div>
+  <div class="funnel">数据源 74 条 → 热度不足 −1 → 价超限 −1 → 降价放行 +1 → 好价榜 <b>20</b> 条（无原价 39 条）　|　24 小时池 <b>224</b> 条 → 折扣榜 <b>10</b> 条</div>
   <h2><span class="dot"></span>折扣榜 <span class="hint">按折扣力度排序 · 只收 3.5 折以内</span></h2>
   <div class="legend">
     <span><i class="sw sw-nl"></i>新低 = 比历史最低还低</span>
@@ -162,14 +232,14 @@ tbody tr:hover td{background:#fcfcfd}
 </tr><tr>
   <td class="idx">3</td>
   <td class="name" data-t="移动专享、今日必买：米家 空气净化器 5 Pro"><a href="https://www.smzdm.com/p/184799205/" target="_blank">移动专享、今日必买：米家 空气净化器 5 Pro</a>
-    <div class="meta">其他 · 抖音商城 · 12H最热 · 10-26 20:07 · 值81/评80 · 拉取 2026-10-27 </div></td>
-  <td class="num"><b>¥699</b> <s>¥4000</s><span class="newlow">新低</span></td>
+    <div class="meta">其他 · 抖音商城 · 12H最热 · 10-26 20:07 · 值85/评91 · 拉取 2026-10-27 </div></td>
+  <td class="num"><b>¥699</b> <s>¥4000</s><span class="atlow">史低</span></td>
   <td class="rate">1.8<small>折</small><div class="bar"><i style="width:17.5%"></i></div></td>
 </tr><tr>
   <td class="idx">4</td>
   <td class="name" data-t="移动专享：小米 自营/加补 小米米家空气净化器5Pro除甲醛宠物消毒净化机除烟异味"><a href="https://www.smzdm.com/p/184799205/" target="_blank">移动专享：小米 自营/加补 小米米家空气净化器5Pro除甲醛宠物消毒净化机除烟异味</a>
     <div class="meta">食品生鲜 · 抖音商城 · 12H最热 · 10-26 20:07 · 值42/评32 · 拉取 2026-10-27 </div></td>
-  <td class="num"><b>¥700</b> <s>¥4000</s><span class="atlow">史低</span></td>
+  <td class="num"><b>¥700</b> <s>¥4000</s><div class="lowhint">历史低 ¥699（10-27）</div></td>
   <td class="rate">1.8<small>折</small><div class="bar"><i style="width:17.5%"></i></div></td>
 </tr><tr>
   <td class="idx">5</td>
@@ -213,31 +283,31 @@ tbody tr:hover td{background:#fcfcfd}
   <tbody><tr>
   <td class="idx">1</td>
   <td class="name" data-t="倍思 小冰充100W氮化镓折叠快充充电器 iPhone 18 充电器"><a href="https://www.smzdm.com/p/184828282/" target="_blank">倍思 小冰充100W氮化镓折叠快充充电器 iPhone 18 充电器</a>
-    <div class="meta">电脑数码 · 拼多多 · 12H最热 · 08:48 · 值74/评2 · 拉取 2026-10-27 </div></td>
+    <div class="meta">电脑数码 · 拼多多 · 12H最热 · 08:48 · 值84/评2 · 拉取 2026-10-27 </div></td>
   <td class="num"><b>¥44.34</b> <s>¥44.34</s><span class="atlow">史低</span></td>
   <td class="rate"><span class="muted">无原价</span></td>
 </tr><tr>
   <td class="idx">2</td>
   <td class="name" data-t="喜之郎 蒟蒻果汁果冻桶 520克*2桶（52包）"><a href="https://www.smzdm.com/p/184783161/" target="_blank">喜之郎 蒟蒻果汁果冻桶 520克*2桶（52包）</a>
-    <div class="meta">食品生鲜 · 京东 · 12H最热 · 13:23 · 值395/评625 · 拉取 2026-10-27 </div></td>
+    <div class="meta">食品生鲜 · 京东 · 12H最热 · 13:23 · 值411/评646 · 拉取 2026-10-27 </div></td>
   <td class="num"><b>¥14.4</b> <span class="atlow">史低</span></td>
   <td class="rate"><span class="muted">无原价</span></td>
 </tr><tr>
   <td class="idx">3</td>
-  <td class="name" data-t="鲜京采 冷冻三去黄花鱼(宁德大黄鱼)1700g(5条装)礼盒"><a href="https://www.smzdm.com/p/184553049/" target="_blank">鲜京采 冷冻三去黄花鱼(宁德大黄鱼)1700g(5条装)礼盒</a>
-    <div class="meta">食品生鲜 · 京东 · 12H最热 · 10:07 · 值161/评671 · 拉取 2026-10-27 </div></td>
-  <td class="num"><b>¥107</b> <span class="atlow">史低</span></td>
+  <td class="name" data-t="今日必买：绪日鲜 挪威进口冰鲜三文鱼 上佳中段 200g*2盒"><a href="https://www.smzdm.com/p/184775198/" target="_blank">绪日鲜 挪威进口冰鲜三文鱼 上佳中段 200g*2盒</a><span class="tag warn">淘金币</span>
+    <div class="meta">食品生鲜 · 天猫精选 · 12H最热 · 10:26 · 值313/评494 · 拉取 2026-10-27 </div></td>
+  <td class="num"><b>¥56.88</b> <span class="atlow">史低</span></td>
   <td class="rate"><span class="muted">无原价</span></td>
 </tr><tr>
   <td class="idx">4</td>
-  <td class="name" data-t="今日必买：绪日鲜 挪威进口冰鲜三文鱼 上佳中段 200g*2盒"><a href="https://www.smzdm.com/p/184775198/" target="_blank">绪日鲜 挪威进口冰鲜三文鱼 上佳中段 200g*2盒</a><span class="tag warn">淘金币</span>
-    <div class="meta">食品生鲜 · 天猫精选 · 12H最热 · 10:26 · 值305/评486 · 拉取 2026-10-27 </div></td>
-  <td class="num"><b>¥56.88</b> <span class="atlow">史低</span></td>
+  <td class="name" data-t="鲜京采 冷冻三去黄花鱼(宁德大黄鱼)1700g(5条装)礼盒"><a href="https://www.smzdm.com/p/184553049/" target="_blank">鲜京采 冷冻三去黄花鱼(宁德大黄鱼)1700g(5条装)礼盒</a>
+    <div class="meta">食品生鲜 · 京东 · 12H最热 · 10:07 · 值161/评675 · 拉取 2026-10-27 </div></td>
+  <td class="num"><b>¥107</b> <span class="atlow">史低</span></td>
   <td class="rate"><span class="muted">无原价</span></td>
 </tr><tr>
   <td class="idx">5</td>
   <td class="name" data-t="淘金币可用、88VIP：康巴赫 家用加厚复合钢高压锅 120Kpa 22cm 三层钢加压款 5.5L"><a href="https://www.smzdm.com/p/184641235/" target="_blank">康巴赫 家用加厚复合钢高压锅 120Kpa 22cm 三层钢加压款 5.5L</a><span class="tag">88VIP</span><span class="tag warn">淘金币</span><span class="tag">需券</span>
-    <div class="meta">其他 · 天猫超市 · 12H最热 · 10:09 · 值81/评372 · 拉取 2026-10-27 </div></td>
+    <div class="meta">其他 · 天猫超市 · 12H最热 · 10:09 · 值81/评375 · 拉取 2026-10-27 </div></td>
   <td class="num"><b>¥142.94</b> <span class="atlow">史低</span></td>
   <td class="rate"><span class="muted">无原价</span></td>
 </tr><tr>
@@ -249,20 +319,20 @@ tbody tr:hover td{background:#fcfcfd}
 </tr><tr>
   <td class="idx">7</td>
   <td class="name" data-t="今日必买：沃隆 210g*2罐紫衣腰果"><a href="https://www.smzdm.com/p/184560462/" target="_blank">沃隆 210g*2罐紫衣腰果</a>
-    <div class="meta">食品生鲜 · 京东 · 12H最热 · 13:23 · 值104/评163 · 拉取 2026-10-27 </div></td>
+    <div class="meta">食品生鲜 · 京东 · 12H最热 · 13:23 · 值106/评166 · 拉取 2026-10-27 </div></td>
   <td class="num"><b>¥27.9</b> <s>¥59.9</s><span class="atlow">史低</span></td>
   <td class="rate">4.7<small>折</small><div class="bar"><i style="width:46.6%"></i></div></td>
 </tr><tr>
   <td class="idx">8</td>
-  <td class="name" data-t="鲜秋风物集：隆上記 品蟹正当季！大闸蟹 公4.0-4.3两 母3.0-3.3两 4对8只现货礼盒（去绳足重、死蟹包赔）"><a href="https://www.smzdm.com/p/184661961/" target="_blank">鲜秋风物集：隆上記 品蟹正当季！大闸蟹 公4.0-4.3两 母3.0-3.3两 4对8只现货礼盒（去绳足重、死蟹包赔）</a>
-    <div class="meta">其他 · 京东 · 12H最热 · 10:07 · 值79/评100 · 拉取 2026-10-27 </div></td>
-  <td class="num"><b>¥156</b> <div class="lowhint">历史低 ¥136（10-22）</div></td>
+  <td class="name" data-t="折29.9元/箱：特仑苏 新日期 全脂纯牛奶 250mL*16瓶*3箱"><a href="https://www.smzdm.com/p/184780708/" target="_blank">折29.9元/箱：特仑苏 新日期 全脂纯牛奶 250mL*16瓶*3箱</a><span class="tag">需券</span>
+    <div class="meta">食品生鲜 · 京东 · 12H最热 · 12:31 · 值37/评65 · 拉取 2026-10-27 </div></td>
+  <td class="num"><b>¥89.7</b> <span class="atlow">史低</span></td>
   <td class="rate"><span class="muted">无原价</span></td>
 </tr><tr>
   <td class="idx">9</td>
-  <td class="name" data-t="折29.9元/箱：特仑苏 新日期 全脂纯牛奶 250mL*16瓶*3箱"><a href="https://www.smzdm.com/p/184780708/" target="_blank">折29.9元/箱：特仑苏 新日期 全脂纯牛奶 250mL*16瓶*3箱</a><span class="tag">需券</span>
-    <div class="meta">食品生鲜 · 京东 · 12H最热 · 12:31 · 值37/评62 · 拉取 2026-10-27 </div></td>
-  <td class="num"><b>¥89.7</b> <span class="atlow">史低</span></td>
+  <td class="name" data-t="鲜秋风物集：隆上記 品蟹正当季！大闸蟹 公4.0-4.3两 母3.0-3.3两 4对8只现货礼盒（去绳足重、死蟹包赔）"><a href="https://www.smzdm.com/p/184661961/" target="_blank">鲜秋风物集：隆上記 品蟹正当季！大闸蟹 公4.0-4.3两 母3.0-3.3两 4对8只现货礼盒（去绳足重、死蟹包赔）</a>
+    <div class="meta">其他 · 京东 · 12H最热 · 10:07 · 值79/评100 · 拉取 2026-10-27 </div></td>
+  <td class="num"><b>¥156</b> <div class="lowhint">历史低 ¥136（10-22）</div></td>
   <td class="rate"><span class="muted">无原价</span></td>
 </tr><tr>
   <td class="idx">10</td>
@@ -279,7 +349,7 @@ tbody tr:hover td{background:#fcfcfd}
 </tr><tr>
   <td class="idx">12</td>
   <td class="name" data-t="88VIP、今日必买：乐事 班味粉碎机薯片礼盒 558g"><a href="https://www.smzdm.com/p/184783160/" target="_blank">乐事 班味粉碎机薯片礼盒 558g</a><span class="tag">88VIP</span><span class="tag">需券</span>
-    <div class="meta">食品生鲜 · 天猫超市 · 12H最热 · 13:23 · 值46/评57 · 拉取 2026-10-27 </div></td>
+    <div class="meta">食品生鲜 · 天猫超市 · 12H最热 · 13:23 · 值48/评57 · 拉取 2026-10-27 </div></td>
   <td class="num"><b>¥13.67</b> <s>¥65.9</s><span class="atlow">史低</span></td>
   <td class="rate">2.1<small>折</small><div class="bar"><i style="width:20.7%"></i></div></td>
 </tr><tr>
@@ -303,35 +373,35 @@ tbody tr:hover td{background:#fcfcfd}
 </tr><tr>
   <td class="idx">16</td>
   <td class="name" data-t="88VIP：安踏 儿童 蓬蓬羽羽绒服 180cm"><a href="https://www.smzdm.com/p/184787565/" target="_blank">安踏 儿童 蓬蓬羽羽绒服 180cm</a><span class="tag">88VIP</span><span class="tag">需券</span>
-    <div class="meta">其他 · 天猫精选 · 12H最热 · 10-26 16:47 · 值6/评23 · 拉取 2026-10-27 </div></td>
+    <div class="meta">其他 · 天猫精选 · 12H最热 · 13:49 · 值6/评24 · 拉取 2026-10-27 </div></td>
   <td class="num"><b>¥166.1</b> <span class="atlow">史低</span></td>
   <td class="rate"><span class="muted">无原价</span></td>
 </tr><tr>
   <td class="idx">17</td>
+  <td class="name" data-t="百亿补贴：酷态科 25号超级电能块SE电芯25000毫安适用笔记本小米Fold苹果18"><a href="https://www.smzdm.com/p/184831172/" target="_blank">酷态科 25号超级电能块SE电芯25000毫安适用笔记本小米Fold苹果18</a><span class="tag">需券</span>
+    <div class="meta">电脑数码 · 拼多多 · 12H最热 · 09:30 · 值12/评211 · 拉取 2026-10-27 </div></td>
+  <td class="num"><b>¥150</b> <div class="lowhint">历史低 ¥130（10-24）</div></td>
+  <td class="rate"><span class="muted">无原价</span></td>
+</tr><tr>
+  <td class="idx">18</td>
   <td class="name" data-t="1号会员店 新西兰散养原切羔羊肉卷 2斤"><a href="https://www.smzdm.com/p/184733521/" target="_blank">1号会员店 新西兰散养原切羔羊肉卷 2斤</a><span class="tag">会员</span>
     <div class="meta">食品生鲜 · 京东 · 12H最热 · 10:08 · 值47/评33 · 拉取 2026-10-27 </div></td>
   <td class="num"><b>¥64.9</b> <div class="lowhint">历史低 ¥63.4（10-21）</div></td>
   <td class="rate"><span class="muted">无原价</span></td>
 </tr><tr>
-  <td class="idx">18</td>
+  <td class="idx">19</td>
   <td class="name" data-t="今日必买：爱他美 澳洲白金版 婴幼儿配方奶粉 3段 900g*3 折171/罐"><a href="https://www.smzdm.com/p/184698427/" target="_blank">爱他美 澳洲白金版 婴幼儿配方奶粉 3段 900g*3 折171/罐</a>
     <div class="meta">食品生鲜 · 天猫国际官方直营 · 12H最热 · 10:24 · 值26/评81 · 拉取 2026-10-27 </div></td>
   <td class="num"><b>¥513</b> <span class="atlow">史低</span></td>
   <td class="rate"><span class="muted">无原价</span></td>
 </tr><tr>
-  <td class="idx">19</td>
-  <td class="name" data-t="PLUS会员：美玏 八角桂皮香叶花椒辣椒白芷 6罐 调味品套装"><a href="https://www.smzdm.com/p/184710365/" target="_blank">美玏 八角桂皮香叶花椒辣椒白芷 6罐 调味品套装</a><span class="tag">会员</span>
-    <div class="meta">食品生鲜 · 京东 · 12H最热 · 12:29 · 值44/评77 · 拉取 2026-10-27 </div></td>
-  <td class="num"><b>¥12.72</b> <s>¥20.79</s><span class="atlow">史低</span></td>
-  <td class="rate">6.1<small>折</small><div class="bar"><i style="width:61.2%"></i></div></td>
-</tr><tr>
   <td class="idx">20</td>
-  <td class="name" data-t="百亿补贴：大疆 Mic Mini 2 迷你无线高品质音频多色前盖降噪领夹麦克风"><a href="https://www.smzdm.com/p/184810700/" target="_blank">大疆 Mic Mini 2 迷你无线高品质音频多色前盖降噪领夹麦克风</a><span class="tag warn">凑单</span>
-    <div class="meta">电脑数码 · 拼多多 · 12H最热 · 10-26 23:59 · 值5/评162 · 拉取 2026-10-27 </div></td>
-  <td class="num"><b>¥200.6</b> <s>¥229</s><span class="atlow">史低</span></td>
-  <td class="rate">8.8<small>折</small><div class="bar"><i style="width:87.6%"></i></div></td>
+  <td class="name" data-t="PLUS会员、今日必买：青岛啤酒 新升级！拉环小棕金258mL*12瓶"><a href="https://www.smzdm.com/p/184733763/" target="_blank">青岛啤酒 新升级！拉环小棕金258mL*12瓶</a><span class="tag warn">凑单</span><span class="tag">会员</span>
+    <div class="meta">酒类 · 京东 · 12H最热 · 14:05 · 值64/评87 · 拉取 2026-10-27 </div></td>
+  <td class="num"><b>¥34.05</b> <div class="lowhint">历史低 ¥32.05（10-26）</div></td>
+  <td class="rate"><span class="muted">无原价</span></td>
 </tr></tbody></table>
-  <div class="foot">页面版本 2026-10-27 13:46<br>由 daily.py 自动生成 · <a href="./overview.html" style="color:#c8102e;text-decoration:none">运行概览</a> ·
+  <div class="foot">页面版本 2026-10-27 14:16<br>由 daily.py 自动生成 · <a href="./overview.html" style="color:#c8102e;text-decoration:none">运行概览</a> ·
     数据源 12H最热（全部好价排行榜）·
     仅抓列表页，未访问商品详情页 · 折扣按「现价/原价」计算，原价取自好价流描述，仅供参考。</div>
 </div>
