@@ -966,6 +966,7 @@ def render_html(hot: list[dict], passed: list[dict], meta: dict) -> str:
         "fetched_at": H.escape(meta["fetched_at"]),
         "requests": meta["requests"],
         "wish_count": meta.get("watch_words", 0),
+        "db_count": meta.get("catalog_count", 0),
         "warn": warn,
         "empty": empty,
         "hot_count": len(hot),
