@@ -437,6 +437,8 @@ def decorate(d: dict, catalog: "Catalog", cutoff: str, drop_pct: float,
     low = rec.get("low")
     if low is not None:
         d["low_price"] = low
+        # 低点日期：老记录没有 low_date 字段时回退用首次见到日期
+        d["low_date"] = rec.get("low_date") or rec.get("first")
         d["is_low"] = d["price"] < low - 1e-9        # 比历史最低还低
         # 持平历史最低同样算「当前就是历史最低价」，此前用严格小于，
         # 导致同一个价格反复出现时反而打不上标（嘉顿苏打饼干就是这样）。
@@ -737,7 +739,8 @@ class Catalog:
             nt = norm_title(d.get("title", ""))
             rec = {"norm": nt, "specs": specs(nt),
                    "title": d.get("title", ""), "ids": [],
-                   "low": None, "first": today, "last": today, "hits": 0,
+                   "low": None, "low_date": None,
+                   "first": today, "last": today, "hits": 0,
                    "push_date": None, "push_price": None,
                    # 下面这几个是给「数据库」页面展示用的，随时更新成最近一次见到的样子
                    "url": None, "mall": None, "category": None,
@@ -752,9 +755,21 @@ class Catalog:
         price = d.get("price")
         if price:
             lo = rec.get("low")
-            rec["low"] = price if lo is None else min(lo, price)
+            if lo is None or price < lo - 1e-9:
+                rec["low"] = price
+                rec["low_date"] = today          # 低点日期：出现新低时记下
         rec["last"] = today
         rec["hits"] = rec.get("hits", 0) + 1
+
+        # 命中老记录时刷新标题：同一篇帖子被发帖人改标题（如换品牌名）后，
+        # 数据库页搜索与日报显示才能跟上新名字。id 池匹配不受影响。
+        new_title = d.get("title", "")
+        if new_title and new_title != rec.get("title"):
+            rec["title"] = new_title
+        nt = norm_title(new_title or "")
+        if nt and nt != rec.get("norm"):
+            rec["norm"] = nt
+            rec["specs"] = specs(nt)
 
         # 展示字段：始终保留最近一次见到的链接、商城、分类
         for k, v in (("url", d.get("url")), ("mall", d.get("mall")),
@@ -886,7 +901,9 @@ def render_html(hot: list[dict], passed: list[dict], meta: dict) -> str:
         elif d.get("at_low"):
             low_badge = '<span class="atlow">史低</span>'
         elif d.get("low_price") is not None and d["price"] > d["low_price"] + 1e-9:
-            low_hint = f'<div class="lowhint">历史低 ¥{d["low_price"]:g}</div>'
+            ld = (d.get("low_date") or "")[5:10]     # YYYY-MM-DD → MM-DD
+            low_hint = (f'<div class="lowhint">历史低 ¥{d["low_price"]:g}'
+                        + (f'（{H.escape(ld)}）' if ld else "") + '</div>')
         pct = d.get("discount_pct")
         if pct:
             rate = (f'{zhe(pct)}<small>折</small>'
