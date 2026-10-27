@@ -909,7 +909,14 @@ def render_html(hot: list[dict], passed: list[dict], meta: dict) -> str:
         数据不全（老记录没有 high）就返回空串，宁可不画也不画错。
         """
         lo, hi, cur = d.get("low_price"), d.get("high_price"), d.get("price")
-        if not lo or not hi or cur is None or hi <= lo:
+        if not lo or cur is None:
+            return ""
+        # high 是 v3.4 才加的字段，老记录要等下次见到才补齐。
+        # 补不齐时用「原价」当上界——原价本来就是这条商品的价格天花板，
+        # 语义上说得通，也比干脆不画有用得多。
+        if not hi or hi <= lo:
+            hi = d.get("origin_price")
+        if not hi or hi <= lo:
             return ""
         span = hi - lo
         # 现价可能比历史低更低（新低）或比历史高更高，统一夹到 2%~98%，
