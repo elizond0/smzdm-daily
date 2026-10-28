@@ -167,16 +167,19 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:14px;bottom:14px;wid
 .bar i{display:block;height:100%;border-radius:99px;background:var(--stripe)}
 
 /* ---------------- 价格区间轴 ---------------- */
-/* 一根 92px 的细线：左端 = 历史低，右端 = 历史高，圆点 = 现价。
- * 现价落在最便宜的五分之一时变红，一眼看出「现在是不是该买」。 */
-.axis{position:relative;display:block;width:100px;height:3px;
+/* 一根 64px 的细线，是「历史低 ↔ 历史高」这条价格走廊的缩略图：
+ *   左端竖线 = 历史最低价，右端竖线 = 历史最高价，圆点 = 当前价在这条走廊上的位置。
+ * 圆点越靠左越便宜；落在最便宜的五分之一（pos ≤ 20%）时圆点变红 + 外发光，
+ * 一眼看出「现在是不是该买」。精确数字放 title 里，鼠标停上去可看。
+ * 宽度别再拉长：152px 的价格列里它只是个辅助图形，涨到 100px 会抢价格的视觉重心。 */
+.axis{position:relative;display:block;width:64px;height:3px;
   border-radius:99px;
   background:linear-gradient(90deg,var(--green-line),var(--line-2) 62%,var(--line-2))}
 .axis::before,.axis::after{content:"";position:absolute;top:-2px;width:1px;height:7px;
   background:var(--ink-5);opacity:.45}
 .axis::before{left:0}
 .axis::after{right:0}
-.axis i{position:absolute;top:50%;width:9px;height:9px;margin:-4.5px 0 0 -4.5px;
+.axis i{position:absolute;top:50%;width:8px;height:8px;margin:-4px 0 0 -4px;
   border-radius:50%;background:var(--ink-4);border:2px solid var(--card);
   box-shadow:0 0 0 1px var(--ink-5)}
 .axis.hot i{background:var(--brand);box-shadow:0 0 0 1px var(--brand),
@@ -186,29 +189,31 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:14px;bottom:14px;wid
 }
 
 /* ---------------- 标签 ---------------- */
-.tag{display:inline-block;margin-left:5px;padding:0 5px;border-radius:3px;font-size:10.5px;
-  line-height:16px;background:var(--amber-bg);color:var(--amber);
-  border:1px solid var(--amber-line);vertical-align:middle}
+/* 【坑】行内小标签的 vertical-align 必须逐个写全，不能指望继承。
+ * 第 67 行的 .warn（顶部橙色提示框）会命中 <span class="tag warn">淘金币</span>：
+ * 它的 padding/font-size/border 都被下面 .tag/.tag.warn 的正常样式盖掉了，
+ * 但它没设 vertical-align → 标签退回默认 baseline，实测比商品名中线低 8px，
+ * 看起来就是「淘金币飘起来了」。同类选择器一律显式声明，别再踩。 */
+/* 用 baseline 而不是 middle：middle 的对齐基准是「父基线 + 半个 x-height」，
+ * 商品名换行后基准会变，内联盒就整体下沉；baseline 跟着当前行走，换行也不歪。
+ * 再把相对基线的位移统一成 -3px（商品名 14.5px、标签 18px 盒高，中心恰好对齐）。 */
+.tag,.newlow,.atlow,.first,.wish{display:inline-block;margin-left:5px;padding:0 5px;
+  border-radius:3px;font-size:10.5px;line-height:16px;
+  vertical-align:.5px}
+.tag{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-line)}
 .tag.warn{background:var(--brand-bg);color:var(--brand);border-color:var(--brand-line)}
-.newlow{display:inline-block;margin-left:5px;padding:0 5px;border-radius:3px;font-size:10.5px;
-  line-height:16px;background:var(--green-bg);color:var(--green);
-  border:1px solid var(--green-line);vertical-align:middle}
-.atlow{display:inline-block;margin-left:5px;padding:0 5px;border-radius:3px;font-size:10.5px;
-  line-height:16px;background:var(--teal-bg);color:var(--teal);
-  border:1px solid var(--teal-line);vertical-align:middle}
-.first{display:inline-block;margin-left:5px;padding:0 5px;border-radius:3px;font-size:10.5px;
-  line-height:16px;background:var(--blue-bg);color:var(--blue);
-  border:1px solid var(--blue-line);vertical-align:middle}
-.wish{display:inline-block;margin-left:5px;padding:0 6px;border-radius:3px;font-size:10.5px;
-  line-height:16px;background:var(--purple-bg);color:var(--purple);
-  border:1px solid var(--purple-line);vertical-align:middle;font-weight:600}
+.newlow{background:var(--green-bg);color:var(--green);border:1px solid var(--green-line)}
+.atlow{background:var(--teal-bg);color:var(--teal);border:1px solid var(--teal-line)}
+.first{background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-line)}
+.wish{background:var(--purple-bg);color:var(--purple);
+  border:1px solid var(--purple-line);padding:0 6px;font-weight:600}
 
 /* ---------------- 快捷操作按钮 ---------------- */
 /* 由 watch.js 与 block.js 插入，紧跟商品标签之后（同一行内）。
  * 图标用内联 SVG 而不是 emoji：emoji 依赖系统字体，Windows 上有概率渲染成 □ */
 .wishbtn,.blkbtn{display:inline-flex;align-items:center;gap:3px;margin-left:6px;
   padding:0 7px;height:18px;box-sizing:border-box;border-radius:5px;font-size:11px;
-  cursor:pointer;vertical-align:-4px;line-height:16px;flex:none;
+  cursor:pointer;vertical-align:-.5px;line-height:16px;flex:none;
   transition:background .14s ease,color .14s ease,border-color .14s ease,
              box-shadow .14s ease,transform .1s ease}
 .wishbtn svg,.blkbtn svg{width:11px;height:11px;display:block}
@@ -385,9 +390,9 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:14px;bottom:14px;wid
    * 加半个 x-height，文字一换行就会整体下沉十几个像素，看着像"标签跑到行中间"。
    * 基线对齐时，换行前后都自动跟着当前行对齐。 */
   .tag,.newlow,.atlow,.first,.wish{font-size:10.5px;margin-left:5px;padding:0 6px;
-    border-radius:4px;line-height:16px;vertical-align:baseline;white-space:nowrap}
+    border-radius:4px;line-height:16px;vertical-align:1px;white-space:nowrap}
   .wishbtn,.blkbtn{margin-left:5px;padding:0 8px;height:18px;border-radius:6px;
-    font-size:11px;line-height:16px;vertical-align:baseline}
+    font-size:11px;line-height:16px;vertical-align:-1.5px}
   .wishbtn svg,.blkbtn svg{width:11px;height:11px}
   /* 手机没有 hover，用 :active 给触摸即时反馈 */
   .wishbtn:active,.blkbtn:active{transform:scale(.94)}
@@ -415,7 +420,7 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:14px;bottom:14px;wid
    * 必须显式 flex-basis:100%，否则父级 .num 是 flex 容器时会被压成 0 宽 */
   .axisrow{flex:1 1 100%;width:100%;margin-top:8px;gap:10px}
   .axisrow .lowhint{text-align:left;font-size:11px}
-  .num .axis{flex:1 1 auto;width:auto;min-width:60px;max-width:200px}
+  .num .axis{flex:1 1 auto;width:auto;min-width:56px;max-width:110px}
   .save{display:inline-block;margin:0;font-size:12px;color:var(--ink-3)}
   .rate{font-size:14px;font-weight:700;color:var(--brand);letter-spacing:-.2px}
   .rate small{font-size:10.5px;font-weight:400}
