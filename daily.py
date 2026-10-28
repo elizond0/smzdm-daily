@@ -897,10 +897,20 @@ def render_html(hot: list[dict], passed: list[dict], meta: dict) -> str:
             parts.append(f"值{d.get('zhi', 0)}/评{d.get('comments', 0)}")
         # 折扣榜混了一天内的多轮抓取，标出这条最后一次见到的时间，
         # 便于判断它是刚抓到的还是几小时前的
+        # 「拉取 2026-10-28」整段包一层 .nw（white-space:nowrap）：
+        # 手机端 .meta 开着 word-break:break-word，日期会被从连字符处撕开，
+        # 变成「拉取 2026-」+「10-28」两行，读起来像两个数字。日期不可拆。（v3.9）
+        # 注意不能先拼进 parts 再统一转义——那样 <span> 会被转义成 &lt;span&gt;。
         seen = (d.get("last_seen") or "")[:11]
+        body = " · ".join(H.escape(str(p)) for p in parts if p)
         if seen:
-            parts.append(f"拉取 {H.escape(seen)}")
-        return " · ".join(H.escape(str(p)) for p in parts if p)
+            # 分隔符要跟日期一起走。若写成 f'{body} · <span class="nw">拉取…</span>'，
+            # 换行时那个「·」会孤零零留在上一行末尾，下面一行才开始「拉取」。
+            # 分隔符和日期必须在**同一个** nowrap 盒子里：写成 `</span> <span>` 的话，
+            # 中间那个空格是可断点，换行照样会把「·」留在上一行。
+            seg = f'<span class="nw">· 拉取 {H.escape(seen)}</span>'
+            body = f'{body} {seg}' if body else f'<span class="nw">拉取 {H.escape(seen)}</span>' 
+        return body
 
     def price_axis(d, sid):
         """价格区间轴：把「历史低 — 现价 — 历史高」画成一根 92px 的细线。
