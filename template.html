@@ -108,10 +108,14 @@ h2.collapsed~.sec-body{display:none}
 
 /* ---------------- 表格 ---------------- */
 .tablewrap{background:var(--card);border:1px solid var(--line);border-radius:12px;
-  box-shadow:var(--shadow-s)}
+  box-shadow:var(--shadow-s);overflow-x:clip}
 table{width:100%;border-collapse:separate;border-spacing:0;background:var(--card);
   border-radius:12px}
-/* 表头吸顶：整页往下滚时列名一直可见（贴的是视口，不是表格） */
+/* 表头吸顶：整页往下滚时列名一直可见，粘的是视口（表格本身比视口高）。
+ * ⚠️ 这里踩过坑：.tablewrap 一旦设成 overflow-x:auto / hidden / scroll，
+ * 它就成了"滚动容器"，表头会以表格自身为粘附对象——而表格被它整个装住，
+ * 表头永远顶到 wrap 的顶端，看起来就是"吸顶完全没生效"。
+ * 用 overflow-x:clip 才能既裁掉圆角外的溢出、又不制造滚动容器。 */
 thead th{position:sticky;top:0;z-index:3;
   backdrop-filter:saturate(180%) blur(8px);
   -webkit-backdrop-filter:saturate(180%) blur(8px)}
@@ -122,9 +126,13 @@ th{text-align:left;font-size:12px;color:var(--ink-3);font-weight:600;
 th:first-child{border-top-left-radius:12px}
 th:last-child{border-top-right-radius:12px;text-align:right}
 td{padding:14px;border-bottom:1px solid var(--line-3);vertical-align:middle}
+/* 到手价列表头右对齐：th 没有自己的类名，用 :nth-child(3) 定位
+ * （# / 商品 / 到手价 / 折扣）。表头默认左对齐会把"到手价"推到列左侧，
+ * 离下面右对齐的价格很远，看着像没对齐 */
+thead th:nth-child(3){text-align:right}
 /* 价格列整体留出一行轴的高度：有的行有轴、有的没有，
  * 不留的话整张表的高低会参差 */
-td.num{vertical-align:top;height:70px}
+td.num{vertical-align:top;min-height:70px}
 tbody tr:last-child td{border-bottom:0}
 tbody tr:last-child td:first-child{border-bottom-left-radius:12px}
 tbody tr:last-child td:last-child{border-bottom-right-radius:12px}
@@ -138,8 +146,8 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:14px;bottom:14px;wid
 .idx{color:var(--ink-5);width:38px;font-variant-numeric:tabular-nums;font-size:13px;
   font-weight:500}
 .cat{color:var(--ink-3);font-size:13px;width:82px}
-.name a{color:var(--ink);text-decoration:none;font-weight:600;font-size:14.5px;
-  letter-spacing:-.1px}
+.name a{color:var(--ink);text-decoration:none;font-weight:400;font-size:14.5px;
+  letter-spacing:-.1px;vertical-align:baseline}
 .name a:hover{color:var(--brand);text-decoration:underline;text-underline-offset:2px}
 .meta{color:var(--ink-4);font-size:12px;margin-top:4px;letter-spacing:.1px}
 .num{white-space:nowrap;font-variant-numeric:tabular-nums;text-align:right;width:152px}
@@ -179,28 +187,28 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:14px;bottom:14px;wid
 
 /* ---------------- 标签 ---------------- */
 .tag{display:inline-block;margin-left:5px;padding:0 5px;border-radius:3px;font-size:10.5px;
-  background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-line);
-  vertical-align:1px}
+  line-height:16px;background:var(--amber-bg);color:var(--amber);
+  border:1px solid var(--amber-line);vertical-align:middle}
 .tag.warn{background:var(--brand-bg);color:var(--brand);border-color:var(--brand-line)}
 .newlow{display:inline-block;margin-left:5px;padding:0 5px;border-radius:3px;font-size:10.5px;
-  background:var(--green-bg);color:var(--green);border:1px solid var(--green-line);
-  vertical-align:1px}
+  line-height:16px;background:var(--green-bg);color:var(--green);
+  border:1px solid var(--green-line);vertical-align:middle}
 .atlow{display:inline-block;margin-left:5px;padding:0 5px;border-radius:3px;font-size:10.5px;
-  background:var(--teal-bg);color:var(--teal);border:1px solid var(--teal-line);
-  vertical-align:1px}
+  line-height:16px;background:var(--teal-bg);color:var(--teal);
+  border:1px solid var(--teal-line);vertical-align:middle}
 .first{display:inline-block;margin-left:5px;padding:0 5px;border-radius:3px;font-size:10.5px;
-  background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-line);
-  vertical-align:1px}
+  line-height:16px;background:var(--blue-bg);color:var(--blue);
+  border:1px solid var(--blue-line);vertical-align:middle}
 .wish{display:inline-block;margin-left:5px;padding:0 6px;border-radius:3px;font-size:10.5px;
-  background:var(--purple-bg);color:var(--purple);border:1px solid var(--purple-line);
-  vertical-align:1px;font-weight:600}
+  line-height:16px;background:var(--purple-bg);color:var(--purple);
+  border:1px solid var(--purple-line);vertical-align:middle;font-weight:600}
 
 /* ---------------- 快捷操作按钮 ---------------- */
 /* 由 watch.js 与 block.js 插入，紧跟商品标签之后（同一行内）。
  * 图标用内联 SVG 而不是 emoji：emoji 依赖系统字体，Windows 上有概率渲染成 □ */
 .wishbtn,.blkbtn{display:inline-flex;align-items:center;gap:3px;margin-left:6px;
-  padding:2px 7px;border-radius:5px;font-size:11.5px;cursor:pointer;
-  vertical-align:1px;line-height:1.45;flex:none;
+  padding:0 7px;height:18px;box-sizing:border-box;border-radius:5px;font-size:11px;
+  cursor:pointer;vertical-align:-4px;line-height:16px;flex:none;
   transition:background .14s ease,color .14s ease,border-color .14s ease,
              box-shadow .14s ease,transform .1s ease}
 .wishbtn svg,.blkbtn svg{width:11px;height:11px;display:block}
@@ -362,17 +370,24 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:14px;bottom:14px;wid
     border-radius:0 3px 3px 0;background:var(--band-hot)}
   .band-feed tr::before{background:var(--band-feed)}
   /* 商品名与标签同段落流式排布：标题后紧跟标签/按钮，超长才换行 */
-  .name{padding-left:30px;margin-bottom:8px;line-height:1.62;word-break:break-word}
-  .name a{font-size:15px;font-weight:600;color:var(--ink);letter-spacing:-.1px;
-    display:inline;text-decoration:none;word-break:break-word}
+  /* 序号是绝对定位的小圆片（left:14px、宽 19px，即占到 33px）：
+   * 名字太窄时（flex:1 1 100% 在 .name 前面已生效）用负 margin 让出这块，
+   * 并把同样宽度还给右内边距，否则右侧文字会被卡片圆角裁掉。 */
+  .name{padding-left:44px;margin-left:-30px;margin-right:-7px;margin-bottom:8px;
+    line-height:1.62;word-break:break-word}
+  .name a{font-size:15px;font-weight:400;color:var(--ink);letter-spacing:-.1px;
+    display:inline;text-decoration:none;word-break:break-word;vertical-align:baseline}
   .meta{font-size:11.5px;line-height:1.6;margin-top:6px;color:var(--ink-4);
     word-break:break-word;overflow-wrap:anywhere;letter-spacing:-.1px}
 
-  /* 标签与快捷按钮：自然换行，不再挤成一团 */
-  .tag,.newlow,.atlow,.first,.wish{font-size:10.5px;margin-left:5px;padding:1px 6px;
-    border-radius:4px;vertical-align:1.5px;white-space:nowrap}
-  .wishbtn,.blkbtn{margin-left:5px;padding:3px 8px;border-radius:6px;font-size:11.5px;
-    vertical-align:1.5px}
+  /* 标签与快捷按钮：自然换行，不再挤成一团。
+   * 用 vertical-align:baseline（不是 middle）——middle 的对齐基准是父元素基线
+   * 加半个 x-height，文字一换行就会整体下沉十几个像素，看着像"标签跑到行中间"。
+   * 基线对齐时，换行前后都自动跟着当前行对齐。 */
+  .tag,.newlow,.atlow,.first,.wish{font-size:10.5px;margin-left:5px;padding:0 6px;
+    border-radius:4px;line-height:16px;vertical-align:baseline;white-space:nowrap}
+  .wishbtn,.blkbtn{margin-left:5px;padding:0 8px;height:18px;border-radius:6px;
+    font-size:11px;line-height:16px;vertical-align:baseline}
   .wishbtn svg,.blkbtn svg{width:11px;height:11px}
   /* 手机没有 hover，用 :active 给触摸即时反馈 */
   .wishbtn:active,.blkbtn:active{transform:scale(.94)}
