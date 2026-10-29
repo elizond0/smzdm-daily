@@ -375,12 +375,19 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:14px;bottom:14px;wid
   .sub .entries>a.wishlink .ico{width:12px;height:12px;flex:none}
   .sub .entries>a.wishlink span{font-size:11.5px;opacity:.8;margin-left:0}
 
-  /* 四宫格统计 */
-  .stats{grid-template-columns:repeat(2,1fr);gap:9px;margin-bottom:15px}
-  .stat{padding:12px 14px;border-radius:12px}
-  .stat .k{font-size:12px;color:var(--ink-3);margin-bottom:2px}
-  .stat .v{font-size:23px;font-weight:700;letter-spacing:-.5px;line-height:1.25}
-  .stat .v em{font-size:11.5px;font-weight:400;color:var(--ink-3)}
+  /* 四宫格统计：标签与数字**同一行**（v3.13）。
+   * 原来 .k / .v 都是块级 div，天然上下两行，2×2 布局里每张卡都白占一行高度，
+   * 四块叠起来比数字本身还高。改成 flex + 基线对齐 + nowrap：「折扣榜 10 条」一行读完。 */
+  .stats{grid-template-columns:repeat(2,1fr);gap:9px;margin-bottom:14px}
+  .stat{padding:9px 12px;border-radius:11px;display:flex;align-items:baseline;
+    gap:6px;flex-wrap:nowrap}
+  /* 手机上去掉左侧竖条（第一格是品牌红）。3px 竖条在 11px 圆角上本来就切角不齐，
+   * 又和商品卡被去掉的组别色带重复表达「这是重点」。（v3.13） */
+  .stat::before{display:none}
+  .stat .k{font-size:11.5px;color:var(--ink-3);margin:0;flex:none;white-space:nowrap}
+  .stat .v{font-size:21px;font-weight:700;letter-spacing:-.4px;line-height:1.2;
+    flex:0 1 auto;min-width:0;white-space:nowrap}
+  .stat .v em{font-size:11px;font-weight:400;color:var(--ink-3);margin-left:2px}
   /* 手机上不做位移，避免卡片抖动 */
   .stat:hover{transform:none}
 
@@ -402,6 +409,9 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:14px;bottom:14px;wid
     line-height:1.6;color:var(--ink-3)}
   .legend>span{white-space:nowrap;flex:none}
   .legend .sw{width:8px;height:8px;margin-right:5px}
+  /* 手机上不画价格轴了，图例里解释轴的那条（圆点/左右端）也一并收掉，
+   * 否则读者会在卡片里找一个并不存在的横轴。（v3.13） */
+  .legend .lg-ax{display:none}
 
   /* ---------- 卡片 ---------- */
   .tablewrap{background:transparent;border:0;border-radius:0;box-shadow:none}
@@ -410,35 +420,51 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:14px;bottom:14px;wid
   thead{display:none}
   tbody{display:block}
   tr{position:relative;background:var(--card);border:1px solid var(--line);
-     border-radius:13px;padding:12px 13px 10px;margin-bottom:9px;
-     box-shadow:var(--shadow-s),inset 3px 0 0 var(--band-hot);
-     transition:box-shadow .15s ease}
-  .band-feed tr{box-shadow:var(--shadow-s),inset 3px 0 0 var(--band-feed)}
+     border-radius:13px;padding:10px 12px 9px;margin-bottom:8px;
+     box-shadow:var(--shadow-s);transition:box-shadow .15s ease;
+     /* 卡片内所有正文（商品名 / meta / 价格）共用的左缩进：
+      * 圆片宽 19 + 5px 呼吸位，因为圆片左边缘与内容盒左边缘齐平。
+      * 推法见下面 .name 上方的注释，改圆片尺寸时同步改这里。 */
+     --card-indent:24px}
   tr:last-child{margin-bottom:0}
   tbody tr:hover td{background:transparent}
   td{border:0;padding:0}
 
-  /* 序号做成左上角小圆片；分组色带在手机上收成卡片左边的短色条 */
-  .idx{position:absolute;left:14px;top:13px;width:19px;height:19px;
+  /* 序号做成左上角小圆片。
+   * 【v3.13】组别色带（红/蓝的整卡左侧竖带）在手机上去掉了：
+   * 两张榜一前一后、各有 h2 标题，色带没提供额外信息，只让每张卡看起来都像被"标红"。
+   * PC 端仍保留 `tbody td.idx::after` 那条 3px 竖条。
+   *
+   * 【坑·v3.13】必须写成 `tbody td.idx`，不能只写 `.idx`：
+   * 上面第 151 行有 `tbody td.idx{position:relative}`（特异性 0,1,2），
+   * 而 `.idx{position:absolute}` 只有 (0,1,0)——比不过，**一直没生效**。
+   * 结果圆片以 position:relative 的身份留在 flex 流里当第一个 flex 项，
+   * `flex:0 0 auto` + 高 19px，把 `.name`（flex-basis:100%）挤到第二行，
+   * 于是每张卡片顶部都白挂着一个 19px 的空行。这就是「卡片太高」的主因。
+   * left/top 用 12/10（= 卡片内边距）让圆片左上角对齐内容区左上角。 */
+  tbody td.idx{position:absolute;left:12px;top:10px;width:19px;height:19px;
     display:flex;align-items:center;justify-content:center;
     background:var(--line-3);color:var(--ink-3);border-radius:6px;font-size:11px;
     font-weight:600;font-variant-numeric:tabular-nums;line-height:1}
   tbody td.idx::after{display:none}
-  /* 组别色带：原先是 19px 高的小红条（tr::before），挂在卡片左上角，跟一整张卡
-   * 毫无关系，看着像"标签掉在边上"。改成 inset box-shadow 做**整卡左侧竖带**，
-   * 高度跟着卡片长，两端自动贴合 13px 圆角，不需要额外元素也不影响布局。（v3.12） */
-  /* 商品名与标签同段落流式排布：标题后紧跟标签/按钮，超长才换行 */
-  /* 序号圆片（left:14px、宽 19px）占住卡片左侧一条竖向通道，商品名要避开它。
-   * 用 padding-left 让位 + 负 margin 抵消 flex 里的额外占位。
-   * 44px 是「刚好不压字」的临界值——实测名字左边界正好等于圆片右边界 57px，
-   * 视觉上两者紧贴，像被圆片咬住。留 5px 呼吸位改成 49px。（v3.9）
-   * 净缩进 = 49-30 = 19px，也就是 №.NUM-INDENT，价格区要跟着缩进同样距离，
-   * 否则「商品名缩进、价格贴边」，一列里两种左边线。 */
-  .name{padding-left:49px;margin-left:-30px;margin-right:-7px;margin-bottom:8px;
-    line-height:1.62;word-break:break-word}
+  /* ---------- 左侧缩进：一个变量说完 ----------
+   * 序号圆片 absolute 定位在 left:12px、宽 19px —— 12 就是卡片左内边距，
+   * 所以圆片左边缘正好压在内容盒左边缘上，右边界落在内容盒 +19 处。
+   * 再留 5px 呼吸位 → 正文统一从 24px 起排（--card-indent）。
+   * 实测 360 档：圆片 21..40，商品名与价格都从 45 起，间隙 5px。
+   *
+   * 【坑·v3.13】这里原先写的是 `.name{padding-left:49px;margin-left:-30px}`，
+   * 靠负 margin「抵消 flex 占位」。实测 margin-left:-30px 在 flex 项上只左移了 11px
+   * （因为同时还有 flex:1 1 100% 和 margin-right:-7px 参与剩余空间计算），
+   * 于是商品名实际起点是 59px，而价格区 padding-left 写的是 19px（以为净缩进是 19），
+   * 结果「商品名往里缩、价格往外顶」，一列两种左边线——这正是使用者说的
+   * 「序号缩进过多，而价格却贴边」。
+   * 现在两边都直接吃同一个 --card-indent，不再有负 margin 这种跨引擎不保证的位移。 */
+  .name{padding-left:var(--card-indent);margin-left:0;margin-right:-7px;margin-bottom:5px;
+    line-height:1.55;word-break:break-word}
   .name a{font-size:15px;font-weight:400;color:var(--ink);letter-spacing:-.1px;
     display:inline;text-decoration:none;word-break:break-word;vertical-align:baseline}
-  .meta{font-size:11.5px;line-height:1.6;margin-top:6px;color:var(--ink-4);
+  .meta{font-size:11.5px;line-height:1.5;margin-top:4px;color:var(--ink-4);
     word-break:break-word;overflow-wrap:anywhere;letter-spacing:-.1px}
   /* meta 拆成 m1（分类·商城·来源）/ m2（时间·值评·拉取）两段。
    * 窗口极窄时两段各占一行，比让它在任意位置折行整齐。
@@ -468,9 +494,14 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:14px;bottom:14px;wid
   tr>.name{flex:1 1 100%;width:100%}
   tr>.num{flex:1 1 auto;min-width:0;display:flex;align-items:baseline;flex-wrap:wrap;
     gap:0 5px;order:2;font-size:13px;white-space:normal;text-align:left;
-    padding-left:19px;
-    margin-top:8px;padding-top:7px;border-top:1px dashed var(--line-3)}
-  tr>.rate{flex:0 0 auto;order:3;margin-top:8px;padding-top:7px;
+    padding-left:var(--card-indent);
+    /* 【坑·v3.13】桌面端 `td.num{min-height:70px}`（第 144 行）是为了让表格里
+     * 价格/轴两行的高度一致、行与行不忽高忽低。但卡片化之后价格区只有一行文字
+     * （约 23px），这条 70px 的最小高度就成了每张卡片底部固定多出的 47px 空白——
+     * 「卡片太高」另一半原因就是它。手机上必须归零。 */
+    min-height:0;
+    margin-top:6px;padding-top:6px;border-top:1px dashed var(--line-3)}
+  tr>.rate{flex:0 0 auto;order:3;margin-top:6px;padding-top:6px;
     border-top:1px dashed var(--line-3);text-align:right;align-self:stretch;
     display:flex;align-items:baseline;justify-content:flex-end}
   .num b{font-size:21px;letter-spacing:-.5px;font-variant-numeric:tabular-nums;
@@ -479,15 +510,17 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:14px;bottom:14px;wid
   .num .atlow,.num .newlow{font-size:10.5px;vertical-align:2px}
   .lowhint{flex:1 1 100%;font-size:11px;margin:0;color:var(--ink-4);
     letter-spacing:-.1px}
-  /* 价格轴在手机上占满一行，宽度更大更好看。
-   * 必须显式 flex-basis:100%，否则父级 .num 是 flex 容器时会被压成 0 宽。
-   * justify-content 从 flex-end 改成 flex-start（v3.9）：手机上价格是**左对齐**的，
-   * 轴却贴着右边跑，中间空出上百像素，看着像浮在半空。
-   * 对齐左边后，轴的左端正好落在「¥」下方，读「现在贵在区间哪一段」时视线不用横跳。
-   * 有 lowhint 的行不受影响：lowhint 带 flex:1 会把它顶到右侧，和 PC 端语义一致。 */
-  .axisrow{flex:1 1 100%;width:100%;margin-top:8px;gap:10px;justify-content:flex-start}
-  .axisrow .lowhint{text-align:left;font-size:11px}
-  .num .axis{flex:1 1 auto;width:auto;min-width:56px;max-width:110px}
+  /* 价格轴在手机上去掉（v3.13）。用户反馈「现价史低下面那条横轴不要了」：
+   * 手机上价格已经是左对齐 + 单独一行，轴上那个圆点离开「¥」后孤零零挂在
+   * 卡片下沿，提供的信息（现价落在历史区间哪一段）远不如它占的那 14px 高度值。
+   * ⚠️ 只隐藏 .axis，不能整块 display:none 掉 .axisrow ——
+   * 「历史低 ¥313.26（10-29）」这句 .lowhint 是 .axisrow 的子元素，
+   * 一起藏就会把唯一的价格参照点也删掉。所以留空容器（0 高、margin:0，
+   * 不占位），只给 .lowhint 自己留一点上间距。 */
+  .axisrow{flex:1 1 100%;width:100%;margin:0;gap:0;justify-content:flex-start}
+  .axisrow .axis{display:none}
+  .axisrow .lowhint{display:block;width:100%;margin:3px 0 0;
+    text-align:left;font-size:10.5px}
   .save{display:inline-block;margin:0;font-size:12px;color:var(--ink-3)}
   .rate{font-size:14px;font-weight:700;color:var(--brand);letter-spacing:-.2px}
   .rate small{font-size:10.5px;font-weight:400}
@@ -508,7 +541,14 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:14px;bottom:14px;wid
 }
 @media (max-width:380px){
   body{padding:12px 8px 20px}
-  .stat .v{font-size:21px}
+  /* 320 档：标签+数字同行后每格只有 ~123px 可用，
+   * 「最高立省 ¥984」是四块里最长的，字号必须再降一档才不挤 */
+  .stat{padding:8px 10px;gap:5px}
+  .stat .k{font-size:11px}
+  .stat .v{font-size:19px}
+  /* 320 档 h2 里「折扣榜 10 条」+ 折叠按钮已经占满，hint 再换行就只剩一个「内」字
+   * 孤零零挂在第二行。改成单行省略，保住行高整齐。（v3.13） */
+  h2 .hint{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
   .name a{font-size:14px}
   .num b{font-size:19px}
   /* 320 这类超窄屏：grid 三列已在 700 断点统一设好，这里只做进一步的收缩，
@@ -559,7 +599,7 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:14px;bottom:14px;wid
     <span><i class="sw sw-nl"></i>新低 = 比历史最低还低</span>
     <span><i class="sw sw-al"></i>史低 = 与历史最低持平</span>
     <span><i class="sw sw-lh"></i>历史低 ¥xx = 当前高于历史最低</span>
-    <span><i class="sw sw-ax"></i>价格轴：左历史低 · 右历史高 · 圆点是现价</span>
+    <span class="lg-ax"><i class="sw sw-ax"></i>价格轴：左历史低 · 右历史高 · 圆点是现价</span>
   </div>
   <div class="sec-body{{hot_empty_cls}}">{{hot_empty}}<div class="tablewrap"><table><thead><tr><th>#</th><th>商品</th><th>到手价</th><th>折扣</th></tr></thead>
   <tbody>{{hot_rows}}</tbody></table></div></div>
