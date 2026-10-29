@@ -952,8 +952,10 @@ def render_html(hot: list[dict], passed: list[dict], meta: dict) -> str:
         pos = min(98.0, max(2.0, (cur - lo) / span * 100.0))
         cheap = pos <= 20          # 落在区间最便宜的五分之一，标成红色强调
         cls = "axis hot" if cheap else "axis"
+        # 位置用自定义属性传出去，由 CSS 做像素级夹取（clamp），
+        # 否则 pos=2% 时圆点会有一半挂在轨道外面，看着像"飘在左边"。
         return (f'<span class="{cls}" title="历史低 ¥{lo:g} · 现价 ¥{cur:g} · 历史高 ¥{hi:g}">'
-                f'<i style="left:{pos:.1f}%"></i></span>')
+                f'<i style="--pos:{pos:.1f}%"></i></span>')
 
     def row(d, i, sid=""):
         conds = "".join(
