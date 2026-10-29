@@ -136,7 +136,9 @@ h2 .hint{font-weight:400;color:var(--ink-4);font-size:13px;letter-spacing:0}
  * 但把命中区扩到 44×44：伪元素撑出去 9px，用户不用瞄准也能点中。
  * 这是「视觉小、手感大」的标准做法，比把按钮做成 44 更不破坏标题行。 */
 .sec-fold{position:relative}
-.sec-fold::after{content:"";position:absolute;inset:-9px}
+/* 11px 而不是 9px：标称命中区 48，实测因亚像素取整会被吃掉 3px 左右，
+ * 留出余量后真实命中区 45×45，稳稳过 44。 */
+.sec-fold::after{content:"";position:absolute;inset:-11px}
 .sec-fold svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;
   stroke-linecap:round;stroke-linejoin:round;transition:transform .2s ease}
 .sec-fold:hover{background:var(--card-2);color:var(--ink-2);border-color:var(--ink-5)}
@@ -284,6 +286,11 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:50%;width:3px;height
  * 再宽就居中留白，不再跟着视口无限拉长（1440 屏上按钮不会飘到尽头）。 */
 @media (min-width:701px){
   .sub .entries{max-width:1152px}
+  /* 桌面端三颗胶囊按钮高 26px：鼠标够用、也过了 AA 的 24px，但离 44 的触摸标准还差。
+   * 同样用伪元素把命中区上下各撑 9px（横向本来就 >100px），
+   * 视觉一点不变，手感直接到 44。相邻按钮间距 8px，横向不撑，所以不会互相抢点击。 */
+  .wishlink{position:relative}
+  .wishlink::after{content:"";position:absolute;inset:-11px 0}
 }
 
 /* ---------------- 标签 ---------------- */
@@ -375,9 +382,10 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:50%;width:3px;height
   stroke-linecap:round}
 .bh-head b{color:var(--brand);font-variant-numeric:tabular-nums}
 /* 「看看是哪些」做成低调的描边小按钮，不跟主操作抢注意力 */
-.bh-toggle{margin-left:2px;padding:1px 9px;border-radius:999px;font-size:12px;
+.bh-toggle{margin-left:2px;padding:0 10px;border-radius:999px;font-size:12px;
   border:1px solid var(--brand-line);background:transparent;color:var(--brand);
-  cursor:pointer;line-height:1.7;transition:background .14s ease,color .14s ease}
+  cursor:pointer;min-height:30px;display:inline-flex;align-items:center;
+  line-height:1.4;transition:background .14s ease,color .14s ease}
 .bh-toggle:hover{background:var(--brand);border-color:var(--brand);color:#fff}
 .bh-toggle:active{transform:scale(.96)}
 .bh-link{margin-left:auto;color:var(--brand);text-decoration:none;white-space:nowrap}
@@ -401,8 +409,10 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:50%;width:3px;height
   stroke-linecap:round;stroke-linejoin:round;opacity:.85}
 .empty .t{font-size:14.5px;font-weight:600;color:var(--ink-2)}
 .empty .d{font-size:12.5px;color:var(--ink-4);line-height:1.7;max-width:360px}
+/* 【v3.14】code 的底色是 --card-2，暗色下比 --card 更亮（#252a31 vs #1e2228），
+ * 继承的 --ink-4 在上面只剩 4.32:1。改成 --ink-2，深浅两套都稳。 */
 .empty .d code{background:var(--card-2);border:1px solid var(--line);border-radius:4px;
-  padding:0 4px;font-size:12px}
+  padding:0 4px;font-size:12px;color:var(--ink-2)}
 
 /* ============================================================
  * 手机端：表格拆成卡片，避免窄屏把商品名挤成竖排
@@ -430,7 +440,7 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:50%;width:3px;height
   .sub .entries{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;
     width:100%;flex:0 0 100%;margin:1px 0 0}
   .sub .entries>a.wishlink{display:inline-flex;width:100%;min-width:0;max-width:100%;
-    align-items:center;justify-content:center;gap:4px;padding:6px 3px;min-height:40px;
+    align-items:center;justify-content:center;gap:4px;padding:6px 3px;min-height:44px;
     font-size:11.5px;border-radius:999px;margin:0;font-weight:600;
     line-height:16px;white-space:nowrap;overflow:hidden}
   .sub .entries>a.wishlink .ico{width:12px;height:12px;flex:none}
@@ -657,8 +667,8 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:50%;width:3px;height
   <main id="content">
   
   <div class="stats">
-    <div class="stat"><div class="k">折扣榜</div><div class="v"><span class="cnt" data-n="10">0</span><em> 条</em></div></div>
-    <div class="stat"><div class="k">好价榜</div><div class="v"><span class="cnt" data-n="20">0</span><em> 条</em></div></div>
+    <div class="stat"><div class="k">折扣榜</div><div class="v"><span class="cnt" data-n="10">10</span><em> 条</em></div></div>
+    <div class="stat"><div class="k">好价榜</div><div class="v"><span class="cnt" data-n="20">20</span><em> 条</em></div></div>
     <div class="stat"><div class="k">最低折</div><div class="v">1.2<em>折</em></div></div>
     <div class="stat"><div class="k">最高立省</div><div class="v">¥984</div></div>
   </div>
@@ -863,8 +873,11 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:50%;width:3px;height
 <script>
 /* ---------- 页面增强：折叠 + 数字滚动 ----------
  * 都做成「不加这句也不影响阅读」的渐进增强：
- * 数字初始值为 0，但模板里 data-n 带着真值，脚本跑不了时
- * 用 <noscript> 兜底（见下方），保证不会永远停在 0。 */
+ * 折叠按钮是 <button>，脚本不跑时两个榜单就都展开着，内容照样读；
+ * 数字滚动——模板里**直接写的是真值**，脚本跑起来之后才在第一帧改成 0 再数上去。
+ * 【坑·v3.14】原来模板里写的是 0、靠 data-n 记真值，注释里说有 <noscript> 兜底，
+ * 但实际上从来没有那段 noscript：脚本一旦不执行（被拦、解析失败、旧浏览器），
+ * 四宫格就永远停在「0 条」，而下面标题里明明写着「折扣榜 10 条」，自相矛盾。 */
 (function(){
   'use strict';
   var reduce = window.matchMedia &&
@@ -882,6 +895,10 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:50%;width:3px;height
     for(var n = h2.nextElementSibling; n && n.tagName !== 'H2'; n = n.nextElementSibling){
       if(n.classList.contains('sec-body')) bodies.push(n);
     }
+    /* 与 aria-expanded 配套：把折叠按钮和被折叠的区块显式关联起来，
+     * 屏幕阅读器在按钮上就能报出「控制着哪几块内容」。区块原本没有 id，这里补。 */
+    bodies.forEach(function(el, i){ if(!el.id) el.id = 'sec-' + sec + '-' + (i + 1); });
+    if(bodies.length) btn.setAttribute('aria-controls', bodies.map(function(el){ return el.id; }).join(' '));
     function apply(folded, save){
       h2.classList.toggle('collapsed', folded);
       bodies.forEach(function(el){ el.classList.toggle('is-folded', folded); });
@@ -911,8 +928,9 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:50%;width:3px;height
       if(p < 1) requestAnimationFrame(step);
       else el.textContent = target;
     }
-    el.textContent = '0';
-    requestAnimationFrame(step);
+    /* 置 0 放进第一帧里做：HTML 中是真值，若在这里同步改成 0，浏览器可能已经
+     * 画过一帧真值再跳回 0（闪一下）；放进 rAF 后「首帧即 0」，两全。 */
+    requestAnimationFrame(function(ts){ el.textContent = '0'; step(ts); });
   });
 })();
 </script>
