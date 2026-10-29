@@ -891,26 +891,44 @@ def render_html(hot: list[dict], passed: list[dict], meta: dict) -> str:
     这个函数只负责算数、拼行；长成什么样全在 template.html 里。
     """
     def meta_line(d):
-        parts = [d.get("category") or "其他", d.get("mall") or "",
-                 d.get("source") or "", d.get("time") or ""]
+        """meta 行拆成 m1 / m2 两段，各自内部都是「· 值」不可拆单元。
+
+        为什么拆两段：手机上 m1（分类·商城·来源）和 m2（时间·值评·拉取）语义不同，
+        窗口够宽时排一行、够窄时整段换到第二行，比让它「从中间某处随便断」整齐得多。
+        """
+        # 每个「· 值」都包成独立 .nw：分隔符跟着内容走，断行只发生在单元与单元之间。
+        # 【坑】不包的话，`值26/评43 · ` 末尾的空格是断点，换行后第二行开头会剩下
+        # 一个孤零零的「·」，看起来像「· · 拉取」——视觉上多了一个点。（v3.11）
+        def seg_join(items):
+            # 分隔点写在前一块**末尾**（`食品生鲜 ·`），不写在下一块开头。
+            # 写在开头会出问题：整块换行到下一行时，行首就是一个孤零零的「·」，
+            # 看起来像「· 食品生鲜」多长了一个点。写在末尾则跟着上一块走，
+            # 断行后每行都是干净的「词 … 词 ·」收尾。（v3.11）
+            vals = [H.escape(str(x)) for x in items if x]
+            return " ".join(
+                f'<span class="nw">{v}{" ·" if i < len(vals) - 1 else ""}</span>'
+                for i, v in enumerate(vals))
+
+        ident = [d.get("category") or "其他", d.get("mall") or "",
+                 d.get("source") or ""]
+        when = []
+        if d.get("time"):
+            when.append(d["time"])
         if d.get("zhi") or d.get("comments"):
-            parts.append(f"值{d.get('zhi', 0)}/评{d.get('comments', 0)}")
+            when.append(f"值{d.get('zhi', 0)}/评{d.get('comments', 0)}")
+
+        m1, m2 = seg_join(ident), seg_join(when)
         # 折扣榜混了一天内的多轮抓取，标出这条最后一次见到的时间，
-        # 便于判断它是刚抓到的还是几小时前的
-        # 「拉取 2026-10-28」整段包一层 .nw（white-space:nowrap）：
-        # 手机端 .meta 开着 word-break:break-word，日期会被从连字符处撕开，
-        # 变成「拉取 2026-」+「10-28」两行，读起来像两个数字。日期不可拆。（v3.9）
-        # 注意不能先拼进 parts 再统一转义——那样 <span> 会被转义成 &lt;span&gt;。
+        # 便于判断它是刚抓到的还是几小时前的。
+        # 「拉取 2026-10-28」整段不可拆：手机端 .meta 开着 word-break:break-word，
+        # 不加 nowrap 会被从连字符处撕成「拉取 2026-」+「10-28」，读起来像两个数。（v3.9）
         seen = (d.get("last_seen") or "")[:11]
-        body = " · ".join(H.escape(str(p)) for p in parts if p)
         if seen:
-            # 分隔符要跟日期一起走。若写成 f'{body} · <span class="nw">拉取…</span>'，
-            # 换行时那个「·」会孤零零留在上一行末尾，下面一行才开始「拉取」。
-            # 分隔符和日期必须在**同一个** nowrap 盒子里：写成 `</span> <span>` 的话，
-            # 中间那个空格是可断点，换行照样会把「·」留在上一行。
-            seg = f'<span class="nw">· 拉取 {H.escape(seen)}</span>'
-            body = f'{body} {seg}' if body else f'<span class="nw">拉取 {H.escape(seen)}</span>' 
-        return body
+            # 「拉取」是 m2 的最后一块；前面若已有内容，分隔点由前一块的后缀「 ·」提供
+            tail = f'<span class="nw">拉取 {H.escape(seen)}</span>'
+            m2 = f"{m2} {tail}" if m2 else tail
+        return f'<span class="m1">{m1}</span>' + (
+            f' <span class="m2">{m2}</span>' if m2 else "")
 
     def price_axis(d, sid):
         """价格区间轴：把「历史低 — 现价 — 历史高」画成一根 92px 的细线。
