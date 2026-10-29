@@ -90,6 +90,11 @@ h1::after{content:"";display:none}
 h2{font-size:16.5px;margin:34px 0 10px;display:flex;align-items:center;gap:10px;
   letter-spacing:-.2px;font-weight:650}
 h2 .dot{width:3px;height:16px;background:var(--brand);border-radius:2px;flex:none}
+/* 榜单名 + 条数：「折扣榜 10 条」。条数用品牌色加粗，一眼能看到体量，
+ * 省得再去上方四宫格里找。数字用 tabular-nums，位数变化时标题不抖。 */
+h2 .sec-t{flex:none}
+h2 .sec-t b{font-weight:700;color:var(--brand);margin:0 3px 0 5px;
+  font-variant-numeric:tabular-nums}
 h2 .hint{font-weight:400;color:var(--ink-4);font-size:13px;letter-spacing:0}
 /* 折叠按钮做成标题右侧一个低调的小圆片，不抢视觉，
  * 但点击区撑到 26px，手指也点得中 */
@@ -102,9 +107,13 @@ h2 .hint{font-weight:400;color:var(--ink-4);font-size:13px;letter-spacing:0}
   stroke-linecap:round;stroke-linejoin:round;transition:transform .2s ease}
 .sec-fold:hover{background:var(--card-2);color:var(--ink-2);border-color:var(--ink-5)}
 .sec-fold:active{transform:scale(.92)}
-/* 折叠态：把标题之后紧跟的 .sec-body 全部隐藏（用 .collapsed 挂在 h2 上） */
+/* 折叠态：箭头转 90°，本节的 .sec-body 由 JS 逐个打上 .is-folded。
+ * 【坑】这里原先写的是 `h2.collapsed~.sec-body{display:none}`，用通用兄弟选择器
+ * （~）会命中文档里**该 h2 之后所有**的 .sec-body——包含下一个榜单的。
+ * 症状：点「折扣榜」的折叠，好价榜内容跟着一起消失，而好价榜的箭头仍朝下。
+ * 已经踩过，别再用 ~ 做「本节范围」的限定，CSS 没有"到下一个同辈为止"的语法。（v3.12） */
 h2.collapsed .sec-fold svg{transform:rotate(-90deg)}
-h2.collapsed~.sec-body{display:none}
+.sec-body.is-folded{display:none}
 
 /* ---------------- 表格 ---------------- */
 .tablewrap{background:var(--card);border:1px solid var(--line);border-radius:12px;
@@ -202,11 +211,19 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:14px;bottom:14px;wid
   .axis.hot i{box-shadow:0 0 0 1px var(--brand),0 0 0 4px rgba(255,90,114,.18)}
 }
 
-/* 三个入口的容器。桌面端保持 inline 流：说明文字后面紧跟按钮，同一行排开。
- * 【坑】这里千万别写 display:flex —— flex 容器是块级的，会把按钮整组顶到下一行，
- * PC 上就变成「标题 / 说明 / 按钮」三行，用户一眼能看出来。（v3.11）
- * 手机端（≤700）在下面的媒体查询里才改成 flex / grid 独占一行。 */
-.sub .entries{display:inline}
+/* 三个入口按钮的公共容器（与 .sub 的说明文字是兄弟，不是父子）。
+ * 桌面端：.sub 是块级，.entries 也是块级 → 天然独占一行、最大宽度跟着 .wrap 走。
+ * 若写 display:inline —— 按钮组会以 inline 盒身份接在说明文字最后一行的行尾分片里，
+ * 说明文字一长就掉到第二行、短则挤在同一行，PC 上位置不可预测。（v3.12 由 inline 改 block）
+ * 手机端（≤700）在下面媒体查询里换成 grid 三列。
+ * ⚠️ .entries 是 <span>，不是 <div>：它嵌在 <p> 语义的 .sub 行内流里，
+ * 用块级元素会在部分渲染器里被强制闭合。所以块级化必须显式写在轨道上。 */
+.sub .entries{display:block;text-align:left}
+/* PC 端「最大宽度」：1152 = .wrap 的 1120 + 两侧各 16 的伸展余地，
+ * 再宽就居中留白，不再跟着视口无限拉长（1440 屏上按钮不会飘到尽头）。 */
+@media (min-width:701px){
+  .sub .entries{max-width:1152px}
+}
 
 /* ---------------- 标签 ---------------- */
 /* 【坑】行内小标签的 vertical-align 必须逐个写全，不能指望继承。
@@ -336,20 +353,27 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:14px;bottom:14px;wid
 
   h1{font-size:19px;letter-spacing:-.3px;margin:0 0 4px;font-weight:700}
 
-  /* 顶部：说明文字独占一行，三个入口自适应宽度并排（不铺满，避免大色块） */
+  /* 顶部：说明文字一行、三个入口独占下一行。
+   * .sub 是 flex+wrap，.entries 靠 width:100% + flex-basis 强制整行（单独设 grid 不够，
+   * 因为作为 flex item 它的宽度会被内容压缩）。 */
   .sub{font-size:12px;margin-bottom:13px;line-height:1.7;color:var(--ink-3);
     word-break:break-word;overflow-wrap:anywhere;
     display:flex;flex-wrap:wrap;align-items:center;gap:8px 6px}
-  /* 入口按钮组：手机上 width:100% 独占一行（说明文字在上、按钮在下）；
-   * 但 700 以上沿用桌面版的内联排布，别把它挤到标题下面去。 */
-  .sub .entries{display:flex;flex-wrap:wrap;align-items:center;gap:7px 6px;
-    width:100%;margin:1px 0 0}
-  .sub .entries>a.wishlink{display:inline-flex;width:auto;min-width:0;flex:0 0 auto;
-    align-items:center;justify-content:center;gap:4px;padding:6px 11px;
-    font-size:12.5px;border-radius:999px;margin:0;font-weight:600;
-    line-height:16px;white-space:nowrap}
+  /* 入口按钮组：手机上三列等宽铺满，**永远不换行**。
+   * 【坑】原先用 flex + flex-wrap:wrap + 内容自适应宽度，320~520 之间只要三个
+   * 按钮合计比容器宽几个像素，第三个「数据库」就整颗掉到第二行——而它一旦掉行，
+   * 下面所有内容整体下移一行，卡片区的起始位置就跟着抖。
+   * 改成 grid repeat(3,1fr)：每列宽度由容器决定，与文字长度无关，任何屏宽都是
+   * 一行三颗；文字撑不下时靠缩字号 + 缩内边距消化，不做省略号（括号里的数字不能截）。
+   * PC（>700）是块级独占一行，见上面的 .sub .entries 规则。 */
+  .sub .entries{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;
+    width:100%;flex:0 0 100%;margin:1px 0 0}
+  .sub .entries>a.wishlink{display:inline-flex;width:100%;min-width:0;max-width:100%;
+    align-items:center;justify-content:center;gap:4px;padding:6px 3px;
+    font-size:11.5px;border-radius:999px;margin:0;font-weight:600;
+    line-height:16px;white-space:nowrap;overflow:hidden}
   .sub .entries>a.wishlink .ico{width:12px;height:12px;flex:none}
-  .sub .entries>a.wishlink span{font-size:12px;opacity:.8;margin-left:0}
+  .sub .entries>a.wishlink span{font-size:11.5px;opacity:.8;margin-left:0}
 
   /* 四宫格统计 */
   .stats{grid-template-columns:repeat(2,1fr);gap:9px;margin-bottom:15px}
@@ -366,7 +390,10 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:14px;bottom:14px;wid
 
   /* 分节标题：折叠按钮改到同一行右侧 */
   h2{font-size:15px;margin:20px 0 9px;gap:7px;font-weight:650}
-  h2 .dot{width:3px;height:13px;border-radius:2px}
+  /* 手机上不要标题左边那道红竖条（.dot）：卡片化布局里它既不对齐任何东西，
+   * 又和下方每张卡片的色带重复表达同一个信息。留着只觉得"多了一道边"。（v3.12） */
+  h2 .dot{display:none}
+  h2 .sec-t b{margin:0 2px 0 4px}
   h2 .hint{font-size:11.5px;color:var(--ink-4);font-weight:400;display:block;
     margin-left:10px;margin-top:-2px}
   .sec-fold{width:28px;height:28px}
@@ -384,7 +411,9 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:14px;bottom:14px;wid
   tbody{display:block}
   tr{position:relative;background:var(--card);border:1px solid var(--line);
      border-radius:13px;padding:12px 13px 10px;margin-bottom:9px;
-     box-shadow:var(--shadow-s);transition:box-shadow .15s ease}
+     box-shadow:var(--shadow-s),inset 3px 0 0 var(--band-hot);
+     transition:box-shadow .15s ease}
+  .band-feed tr{box-shadow:var(--shadow-s),inset 3px 0 0 var(--band-feed)}
   tr:last-child{margin-bottom:0}
   tbody tr:hover td{background:transparent}
   td{border:0;padding:0}
@@ -395,14 +424,16 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:14px;bottom:14px;wid
     background:var(--line-3);color:var(--ink-3);border-radius:6px;font-size:11px;
     font-weight:600;font-variant-numeric:tabular-nums;line-height:1}
   tbody td.idx::after{display:none}
-  tr::before{content:"";position:absolute;left:0;top:14px;width:3px;height:19px;
-    border-radius:0 3px 3px 0;background:var(--band-hot)}
-  .band-feed tr::before{background:var(--band-feed)}
+  /* 组别色带：原先是 19px 高的小红条（tr::before），挂在卡片左上角，跟一整张卡
+   * 毫无关系，看着像"标签掉在边上"。改成 inset box-shadow 做**整卡左侧竖带**，
+   * 高度跟着卡片长，两端自动贴合 13px 圆角，不需要额外元素也不影响布局。（v3.12） */
   /* 商品名与标签同段落流式排布：标题后紧跟标签/按钮，超长才换行 */
   /* 序号圆片（left:14px、宽 19px）占住卡片左侧一条竖向通道，商品名要避开它。
    * 用 padding-left 让位 + 负 margin 抵消 flex 里的额外占位。
    * 44px 是「刚好不压字」的临界值——实测名字左边界正好等于圆片右边界 57px，
-   * 视觉上两者紧贴，像被圆片咬住。留 5px 呼吸位改成 49px。（v3.9） */
+   * 视觉上两者紧贴，像被圆片咬住。留 5px 呼吸位改成 49px。（v3.9）
+   * 净缩进 = 49-30 = 19px，也就是 №.NUM-INDENT，价格区要跟着缩进同样距离，
+   * 否则「商品名缩进、价格贴边」，一列里两种左边线。 */
   .name{padding-left:49px;margin-left:-30px;margin-right:-7px;margin-bottom:8px;
     line-height:1.62;word-break:break-word}
   .name a{font-size:15px;font-weight:400;color:var(--ink);letter-spacing:-.1px;
@@ -437,6 +468,7 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:14px;bottom:14px;wid
   tr>.name{flex:1 1 100%;width:100%}
   tr>.num{flex:1 1 auto;min-width:0;display:flex;align-items:baseline;flex-wrap:wrap;
     gap:0 5px;order:2;font-size:13px;white-space:normal;text-align:left;
+    padding-left:19px;
     margin-top:8px;padding-top:7px;border-top:1px dashed var(--line-3)}
   tr>.rate{flex:0 0 auto;order:3;margin-top:8px;padding-top:7px;
     border-top:1px dashed var(--line-3);text-align:right;align-self:stretch;
@@ -479,8 +511,8 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:14px;bottom:14px;wid
   .stat .v{font-size:21px}
   .name a{font-size:14px}
   .num b{font-size:19px}
-  /* 320 这类超窄屏：三个入口用等宽三列，避免「关注」挤成半行 */
-  .sub .entries{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+  /* 320 这类超窄屏：grid 三列已在 700 断点统一设好，这里只做进一步的收缩，
+   * 不再重复声明 display/grid-template-columns（重复声明只会让人误以为是另起一套布局） */
   .sub .entries>a.wishlink{padding:6px 2px;gap:2px;font-size:11px;min-width:0}
   .sub .entries>a.wishlink .ico{width:10px;height:10px}
   .sub .entries>a.wishlink span{font-size:11px}
@@ -510,9 +542,10 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:14px;bottom:14px;wid
   <h1>值得买日报 · 2026-10-29</h1>
   <div class="sub">抓取 2026-10-29 18:53　请求 5 次　
     来源 smzdm.com（时点快照，价格与库存随时变动）
+    <span class="entries">
     <a class="wishlink" href="./wishlist.html"><svg class="ico" viewBox="0 0 16 16"><path d="M8 2.2l1.75 3.55 3.92.57-2.84 2.77.67 3.9L8 11.16l-3.5 1.83.67-3.9L2.33 6.32l3.92-.57z"/></svg>关注（<span id="wishCount">0</span>）</a>
     <a class="wishlink blk" href="./blocklist.html"><svg class="ico" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.2"/><path d="M3.8 12.2 12.2 3.8"/></svg>屏蔽（<span id="blockCount">0</span>）</a>
-    <a class="wishlink db" href="./db.html"><svg class="ico" viewBox="0 0 16 16"><ellipse cx="8" cy="4" rx="5.6" ry="2.2"/><path d="M2.4 4v3.2c0 1.2 2.5 2.2 5.6 2.2s5.6-1 5.6-2.2V4"/><path d="M2.4 7.2v3.2c0 1.2 2.5 2.2 5.6 2.2s5.6-1 5.6-2.2V7.2"/></svg>数据库（1066）</a></div>
+    <a class="wishlink db" href="./db.html"><svg class="ico" viewBox="0 0 16 16"><ellipse cx="8" cy="4" rx="5.6" ry="2.2"/><path d="M2.4 4v3.2c0 1.2 2.5 2.2 5.6 2.2s5.6-1 5.6-2.2V4"/><path d="M2.4 7.2v3.2c0 1.2 2.5 2.2 5.6 2.2s5.6-1 5.6-2.2V7.2"/></svg>数据库（1066）</a></span></div>
   
   <div class="stats">
     <div class="stat"><div class="k">折扣榜</div><div class="v"><span class="cnt" data-n="10">0</span><em> 条</em></div></div>
@@ -521,7 +554,7 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:14px;bottom:14px;wid
     <div class="stat"><div class="k">最高立省</div><div class="v">¥984</div></div>
   </div>
   <div class="funnel">数据源 81 条 → 热度不足 −6 → 价超限 −1 → 好价榜 <b>20</b> 条（无原价 36 条）　|　24 小时池 <b>166</b> 条 → 折扣榜 <b>10</b> 条</div>
-  <h2 data-sec="hot"><span class="dot"></span>折扣榜 <span class="hint">按折扣力度排序 · 只收 3.5 折以内</span><button class="sec-fold" type="button" aria-label="折叠折扣榜" aria-expanded="true"><svg viewBox="0 0 16 16"><path d="M4 6l4 4 4-4"/></svg></button></h2>
+  <h2 data-sec="hot"><span class="dot"></span><span class="sec-t">折扣榜<b>10</b>条</span><span class="hint">按折扣力度排序 · 只收 3.5 折以内</span><button class="sec-fold" type="button" aria-label="折叠折扣榜" aria-expanded="true"><svg viewBox="0 0 16 16"><path d="M4 6l4 4 4-4"/></svg></button></h2>
   <div class="legend sec-body">
     <span><i class="sw sw-nl"></i>新低 = 比历史最低还低</span>
     <span><i class="sw sw-al"></i>史低 = 与历史最低持平</span>
@@ -590,7 +623,7 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:14px;bottom:14px;wid
   <td class="num"><b>¥378.47</b> <s>¥1362</s></td>
   <td class="rate">2.8<small>折</small><div class="bar"><i style="width:27.8%"></i></div></td>
 </tr></tbody></table></div></div>
-  <h2 data-sec="feed"><span class="dot"></span>好价榜 <span class="hint">12H最热 原始顺序 · 前 20 条</span><button class="sec-fold" type="button" aria-label="折叠好价榜" aria-expanded="true"><svg viewBox="0 0 16 16"><path d="M4 6l4 4 4-4"/></svg></button></h2>
+  <h2 data-sec="feed"><span class="dot"></span><span class="sec-t">好价榜<b>20</b>条</span><span class="hint">12H最热 原始顺序 · 前 20 条</span><button class="sec-fold" type="button" aria-label="折叠好价榜" aria-expanded="true"><svg viewBox="0 0 16 16"><path d="M4 6l4 4 4-4"/></svg></button></h2>
   <div class="sec-body band-feed"><div class="tablewrap"><table><thead><tr><th>#</th><th>商品</th><th>到手价</th><th>折扣</th></tr></thead>
   <tbody><tr data-sid="f0">
   <td class="idx">1</td>
@@ -733,8 +766,15 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:14px;bottom:14px;wid
     var btn = h2.querySelector('.sec-fold');
     if(!btn) return;
     var sec = h2.getAttribute('data-sec');
+    /* 收集「本节」的 .sec-body：从这个 h2 往后数，遇到下一个 h2 就停。
+     * 【坑】不能靠 CSS 的 ~ 兄弟选择器，那会把后面所有榜单的 body 一起收进来。 */
+    var bodies = [];
+    for(var n = h2.nextElementSibling; n && n.tagName !== 'H2'; n = n.nextElementSibling){
+      if(n.classList.contains('sec-body')) bodies.push(n);
+    }
     function apply(folded, save){
       h2.classList.toggle('collapsed', folded);
+      bodies.forEach(function(el){ el.classList.toggle('is-folded', folded); });
       btn.setAttribute('aria-expanded', String(!folded));
       btn.setAttribute('aria-label', (folded ? '展开' : '折叠') +
         (sec === 'hot' ? '折扣榜' : '好价榜'));
