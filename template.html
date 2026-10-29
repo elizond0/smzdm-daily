@@ -150,10 +150,12 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:14px;bottom:14px;wid
   letter-spacing:-.1px;vertical-align:baseline}
 .name a:hover{color:var(--brand);text-decoration:underline;text-underline-offset:2px}
 .meta{color:var(--ink-4);font-size:12px;margin-top:4px;letter-spacing:.1px}
-/* 不可拆分片段（目前用在 meta 的「拉取 2026-10-28」上）。
+/* 不可拆分片段（目前用在 meta 的每个「· 值」单元上）。
  * 手机端 .meta 为了防溢出开了 word-break:break-word，副作用是日期会在连字符处断开，
- * 变成「拉取 2026-」换行「10-28」。日期属于「拆开就变味」的内容，整体不许断。（v3.9） */
-.nw{white-space:nowrap}
+ * 变成「拉取 2026-」换行「10-28」。日期属于「拆开就变味」的内容，整体不许断。（v3.9）
+ * display:inline-block 是关键：只写 white-space:nowrap 时，Chrome 仍可能在这个盒子
+ * 边界上做出「半个单元」的断行，实测会让行首残留一个孤立的「·」。（v3.11） */
+.nw{display:inline-block;white-space:nowrap}
 .num{white-space:nowrap;font-variant-numeric:tabular-nums;text-align:right;width:152px}
 .num b{color:var(--brand);font-size:17px;font-weight:700;letter-spacing:-.35px}
 .num s{color:var(--ink-5);font-size:12.5px;margin-left:5px}
@@ -199,6 +201,12 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:14px;bottom:14px;wid
 @media (prefers-color-scheme:dark){
   .axis.hot i{box-shadow:0 0 0 1px var(--brand),0 0 0 4px rgba(255,90,114,.18)}
 }
+
+/* 三个入口的容器。桌面端保持 inline 流：说明文字后面紧跟按钮，同一行排开。
+ * 【坑】这里千万别写 display:flex —— flex 容器是块级的，会把按钮整组顶到下一行，
+ * PC 上就变成「标题 / 说明 / 按钮」三行，用户一眼能看出来。（v3.11）
+ * 手机端（≤700）在下面的媒体查询里才改成 flex / grid 独占一行。 */
+.sub .entries{display:inline}
 
 /* ---------------- 标签 ---------------- */
 /* 【坑】行内小标签的 vertical-align 必须逐个写全，不能指望继承。
@@ -332,12 +340,16 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:14px;bottom:14px;wid
   .sub{font-size:12px;margin-bottom:13px;line-height:1.7;color:var(--ink-3);
     word-break:break-word;overflow-wrap:anywhere;
     display:flex;flex-wrap:wrap;align-items:center;gap:8px 6px}
-  .sub>a.wishlink{display:inline-flex;width:auto;min-width:0;flex:0 0 auto;
+  /* 入口按钮组：手机上 width:100% 独占一行（说明文字在上、按钮在下）；
+   * 但 700 以上沿用桌面版的内联排布，别把它挤到标题下面去。 */
+  .sub .entries{display:flex;flex-wrap:wrap;align-items:center;gap:7px 6px;
+    width:100%;margin:1px 0 0}
+  .sub .entries>a.wishlink{display:inline-flex;width:auto;min-width:0;flex:0 0 auto;
     align-items:center;justify-content:center;gap:4px;padding:6px 11px;
     font-size:12.5px;border-radius:999px;margin:0;font-weight:600;
     line-height:16px;white-space:nowrap}
-  .sub>a.wishlink .ico{width:12px;height:12px;flex:none}
-  .sub>a.wishlink span{font-size:12px;opacity:.8;margin-left:0}
+  .sub .entries>a.wishlink .ico{width:12px;height:12px;flex:none}
+  .sub .entries>a.wishlink span{font-size:12px;opacity:.8;margin-left:0}
 
   /* 四宫格统计 */
   .stats{grid-template-columns:repeat(2,1fr);gap:9px;margin-bottom:15px}
@@ -397,6 +409,12 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:14px;bottom:14px;wid
     display:inline;text-decoration:none;word-break:break-word;vertical-align:baseline}
   .meta{font-size:11.5px;line-height:1.6;margin-top:6px;color:var(--ink-4);
     word-break:break-word;overflow-wrap:anywhere;letter-spacing:-.1px}
+  /* meta 拆成 m1（分类·商城·来源）/ m2（时间·值评·拉取）两段。
+   * 窗口极窄时两段各占一行，比让它在任意位置折行整齐。
+   * 每段内部每个「· 值」是独立 .nw 盒，断点只落在盒与盒之间，
+   * 分隔点写在前一盒末尾，行首永远不会以「·」开头。（v3.11） */
+  .meta .m1,.meta .m2{display:inline}
+  .meta .m2{margin-top:0}
 
   /* 标签与快捷按钮：自然换行，不再挤成一团。
    * 用 vertical-align:baseline（不是 middle）——middle 的对齐基准是父元素基线
@@ -461,6 +479,17 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:14px;bottom:14px;wid
   .stat .v{font-size:21px}
   .name a{font-size:14px}
   .num b{font-size:19px}
+  /* 320 这类超窄屏：三个入口用等宽三列，避免「关注」挤成半行 */
+  .sub .entries{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+  .sub .entries>a.wishlink{padding:6px 2px;gap:2px;font-size:11px;min-width:0}
+  .sub .entries>a.wishlink .ico{width:10px;height:10px}
+  .sub .entries>a.wishlink span{font-size:11px}
+}
+
+/* 520 以下：m1 / m2 各占一行，两行都是完整的语义段 */
+@media (max-width:520px){
+  .meta .m1,.meta .m2{display:block}
+  .meta .m2{margin-top:1px}
 }
 /* 尊重系统的「减少动态效果」：数字滚动和过渡一律关掉 */
 @media (prefers-reduced-motion:reduce){
