@@ -491,6 +491,14 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:14px;bottom:14px;wid
   .meta .m1,.meta .m2{display:block}
   .meta .m2{margin-top:1px}
 }
+
+/* 平板宽度（701~1023）：m1、m2 都当整体搬动。
+ * 【坑】不锁的话，m2 会从「值评」和「拉取」之间断开，变成三行——
+ * 第三行只剩下「拉取 2026-10-29」，比折成两行更难看。实测 701 档 27/30、
+ * 768 档 12/30 会这样断。（v3.11） */
+@media (min-width:701px) and (max-width:1023px){
+  .meta .m1,.meta .m2{display:inline-block}
+}
 /* 尊重系统的「减少动态效果」：数字滚动和过渡一律关掉 */
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
