@@ -39,7 +39,7 @@
   --row-hover:#fafbfc;
   --stripe:linear-gradient(90deg,#e8455f,#c8102e);
   /* 两张榜的分组色带：折扣榜走红，好价榜走蓝，扫一眼就知道在看哪张表 */
-  --band-hot:#e8455f; --band-feed:#3b82f6;
+
   /* 价格走廊轴（右侧那根小轴）的三个部件。
    * 【v3.14】旧版轨道用 var(--green-line)→var(--line-2) 渐变，两者在白卡上
    * 对比度只有 1.1~1.3，实测截图里整根轴只剩一个圆点和两个几乎看不见的刻度，
@@ -68,7 +68,7 @@
     --shadow-l:0 12px 34px rgba(0,0,0,.55);
     --row-hover:#23272e;
     --stripe:linear-gradient(90deg,#ff7d90,#ff5a72);
-    --band-hot:#ff5a72; --band-feed:#6aa8ff;
+
     --axis-track:#39404a;
   }
 }
@@ -89,12 +89,17 @@ body{margin:0;padding:40px 20px 60px;background:var(--bg);color:var(--ink);
 .wrap{max-width:1120px;margin:0 auto}
 /* 报头：标题负责「什么产品」，日期降一级只做参照——原来两者同字号同颜色，
  * 读起来像一句话，视线没有落点。（v3.14） */
-.masthead{margin:0}
+/* 【v3.16】报头改成一行：标题 + 日期在左，三个入口在右。
+ * 原来入口挂在「抓取…来源…」那行说明文字下面，而那句说明已经搬到页脚，
+ * 报头就只剩标题孤零零一个。入口挪上来补这一行的右侧空白，
+ * 也让「关注/屏蔽/数据库」这类操作在首屏第一眼就能看到，
+ * 不用先读完一行时间戳。（使用者要求：PC 端放到标题后面） */
+.masthead{display:flex;align-items:center;justify-content:flex-start;
+  gap:10px 24px;flex-wrap:wrap;margin:0 0 22px}
 .h1-date{color:var(--ink-4);font-weight:500;margin-left:9px;font-size:.8em;
   letter-spacing:-.2px;font-variant-numeric:tabular-nums}
-h1{font-size:26px;line-height:1.35;margin:0 0 8px;letter-spacing:-.6px;font-weight:700}
+h1{font-size:26px;line-height:1.35;margin:0;letter-spacing:-.6px;font-weight:700}
 h1::after{content:"";display:none}
-.sub{color:var(--ink-3);font-size:13.5px;margin-bottom:24px;line-height:1.8}
 .warn{background:var(--warn-bg);border:1px solid var(--warn-line);color:var(--warn-ink);
   border-radius:10px;padding:12px 16px;font-size:13.5px;margin-bottom:18px}
 .funnel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px;
@@ -102,18 +107,25 @@ h1::after{content:"";display:none}
   box-shadow:var(--shadow-s)}
 .funnel b{color:var(--brand);font-weight:650}
 
-/* 四宫格：数字做主角，卡片更紧凑、带轻阴影；第一格左侧红色竖条做强调 */
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px}
+/* 四宫格统计条。
+ * 【v3.16】两处改动，都来自使用者反馈：
+ * ① **标签与数字同一行**（「折扣榜 10 条」），不再上下分两行。
+ *    原来 .k / .v 都是块级 div，一张卡白占两行高度，四张叠起来比数字本身还高，
+ *    中间大片空白。改 flex + baseline 后卡高从约 88px 降到 52px。
+ *    手机端 v3.13 就已经这样了，这次是把 PC 对齐过来。
+ * ② **去掉左侧 3px 竖条**（第一格品牌红、其余灰色）。它和榜单里的组别色带
+ *    表达的是同一件事「这行属于哪个榜」，两条并存显得啰嗦；
+ *    而且竖条在 12px 圆角上切角不齐，放大看有毛刺。 */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
 .stat{position:relative;background:var(--card);border:1px solid var(--line);border-radius:12px;
-  padding:16px 18px 17px;box-shadow:var(--shadow-s);
+  padding:14px 18px;box-shadow:var(--shadow-s);
+  display:flex;align-items:baseline;gap:9px;flex-wrap:nowrap;
   overflow:hidden;transition:box-shadow .16s ease,transform .16s ease}
-.stat::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
-  background:var(--line-2);border-radius:12px 0 0 12px}
-.stat:first-child::before{background:var(--brand)}
 .stat:hover{box-shadow:var(--shadow-m);transform:translateY(-1px)}
-.stat .k{font-size:12.5px;color:var(--ink-3);letter-spacing:.2px}
-.stat .v{font-size:28px;font-weight:700;letter-spacing:-.8px;margin-top:3px;
-  font-variant-numeric:tabular-nums;line-height:1.2}
+.stat .k{font-size:13px;color:var(--ink-3);letter-spacing:.2px;
+  flex:none;white-space:nowrap}
+.stat .v{font-size:26px;font-weight:700;letter-spacing:-.8px;margin-top:0;
+  font-variant-numeric:tabular-nums;line-height:1.25}
 .stat .v em{font-size:12.5px;font-style:normal;color:var(--ink-4);font-weight:400;
   margin-left:3px;letter-spacing:0}
 
@@ -195,9 +207,12 @@ tbody td.idx{position:relative}
  * 768 档行高 60px（meta 折成两行）→ 带子 32px。同一套视觉，在平板上变成
  * 一长条红灯管，比商品名还抢眼；而且它贴着表格左边缘，最后一行还会戳进
  * 12px 的圆角里。固定 16px 之后两个档位一致，也自然避开圆角。 */
-tbody td.idx::after{content:"";position:absolute;left:0;top:50%;width:3px;height:16px;
-  margin-top:-8px;border-radius:0 3px 3px 0;background:var(--band-hot);opacity:.9}
-.band-feed tbody td.idx::after{background:var(--band-feed)}
+/* 组别色带（每行最左侧 3px 竖条，折扣榜红 / 好价榜蓝）已删除（v3.16）。
+ * 使用者：「两个榜单内的商品信息卡前面的红边框也去掉」。
+ * 它原本用来一眼分辨「这行在哪个榜」，但两张表各有自己的 h2 标题和条数，
+ * 表格又是纵向连续排列、不会交错，这个信息其实不缺。
+ * 删掉后每行左侧留白由 td 的 padding 承担，行首内容起点不变。
+ * --band-hot / --band-feed 两个变量随之删除。 */
 .idx{color:var(--ink-4);width:38px;font-variant-numeric:tabular-nums;font-size:13px;
   font-weight:500}
 .cat{color:var(--ink-3);font-size:13px;width:82px}
@@ -258,18 +273,12 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:50%;width:3px;height
  * 保留的痕迹：--axis-track 变量仍被 .bar（折扣条轨道）复用，
  * 名字没改是为了不牵动那处；.axis-tick 随轴一起删掉了。
  */
-/* 三个入口按钮的公共容器（与 .sub 的说明文字是兄弟，不是父子）。
- * 桌面端：.sub 是块级，.entries 也是块级 → 天然独占一行、最大宽度跟着 .wrap 走。
- * 若写 display:inline —— 按钮组会以 inline 盒身份接在说明文字最后一行的行尾分片里，
- * 说明文字一长就掉到第二行、短则挤在同一行，PC 上位置不可预测。（v3.12 由 inline 改 block）
- * 手机端（≤700）在下面媒体查询里换成 grid 三列。
- * ⚠️ .entries 是 <span>，不是 <div>：它嵌在 <p> 语义的 .sub 行内流里，
- * 用块级元素会在部分渲染器里被强制闭合。所以块级化必须显式写在轨道上。 */
-.sub .entries{display:block;text-align:left}
-/* PC 端「最大宽度」：1152 = .wrap 的 1120 + 两侧各 16 的伸展余地，
- * 再宽就居中留白，不再跟着视口无限拉长（1440 屏上按钮不会飘到尽头）。 */
+/* 三个入口按钮组。v3.16 起是 .masthead 的 flex 子项，靠右对齐，
+ * 不再依赖任何父级块级容器（原来挂在 .sub 里，需显式 display:block 才独占一行）。
+ * 手机端（≤700）在下面媒体查询里换成 grid 三列、整行铺满。 */
+.entries{display:flex;align-items:center;gap:7px;flex:none}
 @media (min-width:701px){
-  .sub .entries{max-width:1152px}
+  .entries{max-width:760px}
   /* 桌面端三颗胶囊按钮高 26px：鼠标够用、也过了 AA 的 24px，但离 44 的触摸标准还差。
    * 同样用伪元素把命中区上下各撑 9px（横向本来就 >100px），
    * 视觉一点不变，手感直接到 44。相邻按钮间距 8px，横向不撑，所以不会互相抢点击。 */
@@ -353,6 +362,12 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:50%;width:3px;height
 .legend .sw-al{background:var(--teal)}
 .legend .sw-lh{background:var(--ink-5)}
 .foot{color:var(--ink-4);font-size:12px;margin-top:26px;line-height:1.9}
+/* 【v3.16】「抓取时间 / 请求次数 / 来源」从报头搬到页脚。
+ * 这三项是「这个页面是什么时候的快照」的免责信息，读者要先看的是商品，
+ * 不是时间戳；放页脚既不丢信息，也不再占首屏第一行。
+ * 用 .foot-meta 单独一段，颜色比版本行稍深一档，表明它属于「本次数据」而非「页面本身」。*/
+.foot p{margin:0}
+.foot p.foot-meta{color:var(--ink-3);margin-bottom:5px}
 
 /* ---------------- 屏蔽词命中提示条 ----------------
  * 结构由 block.js 动态生成（#blockBar）。配色走变量，
@@ -405,31 +420,28 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:50%;width:3px;height
   body{padding:14px 10px 26px;font-size:15px;background:var(--bg);
     font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
 
-  h1{font-size:19px;letter-spacing:-.3px;margin:0 0 4px;font-weight:700}
+  h1{font-size:19px;letter-spacing:-.3px;margin:0;font-weight:700}
 
-  /* 顶部：说明文字一行、三个入口独占下一行。
-   * .sub 是 flex+wrap，.entries 靠 width:100% + flex-basis 强制整行（单独设 grid 不够，
-   * 因为作为 flex item 它的宽度会被内容压缩）。 */
-  .sub{font-size:12px;margin-bottom:13px;line-height:1.7;color:var(--ink-3);
-    word-break:break-word;overflow-wrap:anywhere;
-    display:flex;flex-wrap:wrap;align-items:center;gap:8px 6px}
-  /* 入口按钮组：手机上三列等宽铺满，**永远不换行**。
-   * 【坑】原先用 flex + flex-wrap:wrap + 内容自适应宽度，320~520 之间只要三个
-   * 按钮合计比容器宽几个像素，第三个「数据库」就整颗掉到第二行——而它一旦掉行，
-   * 下面所有内容整体下移一行，卡片区的起始位置就跟着抖。
+  /* 手机端报头两行：第一行标题+日期，第二行三个入口整行铺满。
+   * 【v3.16】入口从 .sub 里挪出来成了 .masthead 的直接子项，
+   * 这里靠 flex-basis:100% 强制它换到第二行（.masthead 是 flex-wrap）。
+   * 三列等宽的理由不变：**永远不换行**。
+   * 【坑·v3.11】原先用 flex + flex-wrap:wrap + 内容自适应宽度，320~520 之间只要
+   * 三个按钮合计比容器宽几个像素，第三个「数据库」就整颗掉到第二行——而它一旦
+   * 掉行，下面所有内容整体下移一行，卡片区起始位置跟着抖。
    * 改成 grid repeat(3,1fr)：每列宽度由容器决定，与文字长度无关，任何屏宽都是
-   * 一行三颗；文字撑不下时靠缩字号 + 缩内边距消化，不做省略号（括号里的数字不能截）。
-   * PC（>700）是块级独占一行，见上面的 .sub .entries 规则。 */
-  .sub .entries{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;
+   * 一行三颗；文字撑不下时靠缩字号 + 缩内边距消化，不做省略号（括号里的数字不能截）。 */
+  .masthead{gap:10px 0;margin-bottom:13px}
+  .entries{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;
     width:100%;flex:0 0 100%;margin:1px 0 0}
-  .sub .entries>a.wishlink{display:inline-flex;width:100%;min-width:0;max-width:100%;
+  .entries>a.wishlink{display:inline-flex;width:100%;min-width:0;max-width:100%;
     align-items:center;justify-content:center;gap:4px;padding:6px 3px;min-height:44px;
     font-size:11.5px;border-radius:999px;margin:0;font-weight:600;
     line-height:16px;white-space:nowrap;overflow:hidden}
-  .sub .entries>a.wishlink .ico{width:12px;height:12px;flex:none}
+  .entries>a.wishlink .ico{width:12px;height:12px;flex:none}
   /* 括号里的数字不要再压 opacity：.8 会把「关注（0）」里那个 0 的
    * 有效对比度从 4.83 压到 3.50，低于 AA。层级已经由括号本身表达了。 */
-  .sub .entries>a.wishlink span{font-size:11.5px;opacity:1;margin-left:0}
+  .entries>a.wishlink span{font-size:11.5px;opacity:1;margin-left:0}
 
   /* 四宫格统计：标签与数字**同一行**（v3.13）。
    * 原来 .k / .v 都是块级 div，天然上下两行，2×2 布局里每张卡都白占一行高度，
@@ -437,9 +449,6 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:50%;width:3px;height
   .stats{grid-template-columns:repeat(2,1fr);gap:9px;margin-bottom:14px}
   .stat{padding:9px 12px;border-radius:11px;display:flex;align-items:baseline;
     gap:6px;flex-wrap:nowrap}
-  /* 手机上去掉左侧竖条（第一格是品牌红）。3px 竖条在 11px 圆角上本来就切角不齐，
-   * 又和商品卡被去掉的组别色带重复表达「这是重点」。（v3.13） */
-  .stat::before{display:none}
   .stat .k{font-size:11.5px;color:var(--ink-3);margin:0;flex:none;white-space:nowrap}
   .stat .v{font-size:21px;font-weight:700;letter-spacing:-.4px;line-height:1.2;
     flex:0 1 auto;min-width:0;white-space:nowrap}
@@ -499,7 +508,7 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:50%;width:3px;height
     display:flex;align-items:center;justify-content:center;
     background:var(--line-3);color:var(--ink-3);border-radius:6px;font-size:11px;
     font-weight:600;font-variant-numeric:tabular-nums;line-height:1}
-  tbody td.idx::after{display:none}
+  /* td.idx::after 色带已在基础规则里整条删除（v3.16），此处无需再隐藏 */
   /* ---------- 左侧缩进：一个变量说完 ----------
    * 序号圆片 absolute 定位在 left:12px、宽 19px —— 12 就是卡片左内边距，
    * 所以圆片左边缘正好压在内容盒左边缘上，右边界落在内容盒 +19 处。
@@ -581,7 +590,11 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:50%;width:3px;height
   .empty .d{font-size:12px}
 
   .foot{font-size:11.5px;line-height:1.85;margin-top:18px;padding:0 2px;color:var(--ink-4)}
-  .foot br{display:none}
+  /* 【坑·v3.16】这条 `.foot br{display:none}` 是 v3.13 为「手机上页脚少占一行」
+   * 加的。但现在页脚多了「抓取时间/来源」一段（<p class="foot-meta">），
+   * 而版本行里的 <br> 恰好是「页面版本 2026-10-29 18:53」与「由 daily.py 自动生成」
+   * 之间的断点——一隐藏就粘成「18:53由 daily.py」，两个不同性质的句子挤在一行。
+   * 页脚本来就在页面最末，省这一行没有收益，删除。 */
 
   /* 屏蔽提示条：手机上让「管理屏蔽词」独占一行右侧，避免挤在一块 */
   .blockhit{padding:9px 12px;border-radius:10px;margin-bottom:12px}
@@ -602,9 +615,9 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:50%;width:3px;height
   .num b{font-size:19px}
   /* 320 这类超窄屏：grid 三列已在 700 断点统一设好，这里只做进一步的收缩，
    * 不再重复声明 display/grid-template-columns（重复声明只会让人误以为是另起一套布局） */
-  .sub .entries>a.wishlink{padding:6px 2px;gap:2px;font-size:11px;min-width:0}
-  .sub .entries>a.wishlink .ico{width:10px;height:10px}
-  .sub .entries>a.wishlink span{font-size:11px}
+  .entries>a.wishlink{padding:6px 2px;gap:2px;font-size:11px;min-width:0}
+  .entries>a.wishlink .ico{width:10px;height:10px}
+  .entries>a.wishlink span{font-size:11px}
 }
 
 /* 520 以下：m1 / m2 各占一行，两行都是完整的语义段 */
@@ -630,12 +643,11 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:50%;width:3px;height
 <div class="wrap">
   <header class="masthead">
   <h1>值得买日报<span class="h1-date">{{date}}</span></h1>
-  <div class="sub">抓取 {{fetched_at}}　请求 {{requests}} 次　
-    来源 smzdm.com（时点快照，价格与库存随时变动）
-    <span class="entries">
+  <span class="entries">
     <a class="wishlink" href="./wishlist.html"><svg class="ico" viewBox="0 0 16 16"><path d="M8 2.2l1.75 3.55 3.92.57-2.84 2.77.67 3.9L8 11.16l-3.5 1.83.67-3.9L2.33 6.32l3.92-.57z"/></svg>关注（<span id="wishCount">{{wish_count}}</span>）</a>
     <a class="wishlink blk" href="./blocklist.html"><svg class="ico" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.2"/><path d="M3.8 12.2 12.2 3.8"/></svg>屏蔽（<span id="blockCount">0</span>）</a>
-    <a class="wishlink db" href="./db.html"><svg class="ico" viewBox="0 0 16 16"><ellipse cx="8" cy="4" rx="5.6" ry="2.2"/><path d="M2.4 4v3.2c0 1.2 2.5 2.2 5.6 2.2s5.6-1 5.6-2.2V4"/><path d="M2.4 7.2v3.2c0 1.2 2.5 2.2 5.6 2.2s5.6-1 5.6-2.2V7.2"/></svg>数据库（{{db_count}}）</a></span></div>
+    <a class="wishlink db" href="./db.html"><svg class="ico" viewBox="0 0 16 16"><ellipse cx="8" cy="4" rx="5.6" ry="2.2"/><path d="M2.4 4v3.2c0 1.2 2.5 2.2 5.6 2.2s5.6-1 5.6-2.2V4"/><path d="M2.4 7.2v3.2c0 1.2 2.5 2.2 5.6 2.2s5.6-1 5.6-2.2V7.2"/></svg>数据库（{{db_count}}）</a>
+  </span>
   </header>
   <main id="content">
   {{warn}}{{empty}}
@@ -658,9 +670,12 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:50%;width:3px;height
   <div class="sec-body{{feed_empty_cls}} band-feed">{{feed_empty}}<div class="tablewrap"><table><thead><tr><th scope="col">#</th><th scope="col">商品</th><th scope="col">到手价</th><th scope="col">折扣</th></tr></thead>
   <tbody>{{feed_rows}}</tbody></table></div></div>
   </main>
-  <footer class="foot">页面版本 {{build_at}}<br>由 daily.py 自动生成 · <a href="./overview.html" style="color:var(--brand);text-decoration:none">运行概览</a> ·
+  <footer class="foot">
+    <p class="foot-meta">抓取 {{fetched_at}}　请求 {{requests}} 次　来源 smzdm.com（时点快照，价格与库存随时变动）</p>
+    <p>页面版本 {{build_at}}<br>由 daily.py 自动生成 · <a href="./overview.html" style="color:var(--brand);text-decoration:none">运行概览</a> ·
     数据源 {{feed_name}}（全部好价排行榜）·
-    仅抓列表页，未访问商品详情页 · 折扣按「现价/原价」计算，原价取自好价流描述，仅供参考。</footer>
+    仅抓列表页，未访问商品详情页 · 折扣按「现价/原价」计算，原价取自好价流描述，仅供参考。</p>
+  </footer>
 </div>
 <script>
 /* ---------- 页面增强：折叠 + 数字滚动 ----------
