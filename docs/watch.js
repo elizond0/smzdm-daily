@@ -64,6 +64,44 @@
 
   /* 快捷「关注」按钮：点击后写入本机缓存并立即显示标签，
    * 保存到仓库仍要去愿望单页（那里有 Token），与屏蔽按钮同一套交互。 */
+  /* ---- .nameops：标签与快捷按钮的共用包裹层 ----------------------------
+   * 手机上 .name 是 flex 行（标题 / 标签 / 按钮逐项换行）。若把两颗按钮直接
+   * append 到 .name，当「标题 + 两个标签」刚好占满一行时，按钮会掉到第二行，
+   * 而标签留在第一行末尾 → 两行各自 align-items:center，视觉上错开整整一行。
+   * 把按钮装进一个不可拆的 .nameops，换行时它们作为一个整体跟着标签走。
+   *
+   * 【坑·v3.17】watch.js 与 block.js 各自独立跑，先后不定，而且它们自己也会
+   * 追加新标签（「已关注」徽章）。所以不能只在「第一次调用时插一次」就完事——
+   * 实测 watch.js 先建了 .nameops，block.js 之后又往它前面插了个 .tag，
+   * 那颗标签就被隔离在包裹层外面，孤零零占一行。
+   * 正确做法：每次调用都把 .nameops 移动成**最后一个标签的直接后继**，
+   * 幂等且顺序无关。用 insertAdjacentElement 移动已存在节点是 move 而非 clone。
+   *
+   * 没有任何标签时也照样建这个包裹层（挂在标题后面），同时给 .name 打 .nolabel，
+   * 让 CSS 走「按钮贴末行右侧」那套规则——否则那三分之一的无标签卡片，
+   * 按钮会独占一整行。 */
+  function ensureOps(td) {
+    var spans = td.querySelectorAll(':scope > span.tag,:scope > span.newlow,' +
+      ':scope > span.atlow,:scope > span.first,:scope > span.wish');
+    var ops = td.querySelector(':scope > .nameops');
+    if (!ops) {
+      ops = document.createElement('span');
+      ops.className = 'nameops';
+    }
+    if (spans.length) {
+      td.classList.remove('nolabel');
+      var last = spans[spans.length - 1];
+      if (ops.previousElementSibling !== last) last.insertAdjacentElement('afterend', ops);
+    } else {
+      td.classList.add('nolabel');
+      var a = td.querySelector(':scope > a');
+      /* 无标签时要求 .nameops 紧跟在标题后面、且不能有别的元素夹在中间 */
+      if (a && ops.previousElementSibling !== a) a.insertAdjacentElement('afterend', ops);
+      else if (!a && ops.parentNode !== td) td.appendChild(ops);
+    }
+    return ops;
+  }
+
   function ensureWishButton(td, title) {
     if (td.querySelector('.wishbtn')) return;
     var btn = document.createElement('button');
@@ -86,10 +124,9 @@
       apply(words);
       toast('已在本机关注「' + word + '」，去愿望单页面「保存到仓库」才对其他设备生效');
     });
-    /* 锚点 = 最后一个标签/徽章，紧跟其后插入 → 不另起一行 */
-    var spans = td.querySelectorAll('span.tag,span.newlow,span.atlow,span.first,span.wish');
-    var anchor = spans.length ? spans[spans.length - 1] : td.querySelector('a');
-    if (anchor) anchor.insertAdjacentElement('afterend', btn);
+    /* 锚点 = .nameops 包裹层（与 block.js 共用，见那里的注释），插入其中 → 与标签同排 */
+    var ops = ensureOps(td);
+    if (ops) ops.appendChild(btn);
     else td.appendChild(btn);
   }
 
