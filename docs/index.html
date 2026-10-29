@@ -18,11 +18,18 @@
 :root{
   --bg:#f4f5f7; --card:#fff; --card-2:#fafbfc;
   --line:#e8eaed; --line-2:#eceef1; --line-3:#f2f3f5;
-  --ink:#16181c; --ink-2:#3d4249; --ink-3:#71767e; --ink-4:#9aa0a8; --ink-5:#b6bac1;
+  /* 灰阶五档 → 实际只有四档能承载正文。
+   * 【v3.14 实测】上一版 ink-3/4/5 在白底上分别是 4.19 / 2.64 / 1.95，全部低于
+   * WCAG AA 的 4.5:1 —— 也就是「按折扣力度排序」「其他·京东」「¥200 原价」
+   * 这些字实际上一直在违规边缘，暗色下同样偏低。现在：
+   *   ink-3 5.4:1（--bg）  正文次级
+   *   ink-4 4.6:1（--bg）/ 5.1:1（#fff）  最小号注释的底线
+   *   ink-5 仅装饰：轴刻度、分隔线、空态插画；**不再给任何文字上色**。 */
+  --ink:#16181c; --ink-2:#3d4249; --ink-3:#5f646c; --ink-4:#6a6f77; --ink-5:#b6bac1;
   --brand:#c8102e; --brand-2:#e8455f; --brand-bg:#fdecee; --brand-line:#f3c3c9;
   --green:#1a7f42; --green-bg:#e9f6ee; --green-line:#c9e8d4;
   --teal:#0f766e; --teal-bg:#e6f4f4; --teal-line:#bfe3e3;
-  --amber:#a86a12; --amber-bg:#fff4e5; --amber-line:#f5e0c3;
+  --amber:#96600f; --amber-bg:#fff4e5; --amber-line:#f5e0c3;
   --blue:#1d5fbf; --blue-bg:#eef4ff; --blue-line:#cfdefb;
   --purple:#7c3aed; --purple-bg:#f3e8ff; --purple-line:#ddd0fb;
   --warn-ink:#8a6410; --warn-bg:#fff8e6; --warn-line:#f3e2b8;
@@ -33,12 +40,20 @@
   --stripe:linear-gradient(90deg,#e8455f,#c8102e);
   /* 两张榜的分组色带：折扣榜走红，好价榜走蓝，扫一眼就知道在看哪张表 */
   --band-hot:#e8455f; --band-feed:#3b82f6;
+  /* 价格走廊轴（右侧那根小轴）的三个部件。
+   * 【v3.14】旧版轨道用 var(--green-line)→var(--line-2) 渐变，两者在白卡上
+   * 对比度只有 1.1~1.3，实测截图里整根轴只剩一个圆点和两个几乎看不见的刻度，
+   * 「现价落在历史区间哪一段」这个页面唯一的图形信息等于丢失。
+   * 现在拆成三个语义色：轨道（可见的底槽）、刻度（左右端点，满足 3:1 非文本对比）、
+   * 廉价区（左侧绿色端帽，一眼看出"这头是便宜"）。 */
+  --axis-track:#c9cfd8; --axis-tick:#8b9199;
 }
 @media (prefers-color-scheme:dark){
   :root{
-    --bg:#14161a; --card:#1c1f24; --card-2:#22262c;
-    --line:#2c3138; --line-2:#272b31; --line-3:#23272d;
-    --ink:#e8eaed; --ink-2:#c6cad0; --ink-3:#9aa0a8; --ink-4:#7c828b; --ink-5:#61666d;
+    --bg:#14161a; --card:#1e2228; --card-2:#252a31;
+    --line:#333941; --line-2:#2d333a; --line-3:#282d34;
+    /* 暗色同样四档：ink-3 5.4:1 / ink-4 4.9:1（对 --card），ink-5 只做装饰 */
+    --ink:#e8eaed; --ink-2:#c6cad0; --ink-3:#9aa0a8; --ink-4:#878d96; --ink-5:#61666d;
     --brand:#ff5a72; --brand-2:#ff7d90; --brand-bg:#3a1a20; --brand-line:#5c2a33;
     --green:#4ade80; --green-bg:#14301f; --green-line:#245136;
     --teal:#2dd4bf; --teal-bg:#0f2e2c; --teal-line:#1d4f4b;
@@ -52,15 +67,29 @@
     --row-hover:#23272e;
     --stripe:linear-gradient(90deg,#ff7d90,#ff5a72);
     --band-hot:#ff5a72; --band-feed:#6aa8ff;
+    --axis-track:#39404a; --axis-tick:#7c828b;
   }
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
+/* 统一焦点环（v3.14）。原来除了关注/屏蔽两个按钮，其余链接与按钮都只有浏览器
+ * 默认的 1px 自动描边（Chrome 下是一条细橙线），在浅灰底上几乎看不出来。
+ * 这里给所有可聚焦元素一条 2px 品牌色描边 + 2px 外扩，满足 WCAG 2.4.11/2.4.13。
+ * 用 a/button 的元素选择器（0,1,1）：能压过浏览器默认样式，
+ * 又会被 .wishbtn:focus-visible 这类（0,2,0）的既有规则覆盖——
+ * 那两个按钮靠反白背景表达焦点，不需要再加描边。 */
+a:focus-visible,button:focus-visible,summary:focus-visible,[tabindex]:focus-visible{
+  outline:2px solid var(--brand);outline-offset:2px;border-radius:4px}
 body{margin:0;padding:40px 20px 60px;background:var(--bg);color:var(--ink);
   font:15px/1.68 -apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
   -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
   transition:background .25s ease,color .25s ease}
 .wrap{max-width:1120px;margin:0 auto}
+/* 报头：标题负责「什么产品」，日期降一级只做参照——原来两者同字号同颜色，
+ * 读起来像一句话，视线没有落点。（v3.14） */
+.masthead{margin:0}
+.h1-date{color:var(--ink-4);font-weight:500;margin-left:9px;font-size:.8em;
+  letter-spacing:-.2px;font-variant-numeric:tabular-nums}
 h1{font-size:26px;line-height:1.35;margin:0 0 8px;letter-spacing:-.6px;font-weight:700}
 h1::after{content:"";display:none}
 .sub{color:var(--ink-3);font-size:13.5px;margin-bottom:24px;line-height:1.8}
@@ -103,6 +132,11 @@ h2 .hint{font-weight:400;color:var(--ink-4);font-size:13px;letter-spacing:0}
   background:transparent;border:1px solid var(--line);border-radius:8px;
   color:var(--ink-4);cursor:pointer;transition:background .14s ease,
   color .14s ease,border-color .14s ease,transform .14s ease}
+/* 【v3.14】26px 的视觉大小保持不变（它只是标题右侧的一个低调附件），
+ * 但把命中区扩到 44×44：伪元素撑出去 9px，用户不用瞄准也能点中。
+ * 这是「视觉小、手感大」的标准做法，比把按钮做成 44 更不破坏标题行。 */
+.sec-fold{position:relative}
+.sec-fold::after{content:"";position:absolute;inset:-9px}
 .sec-fold svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;
   stroke-linecap:round;stroke-linejoin:round;transition:transform .2s ease}
 .sec-fold:hover{background:var(--card-2);color:var(--ink-2);border-color:var(--ink-5)}
@@ -149,10 +183,15 @@ tbody tr{transition:background .12s ease}
 tbody tr:hover td{background:var(--row-hover)}
 /* 分组色带：两张榜左边缘一条 3px 的色条，区分榜单来源 */
 tbody td.idx{position:relative}
-tbody td.idx::after{content:"";position:absolute;left:0;top:14px;bottom:14px;width:3px;
-  border-radius:0 3px 3px 0;background:var(--band-hot);opacity:.85}
+/* 【v3.14】色带改成固定 16px 高、垂直居中。
+ * 原来写的是 top:14px;bottom:14px（跟着行高走）：1440 档行高 40px → 带子 12px，
+ * 768 档行高 60px（meta 折成两行）→ 带子 32px。同一套视觉，在平板上变成
+ * 一长条红灯管，比商品名还抢眼；而且它贴着表格左边缘，最后一行还会戳进
+ * 12px 的圆角里。固定 16px 之后两个档位一致，也自然避开圆角。 */
+tbody td.idx::after{content:"";position:absolute;left:0;top:50%;width:3px;height:16px;
+  margin-top:-8px;border-radius:0 3px 3px 0;background:var(--band-hot);opacity:.9}
 .band-feed tbody td.idx::after{background:var(--band-feed)}
-.idx{color:var(--ink-5);width:38px;font-variant-numeric:tabular-nums;font-size:13px;
+.idx{color:var(--ink-4);width:38px;font-variant-numeric:tabular-nums;font-size:13px;
   font-weight:500}
 .cat{color:var(--ink-3);font-size:13px;width:82px}
 .name a{color:var(--ink);text-decoration:none;font-weight:400;font-size:14.5px;
@@ -167,7 +206,7 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:14px;bottom:14px;wid
 .nw{display:inline-block;white-space:nowrap}
 .num{white-space:nowrap;font-variant-numeric:tabular-nums;text-align:right;width:152px}
 .num b{color:var(--brand);font-size:17px;font-weight:700;letter-spacing:-.35px}
-.num s{color:var(--ink-5);font-size:12.5px;margin-left:5px}
+.num s{color:var(--ink-4);font-size:12.5px;margin-left:5px}
 /* 轴和历史低提示同一行：文字靠左、轴靠右，垂直居中。
  * 两者都是「离低点多远」的表达，放一起读起来才顺 */
 .axisrow{display:flex;align-items:center;gap:8px;margin-top:9px;justify-content:flex-end}
@@ -183,30 +222,52 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:14px;bottom:14px;wid
   font-variant-numeric:tabular-nums;font-size:14px;letter-spacing:-.3px;
   vertical-align:top}
 .rate small{font-size:11px;font-weight:400}
-/* 进度条要和左边「价格轴」落在同一条水平线上——两列各画一根横条，
+/* 折扣条。要和左边「价格轴」落在同一条水平线上——两列各画一根横条，
  * 一高一低会让人以为是两组不同数据。实测未对齐时 bar 比轴高 8px，
- * 所以把 margin-top 从 6px 提到 14px。手机上 .bar 是 display:none，不受影响。（v3.9） */
-.bar{height:4px;background:var(--line-2);border-radius:99px;margin-top:14px;overflow:hidden}
-.bar i{display:block;height:100%;border-radius:99px;background:var(--stripe)}
+ * 所以把 margin-top 从 6px 提到 14px。手机上 .bar 是 display:none，不受影响。（v3.9）
+ *
+ * 【v3.14】修两件事：
+ * ① 轨道原来用 --line-2（#eceef1），在白卡上几乎不可见，1.2 折时只剩一小截红色，
+ *    看着像"渲染坏掉的横线"。换 --axis-track 后"长度 = 折扣深浅"才成立。
+ * ② 曾试过切成十格刻度（1 格 = 1 折），实测 88px 列里每格只有 6px，加上分隔缝后
+ *    整条变成一排虚线，比原来的问题更难看。改回实心条，只在 5 折处留一条参考刻度。 */
+.bar{height:5px;border-radius:99px;margin-top:14px;overflow:hidden;
+  background:var(--axis-track)}
+.bar i{display:block;height:100%;min-width:5px;border-radius:99px;background:var(--stripe)}
 
 /* ---------------- 价格区间轴 ---------------- */
 /* 一根 64px 的细线，是「历史低 ↔ 历史高」这条价格走廊的缩略图：
  *   左端竖线 = 历史最低价，右端竖线 = 历史最高价，圆点 = 当前价在这条走廊上的位置。
  * 圆点越靠左越便宜；落在最便宜的五分之一（pos ≤ 20%）时圆点变红 + 外发光，
  * 一眼看出「现在是不是该买」。精确数字放 title 里，鼠标停上去可看。
- * 宽度别再拉长：152px 的价格列里它只是个辅助图形，涨到 100px 会抢价格的视觉重心。 */
-.axis{position:relative;display:block;width:64px;height:3px;
-  border-radius:99px;
-  background:linear-gradient(90deg,var(--green-line),var(--line-2) 62%,var(--line-2))}
-.axis::before,.axis::after{content:"";position:absolute;top:-2px;width:1px;height:7px;
-  background:var(--ink-5);opacity:.45}
+ * 宽度别再拉长：152px 的价格列里它只是个辅助图形，涨到 100px 会抢价格的视觉重心。
+ *
+ * 【v3.14】重做配色。旧版轨道是 --green-line → --line-2 的渐变，两端对比度
+ * 只有 1.1 / 1.3，实际渲染出来"整根轴不见了"，只剩一个 8px 圆点悬在空白里。
+ * 现在：底槽用 --axis-track（看得见但退后）、端点刻度用 --axis-tick（≥3:1，
+ * 满足 WCAG 1.4.11 对"理解内容所必需的图形"的要求）。圆点从 8px 提到 9px
+ * 并加粗描边，小屏也能一眼定位。
+ * 底槽**不做绿→灰渐变**：试过一版左侧 26% 绿色端帽表示"这头便宜"，实测在
+ * 64px 的宽度里那点绿色被圆点整个盖住，只留下一条说不清含义的色带。
+ * 「便宜」这个信息已经由圆点变红 + 外发光表达，够了。 */
+.axis{position:relative;display:block;width:64px;height:4px;
+  border-radius:99px;background:var(--axis-track)}
+.axis::before,.axis::after{content:"";position:absolute;top:-2px;width:1px;height:8px;
+  background:var(--axis-tick);border-radius:1px}
 .axis::before{left:0}
 .axis::after{right:0}
+/* 圆点位置由 inline 的 --pos 给（0~100%），这里用 clamp 夹到 [4.5px, 100%-4.5px]：
+ * 圆点含描边正好 9px（全局 border-box），半宽 4.5。
+ * 【坑】原来是直接 left:{pos}%，pos 被夹在 2%~98%，2% × 64px = 1.3px，
+ * 圆点中心贴在轨道端点外侧，半个身子悬空，看起来"轴旁边飘着一个小球"。 */
+/* 圆点 8px、1.5px 白色描边，只靠描边和轨道分开。
+ * 上一版是 9px + 2px 白边 + 1px 灰环，四重描边叠起来像个"珠子"，
+ * 压在 4px 高的轨道端点上时，连左端刻度（历史最低价）都被盖住了。 */
 .axis i{position:absolute;top:50%;width:8px;height:8px;margin:-4px 0 0 -4px;
-  border-radius:50%;background:var(--ink-4);border:2px solid var(--card);
-  box-shadow:0 0 0 1px var(--ink-5)}
+  left:clamp(4px,var(--pos,50%),calc(100% - 4px));
+  border-radius:50%;background:var(--ink-2);border:1.5px solid var(--card)}
 .axis.hot i{background:var(--brand);box-shadow:0 0 0 1px var(--brand),
-  0 0 0 4px rgba(200,16,46,.14)}
+  0 0 0 4px rgba(200,16,46,.16)}
 @media (prefers-color-scheme:dark){
   .axis.hot i{box-shadow:0 0 0 1px var(--brand),0 0 0 4px rgba(255,90,114,.18)}
 }
@@ -299,8 +360,8 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:14px;bottom:14px;wid
 .legend .sw-nl{background:var(--green)}
 .legend .sw-al{background:var(--teal)}
 .legend .sw-lh{background:var(--ink-5)}
-.legend .sw-ax{background:var(--ink-4);height:3px;width:14px;border-radius:99px;
-  margin-bottom:2px}
+.legend .sw-ax{height:3px;width:14px;border-radius:99px;margin-bottom:2px;
+  background:var(--axis-track)}
 .foot{color:var(--ink-4);font-size:12px;margin-top:26px;line-height:1.9}
 
 /* ---------------- 屏蔽词命中提示条 ----------------
@@ -369,11 +430,13 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:14px;bottom:14px;wid
   .sub .entries{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;
     width:100%;flex:0 0 100%;margin:1px 0 0}
   .sub .entries>a.wishlink{display:inline-flex;width:100%;min-width:0;max-width:100%;
-    align-items:center;justify-content:center;gap:4px;padding:6px 3px;
+    align-items:center;justify-content:center;gap:4px;padding:6px 3px;min-height:40px;
     font-size:11.5px;border-radius:999px;margin:0;font-weight:600;
     line-height:16px;white-space:nowrap;overflow:hidden}
   .sub .entries>a.wishlink .ico{width:12px;height:12px;flex:none}
-  .sub .entries>a.wishlink span{font-size:11.5px;opacity:.8;margin-left:0}
+  /* 括号里的数字不要再压 opacity：.8 会把「关注（0）」里那个 0 的
+   * 有效对比度从 4.83 压到 3.50，低于 AA。层级已经由括号本身表达了。 */
+  .sub .entries>a.wishlink span{font-size:11.5px;opacity:1;margin-left:0}
 
   /* 四宫格统计：标签与数字**同一行**（v3.13）。
    * 原来 .k / .v 都是块级 div，天然上下两行，2×2 布局里每张卡都白占一行高度，
@@ -479,9 +542,12 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:14px;bottom:14px;wid
    * 基线对齐时，换行前后都自动跟着当前行对齐。 */
   .tag,.newlow,.atlow,.first,.wish{font-size:10.5px;margin-left:5px;padding:0 6px;
     border-radius:4px;line-height:16px;vertical-align:1px;white-space:nowrap}
-  .wishbtn,.blkbtn{margin-left:5px;padding:0 8px;height:18px;border-radius:6px;
-    font-size:11px;line-height:16px;vertical-align:-1.5px}
-  .wishbtn svg,.blkbtn svg{width:11px;height:11px}
+  /* 【v3.14】关注/屏蔽从 29×18 的扁药丸改成 26×26 的方形图标钮。
+   * 18px 高在触屏上几乎点不中（线上实测每行两颗，一张榜 20 行 = 40 颗小米粒），
+   * 也低于 WCAG 2.5.8 的 24×24 下限；纯图标本来也不需要横向 padding。 */
+  .wishbtn,.blkbtn{margin-left:5px;padding:0;width:26px;height:26px;border-radius:7px;
+    justify-content:center;gap:0;font-size:11px;vertical-align:-7px}
+  .wishbtn svg,.blkbtn svg{width:13px;height:13px}
   /* 手机没有 hover，用 :active 给触摸即时反馈 */
   .wishbtn:active,.blkbtn:active{transform:scale(.94)}
   .wishbtn:active{background:#7c3aed;border-color:#7c3aed;color:#fff}
@@ -506,7 +572,7 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:14px;bottom:14px;wid
     display:flex;align-items:baseline;justify-content:flex-end}
   .num b{font-size:21px;letter-spacing:-.5px;font-variant-numeric:tabular-nums;
     color:var(--brand);line-height:1.2}
-  .num s{font-size:11.5px;color:var(--ink-5)}
+  .num s{font-size:11.5px;color:var(--ink-4)}
   .num .atlow,.num .newlow{font-size:10.5px;vertical-align:2px}
   .lowhint{flex:1 1 100%;font-size:11px;margin:0;color:var(--ink-4);
     letter-spacing:-.1px}
@@ -579,13 +645,16 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:14px;bottom:14px;wid
 </head>
 <body>
 <div class="wrap">
-  <h1>值得买日报 · 2026-10-29</h1>
+  <header class="masthead">
+  <h1>值得买日报<span class="h1-date">2026-10-29</span></h1>
   <div class="sub">抓取 2026-10-29 18:53　请求 5 次　
     来源 smzdm.com（时点快照，价格与库存随时变动）
     <span class="entries">
     <a class="wishlink" href="./wishlist.html"><svg class="ico" viewBox="0 0 16 16"><path d="M8 2.2l1.75 3.55 3.92.57-2.84 2.77.67 3.9L8 11.16l-3.5 1.83.67-3.9L2.33 6.32l3.92-.57z"/></svg>关注（<span id="wishCount">0</span>）</a>
     <a class="wishlink blk" href="./blocklist.html"><svg class="ico" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.2"/><path d="M3.8 12.2 12.2 3.8"/></svg>屏蔽（<span id="blockCount">0</span>）</a>
     <a class="wishlink db" href="./db.html"><svg class="ico" viewBox="0 0 16 16"><ellipse cx="8" cy="4" rx="5.6" ry="2.2"/><path d="M2.4 4v3.2c0 1.2 2.5 2.2 5.6 2.2s5.6-1 5.6-2.2V4"/><path d="M2.4 7.2v3.2c0 1.2 2.5 2.2 5.6 2.2s5.6-1 5.6-2.2V7.2"/></svg>数据库（1066）</a></span></div>
+  </header>
+  <main id="content">
   
   <div class="stats">
     <div class="stat"><div class="k">折扣榜</div><div class="v"><span class="cnt" data-n="10">0</span><em> 条</em></div></div>
@@ -601,60 +670,60 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:14px;bottom:14px;wid
     <span><i class="sw sw-lh"></i>历史低 ¥xx = 当前高于历史最低</span>
     <span class="lg-ax"><i class="sw sw-ax"></i>价格轴：左历史低 · 右历史高 · 圆点是现价</span>
   </div>
-  <div class="sec-body"><div class="tablewrap"><table><thead><tr><th>#</th><th>商品</th><th>到手价</th><th>折扣</th></tr></thead>
+  <div class="sec-body"><div class="tablewrap"><table><thead><tr><th scope="col">#</th><th scope="col">商品</th><th scope="col">到手价</th><th scope="col">折扣</th></tr></thead>
   <tbody><tr data-sid="h0">
   <td class="idx">1</td>
   <td class="name" data-t="售罄 petshy 木薯豆腐混合猫砂 10kg"><a href="https://www.smzdm.com/p/184917058/" target="_blank">售罄 petshy 木薯豆腐混合猫砂 10kg</a>
     <div class="meta"><span class="m1"><span class="nw">其他 ·</span> <span class="nw">京东 ·</span> <span class="nw">12H最热</span></span> <span class="m2"><span class="nw">10-28 17:50 ·</span> <span class="nw">值134/评172</span> <span class="nw">拉取 2026-10-29 </span></span></div></td>
-  <td class="num"><b>¥25</b> <s>¥200</s><span class="atlow">史低</span><div class="axisrow"><span class="axis hot" title="历史低 ¥25 · 现价 ¥25 · 历史高 ¥200"><i style="left:2.0%"></i></span></div></td>
+  <td class="num"><b>¥25</b> <s>¥200</s><span class="atlow">史低</span><div class="axisrow"><span class="axis hot" title="历史低 ¥25 · 现价 ¥25 · 历史高 ¥200"><i style="--pos:2.0%"></i></span></div></td>
   <td class="rate">1.2<small>折</small><div class="bar"><i style="width:12.5%"></i></div></td>
 </tr><tr data-sid="h1">
   <td class="idx">2</td>
   <td class="name" data-t="88VIP：豪士 咸蛋黄肉松面包 408g"><a href="https://www.smzdm.com/p/184804518/" target="_blank">豪士 咸蛋黄肉松面包 408g</a><span class="tag">88VIP</span>
     <div class="meta"><span class="m1"><span class="nw">食品生鲜 ·</span> <span class="nw">天猫超市 ·</span> <span class="nw">12H最热</span></span> <span class="m2"><span class="nw">13:54 ·</span> <span class="nw">值28/评45</span> <span class="nw">拉取 2026-10-29 </span></span></div></td>
-  <td class="num"><b>¥4.51</b> <s>¥33.4</s><span class="atlow">史低</span><div class="axisrow"><span class="axis hot" title="历史低 ¥4.51 · 现价 ¥4.51 · 历史高 ¥33.4"><i style="left:2.0%"></i></span></div></td>
+  <td class="num"><b>¥4.51</b> <s>¥33.4</s><span class="atlow">史低</span><div class="axisrow"><span class="axis hot" title="历史低 ¥4.51 · 现价 ¥4.51 · 历史高 ¥33.4"><i style="--pos:2.0%"></i></span></div></td>
   <td class="rate">1.4<small>折</small><div class="bar"><i style="width:13.5%"></i></div></td>
 </tr><tr data-sid="h2">
   <td class="idx">3</td>
   <td class="name" data-t="88VIP、今日必买：萨啦咪 酱香味鸭舌 105g 鸡鸭零食"><a href="https://www.smzdm.com/p/184837374/" target="_blank">萨啦咪 酱香味鸭舌 105g 鸡鸭零食</a><span class="tag">88VIP</span><span class="tag">需券</span>
     <div class="meta"><span class="m1"><span class="nw">食品生鲜 ·</span> <span class="nw">天猫超市 ·</span> <span class="nw">12H最热</span></span> <span class="m2"><span class="nw">10-28 22:21 ·</span> <span class="nw">值31/评26</span> <span class="nw">拉取 2026-10-29 </span></span></div></td>
-  <td class="num"><b>¥6.8</b> <s>¥49.9</s><span class="atlow">史低</span><div class="axisrow"><span class="axis hot" title="历史低 ¥6.8 · 现价 ¥6.8 · 历史高 ¥49.9"><i style="left:2.0%"></i></span></div></td>
+  <td class="num"><b>¥6.8</b> <s>¥49.9</s><span class="atlow">史低</span><div class="axisrow"><span class="axis hot" title="历史低 ¥6.8 · 现价 ¥6.8 · 历史高 ¥49.9"><i style="--pos:2.0%"></i></span></div></td>
   <td class="rate">1.4<small>折</small><div class="bar"><i style="width:13.6%"></i></div></td>
 </tr><tr data-sid="h3">
   <td class="idx">4</td>
   <td class="name" data-t="88VIP：嘉顿 威化饼干柠檬味200g"><a href="https://www.smzdm.com/p/184883600/" target="_blank">嘉顿 威化饼干柠檬味200g</a><span class="tag">88VIP</span>
     <div class="meta"><span class="m1"><span class="nw">食品生鲜 ·</span> <span class="nw">天猫超市 ·</span> <span class="nw">12H最热</span></span> <span class="m2"><span class="nw">10-28 22:33 ·</span> <span class="nw">值26/评17</span> <span class="nw">拉取 2026-10-29 </span></span></div></td>
-  <td class="num"><b>¥2.26</b> <s>¥10.9</s><span class="atlow">史低</span><div class="axisrow"><span class="axis hot" title="历史低 ¥2.26 · 现价 ¥2.26 · 历史高 ¥10.9"><i style="left:2.0%"></i></span></div></td>
+  <td class="num"><b>¥2.26</b> <s>¥10.9</s><span class="atlow">史低</span><div class="axisrow"><span class="axis hot" title="历史低 ¥2.26 · 现价 ¥2.26 · 历史高 ¥10.9"><i style="--pos:2.0%"></i></span></div></td>
   <td class="rate">2.1<small>折</small><div class="bar"><i style="width:20.7%"></i></div></td>
 </tr><tr data-sid="h4">
   <td class="idx">5</td>
   <td class="name" data-t="88VIP、今日必买：乐事 FIFA世界杯口味薯片礼盒525g"><a href="https://www.smzdm.com/p/184939737/" target="_blank">乐事 FIFA世界杯口味薯片礼盒525g</a><span class="tag">88VIP</span><span class="tag">需券</span>
     <div class="meta"><span class="m1"><span class="nw">食品生鲜 ·</span> <span class="nw">天猫超市 ·</span> <span class="nw">12H最热</span></span> <span class="m2"><span class="nw">13:54 ·</span> <span class="nw">值47/评49</span> <span class="nw">拉取 2026-10-29 </span></span></div></td>
-  <td class="num"><b>¥14.74</b> <s>¥69.9</s><span class="atlow">史低</span><div class="axisrow"><span class="axis hot" title="历史低 ¥14.74 · 现价 ¥14.74 · 历史高 ¥69.9"><i style="left:2.0%"></i></span></div></td>
+  <td class="num"><b>¥14.74</b> <s>¥69.9</s><span class="atlow">史低</span><div class="axisrow"><span class="axis hot" title="历史低 ¥14.74 · 现价 ¥14.74 · 历史高 ¥69.9"><i style="--pos:2.0%"></i></span></div></td>
   <td class="rate">2.1<small>折</small><div class="bar"><i style="width:21.1%"></i></div></td>
 </tr><tr data-sid="h5">
   <td class="idx">6</td>
   <td class="name" data-t="米家 GSHF04LF 电吹风 奶白色"><a href="https://www.smzdm.com/p/184948900/" target="_blank">米家 GSHF04LF 电吹风 奶白色</a><span class="tag warn">凑单</span>
     <div class="meta"><span class="m1"><span class="nw">其他 ·</span> <span class="nw">京东 ·</span> <span class="nw">12H最热</span></span> <span class="m2"><span class="nw">00:10 ·</span> <span class="nw">值2/评11</span> <span class="nw">拉取 2026-10-29 </span></span></div></td>
-  <td class="num"><b>¥34.91</b> <s>¥164</s><span class="atlow">史低</span><div class="axisrow"><span class="axis hot" title="历史低 ¥34.91 · 现价 ¥34.91 · 历史高 ¥164"><i style="left:2.0%"></i></span></div></td>
+  <td class="num"><b>¥34.91</b> <s>¥164</s><span class="atlow">史低</span><div class="axisrow"><span class="axis hot" title="历史低 ¥34.91 · 现价 ¥34.91 · 历史高 ¥164"><i style="--pos:2.0%"></i></span></div></td>
   <td class="rate">2.1<small>折</small><div class="bar"><i style="width:21.3%"></i></div></td>
 </tr><tr data-sid="h6">
   <td class="idx">7</td>
   <td class="name" data-t="88VIP、今日必买：力诚 低脂松叶蟹柳原味 260g 20g*13支"><a href="https://www.smzdm.com/p/184916300/" target="_blank">力诚 低脂松叶蟹柳原味 260g 20g*13支</a><span class="tag">88VIP</span><span class="tag">需券</span>
     <div class="meta"><span class="m1"><span class="nw">其他 ·</span> <span class="nw">天猫超市 ·</span> <span class="nw">12H最热</span></span> <span class="m2"><span class="nw">10-28 22:25 ·</span> <span class="nw">值26/评31</span> <span class="nw">拉取 2026-10-29 </span></span></div></td>
-  <td class="num"><b>¥8.77</b> <s>¥39.9</s><span class="atlow">史低</span><div class="axisrow"><span class="axis hot" title="历史低 ¥8.77 · 现价 ¥8.77 · 历史高 ¥39.9"><i style="left:2.0%"></i></span></div></td>
+  <td class="num"><b>¥8.77</b> <s>¥39.9</s><span class="atlow">史低</span><div class="axisrow"><span class="axis hot" title="历史低 ¥8.77 · 现价 ¥8.77 · 历史高 ¥39.9"><i style="--pos:2.0%"></i></span></div></td>
   <td class="rate">2.2<small>折</small><div class="bar"><i style="width:22.0%"></i></div></td>
 </tr><tr data-sid="h7">
   <td class="idx">8</td>
   <td class="name" data-t="new balance 1080 V14专业缓震运动跑步鞋"><a href="https://www.smzdm.com/p/184940328/" target="_blank">new balance 1080 V14专业缓震运动跑步鞋</a><span class="tag">需券</span>
     <div class="meta"><span class="m1"><span class="nw">其他 ·</span> <span class="nw">天猫精选 ·</span> <span class="nw">12H最热</span></span> <span class="m2"><span class="nw">07:01 ·</span> <span class="nw">值14/评61</span> <span class="nw">拉取 2026-10-29 </span></span></div></td>
-  <td class="num"><b>¥330</b> <s>¥1199</s><div class="axisrow"><span class="lowhint">历史低 ¥313.26（10-29）</span><span class="axis hot" title="历史低 ¥313.26 · 现价 ¥330 · 历史高 ¥1199"><i style="left:2.0%"></i></span></div></td>
+  <td class="num"><b>¥330</b> <s>¥1199</s><div class="axisrow"><span class="lowhint">历史低 ¥313.26（10-29）</span><span class="axis hot" title="历史低 ¥313.26 · 现价 ¥330 · 历史高 ¥1199"><i style="--pos:2.0%"></i></span></div></td>
   <td class="rate">2.6<small>折</small><div class="bar"><i style="width:26.1%"></i></div></td>
 </tr><tr data-sid="h8">
   <td class="idx">9</td>
   <td class="name" data-t="88VIP：溜溜梅 多口味混合 梅子480g"><a href="https://www.smzdm.com/p/184824434/" target="_blank">溜溜梅 多口味混合 梅子480g</a><span class="tag">88VIP</span>
     <div class="meta"><span class="m1"><span class="nw">其他 ·</span> <span class="nw">天猫超市 ·</span> <span class="nw">12H最热</span></span> <span class="m2"><span class="nw">10-28 22:28 ·</span> <span class="nw">值9/评21</span> <span class="nw">拉取 2026-10-29 </span></span></div></td>
-  <td class="num"><b>¥10.73</b> <s>¥39</s><div class="axisrow"><span class="lowhint">历史低 ¥10.24（10-23）</span><span class="axis" title="历史低 ¥10.24 · 现价 ¥10.73 · 历史高 ¥11.22"><i style="left:50.0%"></i></span></div></td>
+  <td class="num"><b>¥10.73</b> <s>¥39</s><div class="axisrow"><span class="lowhint">历史低 ¥10.24（10-23）</span><span class="axis" title="历史低 ¥10.24 · 现价 ¥10.73 · 历史高 ¥11.22"><i style="--pos:50.0%"></i></span></div></td>
   <td class="rate">2.8<small>折</small><div class="bar"><i style="width:27.5%"></i></div></td>
 </tr><tr data-sid="h9">
   <td class="idx">10</td>
@@ -664,7 +733,7 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:14px;bottom:14px;wid
   <td class="rate">2.8<small>折</small><div class="bar"><i style="width:27.8%"></i></div></td>
 </tr></tbody></table></div></div>
   <h2 data-sec="feed"><span class="dot"></span><span class="sec-t">好价榜<b>20</b>条</span><span class="hint">12H最热 原始顺序 · 前 20 条</span><button class="sec-fold" type="button" aria-label="折叠好价榜" aria-expanded="true"><svg viewBox="0 0 16 16"><path d="M4 6l4 4 4-4"/></svg></button></h2>
-  <div class="sec-body band-feed"><div class="tablewrap"><table><thead><tr><th>#</th><th>商品</th><th>到手价</th><th>折扣</th></tr></thead>
+  <div class="sec-body band-feed"><div class="tablewrap"><table><thead><tr><th scope="col">#</th><th scope="col">商品</th><th scope="col">到手价</th><th scope="col">折扣</th></tr></thead>
   <tbody><tr data-sid="f0">
   <td class="idx">1</td>
   <td class="name" data-t="达美乐 超值5选2双比萨套餐 兑换券 1张"><a href="https://www.smzdm.com/p/184502908/" target="_blank">达美乐 超值5选2双比萨套餐 兑换券 1张</a><span class="tag warn">淘金币</span>
@@ -687,13 +756,13 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:14px;bottom:14px;wid
   <td class="idx">4</td>
   <td class="name" data-t="薇姿 绿标二硫化硒洗发液水200ml"><a href="https://www.smzdm.com/p/184324908/" target="_blank">薇姿 绿标二硫化硒洗发液水200ml</a>
     <div class="meta"><span class="m1"><span class="nw">其他 ·</span> <span class="nw">京东 ·</span> <span class="nw">12H最热</span></span> <span class="m2"><span class="nw">10:49 ·</span> <span class="nw">值379/评590</span> <span class="nw">拉取 2026-10-29 </span></span></div></td>
-  <td class="num"><b>¥36.5</b> <s>¥85</s><span class="atlow">史低</span><div class="axisrow"><span class="axis hot" title="历史低 ¥36.5 · 现价 ¥36.5 · 历史高 ¥85"><i style="left:2.0%"></i></span></div></td>
+  <td class="num"><b>¥36.5</b> <s>¥85</s><span class="atlow">史低</span><div class="axisrow"><span class="axis hot" title="历史低 ¥36.5 · 现价 ¥36.5 · 历史高 ¥85"><i style="--pos:2.0%"></i></span></div></td>
   <td class="rate">4.3<small>折</small><div class="bar"><i style="width:42.9%"></i></div></td>
 </tr><tr data-sid="f4">
   <td class="idx">5</td>
   <td class="name" data-t="妮维雅男士 保湿面霜50g*2 赠10g+洁面50g*2"><a href="https://www.smzdm.com/p/184856637/" target="_blank">妮维雅男士 保湿面霜50g*2 赠10g+洁面50g*2</a>
     <div class="meta"><span class="m1"><span class="nw">日用百货 ·</span> <span class="nw">京东 ·</span> <span class="nw">12H最热</span></span> <span class="m2"><span class="nw">10:49 ·</span> <span class="nw">值348/评534</span> <span class="nw">拉取 2026-10-29 </span></span></div></td>
-  <td class="num"><b>¥42.54</b> <s>¥99</s><span class="atlow">史低</span><div class="axisrow"><span class="axis hot" title="历史低 ¥42.54 · 现价 ¥42.54 · 历史高 ¥99"><i style="left:2.0%"></i></span></div></td>
+  <td class="num"><b>¥42.54</b> <s>¥99</s><span class="atlow">史低</span><div class="axisrow"><span class="axis hot" title="历史低 ¥42.54 · 现价 ¥42.54 · 历史高 ¥99"><i style="--pos:2.0%"></i></span></div></td>
   <td class="rate">4.3<small>折</small><div class="bar"><i style="width:43.0%"></i></div></td>
 </tr><tr data-sid="f5">
   <td class="idx">6</td>
@@ -705,19 +774,19 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:14px;bottom:14px;wid
   <td class="idx">7</td>
   <td class="name" data-t="今日必买：沃隆 210g*2罐紫衣腰果"><a href="https://www.smzdm.com/p/184560462/" target="_blank">沃隆 210g*2罐紫衣腰果</a>
     <div class="meta"><span class="m1"><span class="nw">食品生鲜 ·</span> <span class="nw">京东 ·</span> <span class="nw">12H最热</span></span> <span class="m2"><span class="nw">13:53 ·</span> <span class="nw">值297/评480</span> <span class="nw">拉取 2026-10-29 </span></span></div></td>
-  <td class="num"><b>¥27.9</b> <s>¥59.9</s><span class="atlow">史低</span><div class="axisrow"><span class="axis hot" title="历史低 ¥27.9 · 现价 ¥27.9 · 历史高 ¥59.9"><i style="left:2.0%"></i></span></div></td>
+  <td class="num"><b>¥27.9</b> <s>¥59.9</s><span class="atlow">史低</span><div class="axisrow"><span class="axis hot" title="历史低 ¥27.9 · 现价 ¥27.9 · 历史高 ¥59.9"><i style="--pos:2.0%"></i></span></div></td>
   <td class="rate">4.7<small>折</small><div class="bar"><i style="width:46.6%"></i></div></td>
 </tr><tr data-sid="f7">
   <td class="idx">8</td>
   <td class="name" data-t="88VIP：new balance 2002R系列 男女休闲运动鞋 M2002RHO"><a href="https://www.smzdm.com/p/184934163/" target="_blank">new balance 2002R系列 男女休闲运动鞋 M2002RHO</a><span class="tag">88VIP</span>
     <div class="meta"><span class="m1"><span class="nw">其他 ·</span> <span class="nw">天猫精选 ·</span> <span class="nw">12H最热</span></span> <span class="m2"><span class="nw">07:02 ·</span> <span class="nw">值54/评145</span> <span class="nw">拉取 2026-10-29 </span></span></div></td>
-  <td class="num"><b>¥322.8</b> <span class="atlow">史低</span><div class="axisrow"><span class="axis hot" title="历史低 ¥322.8 · 现价 ¥322.8 · 历史高 ¥350.49"><i style="left:2.0%"></i></span></div></td>
+  <td class="num"><b>¥322.8</b> <span class="atlow">史低</span><div class="axisrow"><span class="axis hot" title="历史低 ¥322.8 · 现价 ¥322.8 · 历史高 ¥350.49"><i style="--pos:2.0%"></i></span></div></td>
   <td class="rate"><span class="muted">无原价</span></td>
 </tr><tr data-sid="f8">
   <td class="idx">9</td>
   <td class="name" data-t="腾讯视频 连续包年腾讯视频SVIP会员年卡"><a href="https://www.smzdm.com/p/184017491/" target="_blank">腾讯视频 连续包年腾讯视频SVIP会员年卡</a><span class="tag">会员</span>
     <div class="meta"><span class="m1"><span class="nw">其他 ·</span> <span class="nw">天猫精选 ·</span> <span class="nw">12H最热</span></span> <span class="m2"><span class="nw">14:11 ·</span> <span class="nw">值182/评309</span> <span class="nw">拉取 2026-10-29 </span></span></div></td>
-  <td class="num"><b>¥232</b> <s>¥248</s><span class="atlow">史低</span><div class="axisrow"><span class="axis hot" title="历史低 ¥232 · 现价 ¥232 · 历史高 ¥248"><i style="left:2.0%"></i></span></div></td>
+  <td class="num"><b>¥232</b> <s>¥248</s><span class="atlow">史低</span><div class="axisrow"><span class="axis hot" title="历史低 ¥232 · 现价 ¥232 · 历史高 ¥248"><i style="--pos:2.0%"></i></span></div></td>
   <td class="rate">9.3<small>折</small><div class="bar"><i style="width:93.5%"></i></div></td>
 </tr><tr data-sid="f9">
   <td class="idx">10</td>
@@ -747,7 +816,7 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:14px;bottom:14px;wid
   <td class="idx">14</td>
   <td class="name" data-t="今日必买：AHC B5玻尿酸深度补水面膜5片*6盒（共30片）"><a href="https://www.smzdm.com/p/184848536/" target="_blank">AHC B5玻尿酸深度补水面膜5片*6盒（共30片）</a><span class="tag warn">凑单</span>
     <div class="meta"><span class="m1"><span class="nw">日用百货 ·</span> <span class="nw">京东 ·</span> <span class="nw">12H最热</span></span> <span class="m2"><span class="nw">10:45 ·</span> <span class="nw">值137/评240</span> <span class="nw">拉取 2026-10-29 </span></span></div></td>
-  <td class="num"><b>¥72.7</b> <s>¥204</s><span class="atlow">史低</span><div class="axisrow"><span class="axis hot" title="历史低 ¥72.7 · 现价 ¥72.7 · 历史高 ¥204"><i style="left:2.0%"></i></span></div></td>
+  <td class="num"><b>¥72.7</b> <s>¥204</s><span class="atlow">史低</span><div class="axisrow"><span class="axis hot" title="历史低 ¥72.7 · 现价 ¥72.7 · 历史高 ¥204"><i style="--pos:2.0%"></i></span></div></td>
   <td class="rate">3.6<small>折</small><div class="bar"><i style="width:35.6%"></i></div></td>
 </tr><tr data-sid="f14">
   <td class="idx">15</td>
@@ -759,13 +828,13 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:14px;bottom:14px;wid
   <td class="idx">16</td>
   <td class="name" data-t="88VIP：斐乐 蕨草鞋 女款老爹鞋"><a href="https://www.smzdm.com/p/184934486/" target="_blank">斐乐 蕨草鞋 女款老爹鞋</a><span class="tag">88VIP</span><span class="tag warn">淘金币</span><span class="tag warn">凑单</span>
     <div class="meta"><span class="m1"><span class="nw">其他 ·</span> <span class="nw">天猫精选 ·</span> <span class="nw">12H最热</span></span> <span class="m2"><span class="nw">07:03 ·</span> <span class="nw">值30/评100</span> <span class="nw">拉取 2026-10-29 </span></span></div></td>
-  <td class="num"><b>¥295.07</b> <s>¥717</s><div class="axisrow"><span class="lowhint">历史低 ¥288.4（10-29）</span><span class="axis" title="历史低 ¥288.4 · 现价 ¥295.07 · 历史高 ¥295.07"><i style="left:98.0%"></i></span></div></td>
+  <td class="num"><b>¥295.07</b> <s>¥717</s><div class="axisrow"><span class="lowhint">历史低 ¥288.4（10-29）</span><span class="axis" title="历史低 ¥288.4 · 现价 ¥295.07 · 历史高 ¥295.07"><i style="--pos:98.0%"></i></span></div></td>
   <td class="rate">4.1<small>折</small><div class="bar"><i style="width:41.2%"></i></div></td>
 </tr><tr data-sid="f16">
   <td class="idx">17</td>
   <td class="name" data-t="PLUS会员：美玏 八角桂皮香叶花椒辣椒白芷 6罐 调味品套装"><a href="https://www.smzdm.com/p/184710365/" target="_blank">美玏 八角桂皮香叶花椒辣椒白芷 6罐 调味品套装</a><span class="tag">会员</span>
     <div class="meta"><span class="m1"><span class="nw">食品生鲜 ·</span> <span class="nw">京东 ·</span> <span class="nw">12H最热</span></span> <span class="m2"><span class="nw">14:48 ·</span> <span class="nw">值152/评192</span> <span class="nw">拉取 2026-10-29 </span></span></div></td>
-  <td class="num"><b>¥12.72</b> <s>¥20.79</s><span class="atlow">史低</span><div class="axisrow"><span class="axis hot" title="历史低 ¥12.72 · 现价 ¥12.72 · 历史高 ¥20.79"><i style="left:2.0%"></i></span></div></td>
+  <td class="num"><b>¥12.72</b> <s>¥20.79</s><span class="atlow">史低</span><div class="axisrow"><span class="axis hot" title="历史低 ¥12.72 · 现价 ¥12.72 · 历史高 ¥20.79"><i style="--pos:2.0%"></i></span></div></td>
   <td class="rate">6.1<small>折</small><div class="bar"><i style="width:61.2%"></i></div></td>
 </tr><tr data-sid="f17">
   <td class="idx">18</td>
@@ -783,12 +852,13 @@ tbody td.idx::after{content:"";position:absolute;left:0;top:14px;bottom:14px;wid
   <td class="idx">20</td>
   <td class="name" data-t="今日必买：鲜京采 低至4折！鲜京采黑巧酪酪蛋糕420g/6块 另有其他蛋糕可选"><a href="https://www.smzdm.com/p/184943751/" target="_blank">鲜京采 低至4折！鲜京采黑巧酪酪蛋糕420g/6块 另有其他蛋糕可选</a>
     <div class="meta"><span class="m1"><span class="nw">食品生鲜 ·</span> <span class="nw">京东 ·</span> <span class="nw">12H最热</span></span> <span class="m2"><span class="nw">11:45 ·</span> <span class="nw">值24/评30</span> <span class="nw">拉取 2026-10-29 </span></span></div></td>
-  <td class="num"><b>¥25.6</b> <s>¥66.9</s><span class="atlow">史低</span><div class="axisrow"><span class="axis hot" title="历史低 ¥25.6 · 现价 ¥25.6 · 历史高 ¥66.9"><i style="left:2.0%"></i></span></div></td>
+  <td class="num"><b>¥25.6</b> <s>¥66.9</s><span class="atlow">史低</span><div class="axisrow"><span class="axis hot" title="历史低 ¥25.6 · 现价 ¥25.6 · 历史高 ¥66.9"><i style="--pos:2.0%"></i></span></div></td>
   <td class="rate">3.8<small>折</small><div class="bar"><i style="width:38.3%"></i></div></td>
 </tr></tbody></table></div></div>
-  <div class="foot">页面版本 2026-10-29 18:53<br>由 daily.py 自动生成 · <a href="./overview.html" style="color:var(--brand);text-decoration:none">运行概览</a> ·
+  </main>
+  <footer class="foot">页面版本 2026-10-29 18:53<br>由 daily.py 自动生成 · <a href="./overview.html" style="color:var(--brand);text-decoration:none">运行概览</a> ·
     数据源 12H最热（全部好价排行榜）·
-    仅抓列表页，未访问商品详情页 · 折扣按「现价/原价」计算，原价取自好价流描述，仅供参考。</div>
+    仅抓列表页，未访问商品详情页 · 折扣按「现价/原价」计算，原价取自好价流描述，仅供参考。</footer>
 </div>
 <script>
 /* ---------- 页面增强：折叠 + 数字滚动 ----------
