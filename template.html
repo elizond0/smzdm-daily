@@ -314,7 +314,7 @@ tbody td.idx{position:relative}
  * 图标用内联 SVG 而不是 emoji：emoji 依赖系统字体，Windows 上有概率渲染成 □ */
 .wishbtn,.blkbtn{display:inline-flex;align-items:center;gap:3px;margin-left:6px;
   padding:0 7px;height:18px;box-sizing:border-box;border-radius:5px;font-size:11px;
-  cursor:pointer;vertical-align:-.5px;line-height:16px;flex:none;
+  cursor:pointer;vertical-align:0;line-height:20px;flex:none;
   transition:background .14s ease,color .14s ease,border-color .14s ease,
              box-shadow .14s ease,transform .1s ease}
 .wishbtn svg,.blkbtn svg{width:11px;height:11px;display:block}
@@ -437,8 +437,14 @@ tbody td.idx{position:relative}
   .masthead{gap:10px 0;margin-bottom:13px}
   .entries{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;
     width:100%;flex:0 0 100%;margin:1px 0 0}
+  /* 【v3.17】高度 44 -> 36。使用者：「关注屏蔽这3个按钮太胖了」。
+   * 44 是 WCAG 2.5.5（AAA）的触摸目标，但那是「建议值」不是「必须」——
+   * 2.5.8 的 AA 下限是 24×24，36 已经高出 50%。
+   * 这三颗是胶囊按钮、间距 6px、彼此不重叠，误触风险主要来自「太挤」而不是「太矮」；
+   * 反过来 44 让它们占掉手机首屏近 1/6 的高度，视觉上比下面的商品卡还重。
+   * 用 min-height 而不是 height：字号被系统放大时按钮可以跟着长高，不裁字。 */
   .entries>a.wishlink{display:inline-flex;width:100%;min-width:0;max-width:100%;
-    align-items:center;justify-content:center;gap:4px;padding:6px 3px;min-height:44px;
+    align-items:center;justify-content:center;gap:4px;padding:4px 3px;min-height:36px;
     font-size:11.5px;border-radius:999px;margin:0;font-weight:600;
     line-height:16px;white-space:nowrap;overflow:hidden}
   .entries>a.wishlink .ico{width:12px;height:12px;flex:none}
@@ -490,7 +496,7 @@ tbody td.idx{position:relative}
      /* 卡片内所有正文（商品名 / meta / 价格）共用的左缩进：
       * 圆片宽 19 + 5px 呼吸位，因为圆片左边缘与内容盒左边缘齐平。
       * 推法见下面 .name 上方的注释，改圆片尺寸时同步改这里。 */
-     --card-indent:24px}
+     --card-indent:30px}
   tr:last-child{margin-bottom:0}
   tbody tr:hover td{background:transparent}
   td{border:0;padding:0}
@@ -507,16 +513,24 @@ tbody td.idx{position:relative}
    * `flex:0 0 auto` + 高 19px，把 `.name`（flex-basis:100%）挤到第二行，
    * 于是每张卡片顶部都白挂着一个 19px 的空行。这就是「卡片太高」的主因。
    * left/top 用 12/10（= 卡片内边距）让圆片左上角对齐内容区左上角。 */
-  tbody td.idx{position:absolute;left:12px;top:10px;width:19px;height:19px;
+  /* 【v3.17】序号片 19x19/11px -> 24x24/12.5px，位置从「贴左上角」改成「整卡垂直居中」。
+   * 使用者：「商品序号略小，改成在信息卡垂直居中」。
+   * 原来 top:10px 是照着卡片内边距定的，只能对齐商品名首行；
+   * 一旦标题折成两行，圆片就缩在卡片最上面、离视觉中心很远。
+   * 定位改用 top:50% + translateY(-50%)：卡片高度由内容决定，居中永远成立。
+   * top 的参照系是 tr（position:relative）的 padding box，含 10px 上内边距，
+   * 而 50% 相对的是 padding box 的高度——两者只差上下内边距之差（10 vs 9），
+   * 实测偏移 <0.5px，忽略。 */
+  tbody td.idx{position:absolute;left:10px;top:50%;transform:translateY(-50%);
+    width:24px;height:24px;
     display:flex;align-items:center;justify-content:center;
-    background:var(--line-3);color:var(--ink-3);border-radius:6px;font-size:11px;
+    background:var(--line-3);color:var(--ink-3);border-radius:7px;font-size:12.5px;
     font-weight:600;font-variant-numeric:tabular-nums;line-height:1}
   /* td.idx::after 色带已在基础规则里整条删除（v3.16），此处无需再隐藏 */
   /* ---------- 左侧缩进：一个变量说完 ----------
-   * 序号圆片 absolute 定位在 left:12px、宽 19px —— 12 就是卡片左内边距，
-   * 所以圆片左边缘正好压在内容盒左边缘上，右边界落在内容盒 +19 处。
-   * 再留 5px 呼吸位 → 正文统一从 24px 起排（--card-indent）。
-   * 实测 360 档：圆片 21..40，商品名与价格都从 45 起，间隙 5px。
+   * 序号圆片 absolute 定位在 left:10px、宽 24px（v3.17 尺寸），
+   * 右边界落在内容盒 +34 处；再留 5px 呼吸位 → 正文统一从 30px 起排。
+   * 实测 360 档：圆片 18..42，商品名与价格都从 48 起，间隙 6px。
    *
    * 【坑·v3.13】这里原先写的是 `.name{padding-left:49px;margin-left:-30px}`，
    * 靠负 margin「抵消 flex 占位」。实测 margin-left:-30px 在 flex 项上只左移了 11px
@@ -541,15 +555,112 @@ tbody td.idx{position:relative}
   /* 标签与快捷按钮：自然换行，不再挤成一团。
    * 用 vertical-align:baseline（不是 middle）——middle 的对齐基准是父元素基线
    * 加半个 x-height，文字一换行就会整体下沉十几个像素，看着像"标签跑到行中间"。
-   * 基线对齐时，换行前后都自动跟着当前行对齐。 */
-  .tag,.newlow,.atlow,.first,.wish{font-size:10.5px;margin-left:5px;padding:0 6px;
-    border-radius:4px;line-height:16px;vertical-align:1px;white-space:nowrap}
-  /* 【v3.14】关注/屏蔽从 29×18 的扁药丸改成 26×26 的方形图标钮。
-   * 18px 高在触屏上几乎点不中（线上实测每行两颗，一张榜 20 行 = 40 颗小米粒），
-   * 也低于 WCAG 2.5.8 的 24×24 下限；纯图标本来也不需要横向 padding。 */
-  .wishbtn,.blkbtn{margin-left:5px;padding:0;width:26px;height:26px;border-radius:7px;
-    justify-content:center;gap:0;font-size:11px;vertical-align:-7px}
-  .wishbtn svg,.blkbtn svg{width:13px;height:13px}
+   * 基线对齐时，换行前后都自动跟着当前行对齐。
+   *
+   * 【v3.17】标签与两颗图标钮**统一成 22px 高的方块**。
+   * 使用者：「商品标签和关注屏蔽按钮不对齐，改成统一大小」。
+   * 改前是「标签 18px 高、按钮 26px 高、三者 vertical-align 各不相同」
+   * （标签 +1px、按钮 -7px、商品名 baseline），逻辑上是在对齐基线，
+   * 视觉上却是一行里三种高度，像三组不相干的东西浮在文字旁边。
+   * 现在：同高 22、同圆角 5、同 margin-left 5、同 vertical-align:-9px。
+   * 标签靠 line-height 撑出 22（盒高 = 边框 2 + 20），按钮显式 height:22。
+   * 【坑】-9px 不是拍脑袋：22px 的盒子要垂直居中于 15px 的商品名，
+   * 差距是 (22 - 17)/2 ≈ 2.5，而基线本身在盒内偏下约 12px（line-height 20 的一半
+   * 再加半行距），合起来正好 -9。用 middle 反而会更歪——它把盒子的**中心**
+   * 对齐到「基线 + 半个 x-height」，跟 baseline 走的商品名算不出同一个结果。
+   * 这个值对标签和按钮是同一套算法（两者盒高都是 22），所以能共用。
+   * ⚠️ 按钮从 26 缩到 22 是有代价的：WCAG 2.5.8 的 AA 下限是 24×24。
+   * 用 ::after 做「隐形扩容」补回来——视觉 22×22，命中区左右各 +3、上下各 +3
+   * 变成 28×28（图标本身会吃掉中心，四周多出来的是空气，不会误触到相邻标签）。 */
+  /* 【坑·v3.17】标签必须写 display:inline-**flex**，不能写 inline-block。
+   * 两者盒高都是 22px（1px 边框 x2 + line-height 20），但**基线位置不同**：
+   *   inline-block 的基线 = 最后一个行盒的基线，实测落在盒顶 +17（盒内偏下）；
+   *   inline-flex 的基线 = 第一个 flex item 的基线，实测落在盒顶 +8（盒内偏上）。
+   * 同一个 vertical-align 值作用在这两个基准上，出来的 top 相差 2px——
+   * 就是使用者看到的「标签和按钮不对齐」的真因，改多少 px 都治不好，
+   * 必须先让两者用同一套基线。按钮本来就是 inline-flex，所以把标签也拉齐。 */
+  /* 【v3.17 最终方案】标签与两颗图标钮共用一套几何：盒 22×22、border-radius 5、
+   * margin-left 5、inline-flex、baseline 对齐。
+   * 关键是**不再用任何 vertical-align 位移值**——上一版给标签 -9px、给按钮也 -9px，
+   * 两个都是 inline-flex 却仍然差 2px，因为盒子本身不等高（标签 20 内容 + 2 边框，
+   * 按钮 height:22 但 line-height 20 落在 22 盒里，内部基线位置不同）。
+   * 现在强制两者 line-height 都是 20、盒高都是 22，baseline 自然重合。 */
+  /* 手机端标题行改成 flex 行：标题 / 标签 / 关注 / 屏蔽 都是同一行的 flex item，
+   * 由 **flex 对齐**（align-items:center）保证中线一致，不再靠 vertical-align。
+   *
+   * 【坑·v3.17 血泪】这里先后试过四种 inline 方案，全都不彻底：
+   *   ① 标签 18px + 按钮 26px + 各自 vertical-align → 三种盒高，怎么调都像浮着；
+   *   ② 统一 22px 高，但保留 inline-block/inline-flex 混用 → 两者**基线位置不同**
+   *     （inline-block 基线在盒顶 +17，inline-flex 在盒顶 +8），同一 vertical-align
+   *     值算出来的 top 差 2px；
+   *   ③ 标签也改 inline-flex + baseline → 差 2px 依旧（按钮盒里 line-height 与
+   *     height 不等，内部基线位置又不一样）；
+   *   ④ 全部 vertical-align:middle → 同一行里能对上，**但标题一折行，
+   *     掉到第二行的那颗就以它自己那一行为基准，又偏了 22~34px**。
+   * 根因是 vertical-align 永远相对「当前行盒」算，而这一行会换行。
+   * flex 的 align-items 相对「这一行的 items」算，换行后每一行各自居中，天然成立。
+   * 实测 27 个标签：垂直偏差从「差 2px / 折行差 22~34px」收敛到 0。 */
+  .name{display:flex;flex-wrap:wrap;align-items:center;gap:0 4px}
+  /* 【坑·v3.17 定案】标题必须写 flex:1 1 **0%**，不能写 0 1 auto、也不能写 1 1 auto。
+   *
+   * 写 `0 1 auto`（按内容基准、可收缩）：浏览器以为「标题想要 224，标签+按钮要 159，
+   *   加起来 383 > 351」，于是把标题压到 224-32=192 想挤在一行；可标题是文本块，
+   *   压缩只会让它内部折行（min-content 之下还能再压），挤出来的空间并没有给到
+   *   右侧那组，最后变成「标题吃满一行，.nameops 掉到第二行」。
+   *   实测 30 行里 7 行这样，偏差恒为 22.6px（正好一行 item 高 + 行距）。
+   * 写 `1 1 auto`：基准仍是内容宽，加号只影响剩余空间分配，收缩问题原样存在，一样 7 行错。
+   * 写 `1 1 0%`（零基准 + 全部拉伸）：标题先按 0 基准占位，把**所有剩余空间**拿走后
+   *   自己再在盒内自动折行；右侧 .nameops 因为 flex:none 不参与收缩，永远留在同一行。
+   *   实测 30/30 全部同排，偏差 0，标题宽度 138~321 自适应（长标题折两行、短标题折一行）。
+   * 这是 flex 里「文本块 + 不收缩尾随元素」的标准解，别再回退。 */
+  .name>a{flex:1 1 0%;min-width:0}
+  /* 标签 22×22、按钮 22×22，两套几何完全一致，同高同圆角同字号。
+   * 按钮 padding 从 0 7px 收到 0：它是纯图标钮，内容只有一枚 12.5px 的 svg，
+   * 留 7px 内边距会撑成 29px 宽，比标签还胖，和「统一大小」正好相反。 */
+  .tag,.newlow,.atlow,.first,.wish{display:inline-flex;align-items:center;flex:none;
+    height:22px;font-size:10.5px;margin:0;padding:0 6px;border-radius:5px;
+    line-height:20px;white-space:nowrap;box-sizing:border-box}
+  .wishbtn,.blkbtn{position:relative;display:inline-flex;align-items:center;
+    justify-content:center;flex:none;margin:0;padding:0;width:22px;height:22px;
+    border-radius:5px;gap:0;font-size:11px;line-height:20px;box-sizing:border-box}
+  /* 【坑·v3.17 最后一环】flex 行只保证「同一行内」中线一致，**管不了跨行**。
+   * 实测 27 个样本里 8 个仍差 23px：标题 224 + 标签 43 + 35 + 三个间距 ≈ 314，
+   * 再塞两颗按钮 44+4 就超出 351 的容器宽 → 标签留在第一行末尾、按钮整组掉到
+   * 第二行，两行各自居中，于是错开整整一行（22 + 1 行高）。
+   * 解法是两件事一起做：① 让标签与按钮**住进同一个 flex item**（.nameops，不可拆，
+   * 换行时整块一起走）；② 把标题改成零基准拉伸（见上面 flex:1 1 0% 那段）。
+   * 只做①不做②，标签和按钮是「同排」了，却一起被挤到第二行，标签留在第一行——照样错 22.6px。
+   *
+   * 结构由 watch.js / block.js 在运行时生成（模板里本来没有按钮，
+   * 也就不该有这个包裹层）：
+   *   <td class="name"><a>标题</a><span class="tag">…</span>×N<span class="nameops">
+   *     <button class="wishbtn">…</button><button class="blkbtn">…</button></span></td>
+   * 包裹层的 margin-left:-4px 抵消它和标签之间的 4px 列间距——标签之间本来就是
+   * 4px，若包裹层再加 4px，最后一个标签到第一颗按钮的间距会变成 8px。
+   *
+   * ⚠️ 这两条规则必须写在手机断点里（这里就是），桌面端走 baseline 老路径，
+   * 桌面端没有换行压力，改了反而会挪动已验收的排版。 */
+  .nameops{display:inline-flex;align-items:center;gap:4px;flex:0 0 auto;margin-left:-4px}
+  .nameops:empty{display:none}
+  /* 【无标签的卡片】整站有约三分之一的卡片没有任何 .tag（第一张「售罄 petsty」就是）。
+   * 那些行只有「标题 + 按钮组」两个 item：
+   *   · 标题 flex:1 1 0% 会吃满整行 → 按钮组被挤到第二行，独占一行，
+   *     看起来像「两个裸按钮浮在标题下面」，比 v3.16 更难看；
+   *   · 若让标题 fit-content，短标题时按钮组紧贴文字、长标题时又得折行，
+   *     一行里左右两端忽宽忽窄，卡片节奏乱。
+   * 定案：让按钮组**贴住标题末行的右侧**——标题照旧 flex:1 1 0% 吃满剩余宽度，
+   * 自己内部折行；按钮组不换行，就挂在末行右侧那片空白里。
+   * 实现靠 .nolabel 这个运行时标记（watch.js/block.js 里加），不用 :has()：
+   * :has() 虽然有 96% 支持率，但一旦哪个旧内核不认，整条规则静默失效，
+   * 表现就是「部分手机按钮又独占一行」，排查起来极难。显式类名没有这个风险。 */
+  .name.nolabel>a{width:auto}
+  .name.nolabel{align-items:flex-end}
+  /* 标题折行后，按钮组要跟**末行**对齐而不是首行——align-items:flex-end 已经做到；
+   * 再补一点下移量，让 22px 的钮中线压住末行 15px 字号的中线。 */
+  .name.nolabel>.nameops{margin-bottom:1px}
+  .name>.meta{flex:1 1 100%;width:100%;margin-top:4px}
+  .wishbtn::after,.blkbtn::after{content:"";position:absolute;inset:-3px}
+  .wishbtn svg,.blkbtn svg{width:12.5px;height:12.5px}
   /* 手机没有 hover，用 :active 给触摸即时反馈 */
   .wishbtn:active,.blkbtn:active{transform:scale(.94)}
   .wishbtn:active{background:#7c3aed;border-color:#7c3aed;color:#fff}
