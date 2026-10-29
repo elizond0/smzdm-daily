@@ -212,7 +212,10 @@ tbody td.idx{position:relative}
  * 它原本用来一眼分辨「这行在哪个榜」，但两张表各有自己的 h2 标题和条数，
  * 表格又是纵向连续排列、不会交错，这个信息其实不缺。
  * 删掉后每行左侧留白由 td 的 padding 承担，行首内容起点不变。
- * --band-hot / --band-feed 两个变量随之删除。 */
+ * --band-hot / --band-feed 两个变量随之删除。
+ * ⚠️ 好价榜容器的 class="band-feed" **保留**：它已经没有配色作用，但仍作为
+ * 「这是好价榜那一段」的 DOM 钩子被外部脚本（量测/审计）用来定位。
+ * 删掉它会让 `document.querySelector('.sec-body.band-feed')` 返回 null。 */
 .idx{color:var(--ink-4);width:38px;font-variant-numeric:tabular-nums;font-size:13px;
   font-weight:500}
 .cat{color:var(--ink-3);font-size:13px;width:82px}
