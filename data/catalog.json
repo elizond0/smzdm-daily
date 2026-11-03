@@ -2357,20 +2357,24 @@
  "H:bcf6c3363834703e": {
   "norm": "康巴赫家用耐磨无涂层深氮防锈精铁炒锅32cm",
   "specs": [],
-  "title": "淘金币可用、88VIP：康巴赫 家用耐磨无涂层深氮防锈精铁炒锅 32cm",
+  "title": "88VIP、淘金币可用：康巴赫 家用耐磨无涂层深氮防锈精铁炒锅 32cm",
   "ids": [
-   "184309558"
+   "184309558",
+   "185269807"
   ],
-  "low": 49.12,
+  "low": 43.07,
   "first": "2026-10-21",
-  "last": "2026-10-21",
-  "hits": 14,
+  "last": "2026-11-03",
+  "hits": 15,
   "push_date": null,
   "push_price": null,
-  "url": "https://www.smzdm.com/p/184309558/",
+  "url": "https://www.smzdm.com/p/185269807/",
   "mall": "天猫超市",
   "category": "其他",
-  "last_price": 49.12
+  "last_price": 43.07,
+  "low_date": "2026-11-03",
+  "high": 43.07,
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p3/"
  },
  "H:5bb005ff1547635c": {
   "norm": "OffRelaxOffRelax蓬松零压瓶清爽洗发水860ml赠735ml到手1595ml",
@@ -2443,8 +2447,8 @@
   ],
   "low": 238.0,
   "first": "2026-10-21",
-  "last": "2026-11-01",
-  "hits": 12,
+  "last": "2026-11-03",
+  "hits": 13,
   "push_date": null,
   "push_price": null,
   "low_date": "2026-10-31",
@@ -2847,25 +2851,26 @@
     "g"
    ]
   ],
-  "title": "淘金币可用：苹果 iPhone 18 Pro 5G手机 256GB",
+  "title": "苹果 iPhone 18 Pro 5G手机 256GB",
   "ids": [
    "184409831",
    "184599760",
    "184802566",
    "184938603",
    "184953930",
-   "185089801"
+   "185089801",
+   "185171976"
   ],
   "low": 6999.0,
   "first": "2026-10-21",
-  "last": "2026-11-02",
-  "hits": 24,
+  "last": "2026-11-03",
+  "hits": 25,
   "push_date": null,
   "push_price": null,
-  "url": "https://www.smzdm.com/p/185089801/",
+  "url": "https://www.smzdm.com/p/185171976/",
   "mall": "天猫精选",
   "category": "食品生鲜",
-  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p1/",
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p3/",
   "last_price": 8929.0,
   "last_origin": 9999.0,
   "low_disc": 84.8,
@@ -3144,8 +3149,8 @@
   ],
   "low": 211.0,
   "first": "2026-10-21",
-  "last": "2026-11-02",
-  "hits": 34,
+  "last": "2026-11-03",
+  "hits": 35,
   "push_date": null,
   "push_price": null,
   "url": "https://www.smzdm.com/p/185266020/",
@@ -3154,7 +3159,7 @@
   "last_price": 211.0,
   "last_origin": 298.0,
   "low_disc": 70.8,
-  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p5/",
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p1/",
   "high": 225.0,
   "low_date": "2026-11-02"
  },
@@ -3168,8 +3173,8 @@
   ],
   "low": 152.0,
   "first": "2026-10-21",
-  "last": "2026-11-02",
-  "hits": 17,
+  "last": "2026-11-03",
+  "hits": 18,
   "push_date": null,
   "push_price": null,
   "url": "https://www.smzdm.com/p/184907604/",
@@ -3177,7 +3182,7 @@
   "category": "其他",
   "last_price": 152.0,
   "high": 152.0,
-  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p3/"
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p2/"
  },
  "H:b8810b6bba0683af": {
   "norm": "鲜秋风物集京觅你都咋吃每粒3元云南孟连哈斯牛油果7分熟6粒装",
@@ -3208,8 +3213,8 @@
   ],
   "low": 103.0,
   "first": "2026-10-21",
-  "last": "2026-11-02",
-  "hits": 13,
+  "last": "2026-11-03",
+  "hits": 14,
   "push_date": null,
   "push_price": null,
   "url": "https://www.smzdm.com/p/184969590/",
@@ -3218,7 +3223,7 @@
   "last_price": 103.0,
   "last_origin": 118.0,
   "low_disc": 87.3,
-  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p5/",
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p3/",
   "high": 103.0
  },
  "H:f57072fde2171d4a": {
@@ -5297,8 +5302,8 @@
   ],
   "low": 7024.15,
   "first": "2026-10-22",
-  "last": "2026-11-02",
-  "hits": 19,
+  "last": "2026-11-03",
+  "hits": 20,
   "push_date": null,
   "push_price": null,
   "url": "https://www.smzdm.com/p/185149132/",
@@ -5642,8 +5647,8 @@
   ],
   "low": 284.6,
   "first": "2026-10-22",
-  "last": "2026-11-02",
-  "hits": 7,
+  "last": "2026-11-03",
+  "hits": 8,
   "push_date": null,
   "push_price": null,
   "url": "https://www.smzdm.com/p/184907357/",
@@ -5653,7 +5658,7 @@
   "last_origin": 338.0,
   "low_disc": 84.2,
   "high": 284.6,
-  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p3/"
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p2/"
  },
  "H:e5156904efdaf580": {
   "norm": "湖中秋色力度升级每只17元大闸蟹公4043两母3033两4对8只现货礼盒去绳足重死蟹包赔",
@@ -7119,8 +7124,8 @@
   ],
   "low": 108.0,
   "first": "2026-10-22",
-  "last": "2026-10-29",
-  "hits": 9,
+  "last": "2026-11-03",
+  "hits": 10,
   "push_date": null,
   "push_price": null,
   "url": "https://www.smzdm.com/p/184258262/",
@@ -7131,7 +7136,7 @@
   "low_disc": null,
   "low_date": "2026-10-28",
   "high": 168.0,
-  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p3/"
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p2/"
  },
  "H:7f8822e33731411c": {
   "norm": "湖中秋色大闸蟹全母3033两8只现货礼盒去绳足重死蟹包赔另有公母对款",
@@ -8677,7 +8682,7 @@
   "low": 170.1,
   "first": "2026-10-23",
   "last": "2026-11-03",
-  "hits": 8,
+  "hits": 9,
   "push_date": null,
   "push_price": null,
   "url": "https://www.smzdm.com/p/185299241/",
@@ -8686,7 +8691,7 @@
   "last_price": 170.1,
   "last_origin": 241.0,
   "low_disc": 71.0,
-  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p2/",
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p3/",
   "low_date": "2026-11-03",
   "high": 170.1
  },
@@ -9039,9 +9044,9 @@
   "low_disc": 96.1
  },
  "H:234a5a4f2760f054": {
-  "norm": "bilibili哔哩哔哩大会员年卡京东PLUS年卡",
+  "norm": "bilibili哔哩哔哩大会员年卡京东年卡PLUS双倍积分",
   "specs": [],
-  "title": "bilibili 哔哩哔哩 大会员年卡+京东PLUS年卡",
+  "title": "bilibili 哔哩哔哩 大会员年卡+京东年卡（PLUS双倍积分）",
   "ids": [
    "184228506",
    "185038004",
@@ -9049,17 +9054,17 @@
   ],
   "low": 144.0,
   "first": "2026-10-23",
-  "last": "2026-11-02",
-  "hits": 14,
+  "last": "2026-11-03",
+  "hits": 15,
   "push_date": null,
   "push_price": null,
-  "url": "https://www.smzdm.com/p/185139780/",
-  "mall": "天猫精选",
+  "url": "https://www.smzdm.com/p/185038004/",
+  "mall": "京东",
   "category": "其他",
-  "last_price": 148.0,
+  "last_price": 144.0,
   "last_origin": null,
   "low_disc": null,
-  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p5/",
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p1/",
   "high": 148.0,
   "low_date": "2026-10-30"
  },
@@ -10397,14 +10402,14 @@
   ],
   "low": 428.98,
   "first": "2026-10-24",
-  "last": "2026-11-02",
-  "hits": 24,
+  "last": "2026-11-03",
+  "hits": 25,
   "push_date": null,
   "push_price": null,
   "url": "https://www.smzdm.com/p/184499677/",
   "mall": "天猫精选",
   "category": "其他",
-  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p2/",
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p1/",
   "last_price": 428.98,
   "last_origin": 1200.0,
   "low_disc": 35.7,
@@ -10825,7 +10830,7 @@
   "low_disc": null
  },
  "H:492223b459307223": {
-  "norm": "淘金币35435元西凤酒酒海窖龄30年52度凤香型白酒500ml2瓶赠20年1瓶礼盒装",
+  "norm": "西凤酒酒海窖龄30年陈酿52度凤香型白酒500ml2瓶礼盒装赠20年500ml1瓶",
   "specs": [
    [
     "1",
@@ -10838,25 +10843,31 @@
    [
     "500",
     "ml"
+   ],
+   [
+    "500",
+    "ml"
    ]
   ],
-  "title": "淘金币354.35元：西凤酒 酒海窖龄30年 52度 凤香型白酒 500ml*2瓶 赠20年1瓶 礼盒装",
+  "title": "西凤酒 酒海窖龄30年陈酿 52度 凤香型白酒 500ml*2瓶 礼盒装 赠20年500ml*1瓶",
   "ids": [
-   "184497428"
+   "184497428",
+   "185273586"
   ],
   "low": 418.92,
   "first": "2026-10-24",
-  "last": "2026-10-24",
-  "hits": 3,
+  "last": "2026-11-03",
+  "hits": 4,
   "push_date": null,
   "push_price": null,
-  "url": "https://www.smzdm.com/p/184497428/",
+  "url": "https://www.smzdm.com/p/185273586/",
   "mall": "天猫精选",
   "category": "酒类",
   "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p4/",
-  "last_price": 418.92,
+  "last_price": 441.28,
   "last_origin": 800.0,
-  "low_disc": 52.4
+  "low_disc": 52.4,
+  "high": 441.28
  },
  "H:5d859d13bfe35fab": {
   "norm": "好丽友呀土豆薯条番茄酱味70g",
@@ -12385,7 +12396,7 @@
   "low_disc": null
  },
  "H:0834a0c2137b7ed6": {
-  "norm": "22点开始小米MIXFlip25G手机12GB256GB骁龙8至尊版",
+  "norm": "小米MIXFlip25G手机骁龙8至尊版12GB256GB",
   "specs": [
    [
     "12",
@@ -12400,23 +12411,26 @@
     "g"
    ]
   ],
-  "title": "22点开始：小米 MIX Flip 2 5G手机 12GB+256GB 骁龙8至尊版",
+  "title": "小米 MIX Flip 2 5G手机 骁龙8至尊版 12GB+256GB",
   "ids": [
-   "184530215"
+   "184530215",
+   "185091787"
   ],
-  "low": 2549.15,
+  "low": 2401.15,
   "first": "2026-10-24",
-  "last": "2026-10-25",
-  "hits": 3,
+  "last": "2026-11-03",
+  "hits": 4,
   "push_date": null,
   "push_price": null,
-  "url": "https://www.smzdm.com/p/184530215/",
+  "url": "https://www.smzdm.com/p/185091787/",
   "mall": "天猫精选",
   "category": "食品生鲜",
-  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p1/",
-  "last_price": 2549.15,
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p4/",
+  "last_price": 2401.15,
   "last_origin": 4699.0,
-  "low_disc": 54.2
+  "low_disc": 51.1,
+  "low_date": "2026-11-03",
+  "high": 2401.15
  },
  "H:cf9524200f736b6a": {
   "norm": "强生牛奶多肽婴儿沐浴露1L1瓶",
@@ -15410,7 +15424,7 @@
   "low": 79.9,
   "first": "2026-10-25",
   "last": "2026-11-03",
-  "hits": 4,
+  "hits": 5,
   "push_date": null,
   "push_price": null,
   "url": "https://www.smzdm.com/p/185308330/",
@@ -18749,25 +18763,27 @@
   "low_disc": null
  },
  "H:96e4c67da87353ee": {
-  "norm": "喜临门双人真皮大床套装尼亚pro云雾米光年plus3015米2米",
+  "norm": "大件超省喜临门双人真皮大床套装尼亚pro云雾米白骑士plus15米2米",
   "specs": [],
-  "title": "喜临门 双人真皮大床 套装 尼亚pro 云雾米+光年plus3.0 1.5米*2米",
+  "title": "国家补贴、大件超省：喜临门 双人真皮大床套装 尼亚pro 云雾米+白骑士plus 1.5米*2米",
   "ids": [
-   "184789129"
+   "184789129",
+   "184919729"
   ],
   "low": 1815.35,
   "first": "2026-10-26",
-  "last": "2026-10-27",
-  "hits": 2,
+  "last": "2026-11-03",
+  "hits": 3,
   "push_date": null,
   "push_price": null,
-  "url": "https://www.smzdm.com/p/184789129/",
+  "url": "https://www.smzdm.com/p/184919729/",
   "mall": "京东",
   "category": "其他",
-  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p3/",
-  "last_price": 1815.35,
-  "last_origin": 4228.0,
-  "low_disc": 42.9
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p4/",
+  "last_price": 2266.09,
+  "last_origin": 3881.0,
+  "low_disc": 42.9,
+  "high": 2266.09
  },
  "H:1d98b0b6dbac0cc4": {
   "norm": "施华蔻怡然草本植萃染发剂温和无氨理想盖白41亚麻褐棕",
@@ -19273,25 +19289,27 @@
   "low_disc": null
  },
  "H:cf81f5bd10d3b073": {
-  "norm": "喜临门皮艺双人床套装缓缓pro云雾米光年护脊30床垫152米",
+  "norm": "大件超省喜临门皮艺双人床套装缓缓pro云雾米光年护脊30床垫152米",
   "specs": [],
-  "title": "喜临门 皮艺双人床套装 缓缓pro 云雾米+光年护脊3.0床垫 1.5*2米",
+  "title": "国家补贴、大件超省：喜临门 皮艺双人床套装 缓缓pro 云雾米+光年护脊3.0床垫 1.5*2米",
   "ids": [
-   "184789158"
+   "184789158",
+   "184919898"
   ],
   "low": 1930.77,
   "first": "2026-10-27",
-  "last": "2026-10-27",
-  "hits": 1,
+  "last": "2026-11-03",
+  "hits": 2,
   "push_date": null,
   "push_price": null,
-  "url": "https://www.smzdm.com/p/184789158/",
+  "url": "https://www.smzdm.com/p/184919898/",
   "mall": "京东",
   "category": "其他",
-  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p4/",
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p2/",
   "last_price": 1930.77,
   "last_origin": 4463.0,
-  "low_disc": 43.3
+  "low_disc": 43.3,
+  "high": 1930.77
  },
  "H:973d90b9970e8f06": {
   "norm": "雅戈尔高抗菌功能男士休闲裤",
@@ -19333,14 +19351,14 @@
   ],
   "low": 171.96,
   "first": "2026-10-27",
-  "last": "2026-11-02",
-  "hits": 10,
+  "last": "2026-11-03",
+  "hits": 11,
   "push_date": null,
   "push_price": null,
   "url": "https://www.smzdm.com/p/185140920/",
   "mall": "天猫精选",
   "category": "酒类",
-  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p4/",
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p3/",
   "last_price": 245.6,
   "last_origin": 500.0,
   "low_disc": 34.4,
@@ -23137,7 +23155,7 @@
   "low_disc": 54.5
  },
  "H:fdffed4e96f840ff": {
-  "norm": "沃隆开心果大颗粒原果原色240g2罐",
+  "norm": "沃隆开心果大颗粒无漂白原果原色240g2罐",
   "specs": [
    [
     "2",
@@ -23148,25 +23166,26 @@
     "g"
    ]
   ],
-  "title": "今日必买：沃隆 开心果大颗粒 原果原色240g*2罐",
+  "title": "沃隆 开心果大颗粒无漂白 原果原色 240g*2罐",
   "ids": [
-   "184798011"
+   "184798011",
+   "185285501"
   ],
-  "low": 56.39,
-  "low_date": "2026-10-28",
+  "low": 55.9,
+  "low_date": "2026-11-03",
   "high": 56.39,
   "first": "2026-10-28",
-  "last": "2026-10-28",
-  "hits": 1,
+  "last": "2026-11-03",
+  "hits": 2,
   "push_date": null,
   "push_price": null,
-  "url": "https://www.smzdm.com/p/184798011/",
+  "url": "https://www.smzdm.com/p/185285501/",
   "mall": "京东",
   "category": "食品生鲜",
-  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p5/",
-  "last_price": 56.39,
-  "last_origin": 114.89,
-  "low_disc": 49.1
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p2/",
+  "last_price": 55.9,
+  "last_origin": 114.9,
+  "low_disc": 48.7
  },
  "H:fa3368c6d1432226": {
   "norm": "网易云音乐黑胶会员年卡京东PLUS年卡赠京东12积分",
@@ -24033,8 +24052,8 @@
   "low_date": "2026-10-28",
   "high": 32.11,
   "first": "2026-10-28",
-  "last": "2026-11-02",
-  "hits": 2,
+  "last": "2026-11-03",
+  "hits": 3,
   "push_date": null,
   "push_price": null,
   "url": "https://www.smzdm.com/p/185211146/",
@@ -24113,14 +24132,14 @@
   "low_date": "2026-10-28",
   "high": 178.36,
   "first": "2026-10-28",
-  "last": "2026-11-02",
-  "hits": 2,
+  "last": "2026-11-03",
+  "hits": 3,
   "push_date": null,
   "push_price": null,
   "url": "https://www.smzdm.com/p/185225772/",
   "mall": "天猫超市",
   "category": "食品生鲜",
-  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p3/",
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p2/",
   "last_price": 178.36,
   "last_origin": 579.0,
   "low_disc": 29.7
@@ -26278,25 +26297,31 @@
   "low_disc": 21.3
  },
  "H:d8bac75738dd1b21": {
-  "norm": "苹果iPad2025款11英寸平板电脑",
-  "specs": [],
-  "title": "今日必买：苹果 iPad 2025款 11英寸 平板电脑",
+  "norm": "苹果iPad2025款11英寸A16128GB平板电脑",
+  "specs": [
+   [
+    "16128",
+    "g"
+   ]
+  ],
+  "title": "苹果 iPad 2025款 11英寸（A16、128GB） 平板电脑",
   "ids": [
-   "184923729"
+   "184923729",
+   "185155781"
   ],
   "low": 2591.0,
   "low_date": "2026-10-29",
-  "high": 2591.0,
+  "high": 2704.0,
   "first": "2026-10-29",
-  "last": "2026-10-29",
-  "hits": 1,
+  "last": "2026-11-03",
+  "hits": 2,
   "push_date": null,
   "push_price": null,
-  "url": "https://www.smzdm.com/p/184923729/",
+  "url": "https://www.smzdm.com/p/185155781/",
   "mall": "天猫精选",
   "category": "食品生鲜",
-  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p3/",
-  "last_price": 2591.0,
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p4/",
+  "last_price": 2704.0,
   "last_origin": 3799.0,
   "low_disc": 68.2
  },
@@ -27028,8 +27053,8 @@
   "low_date": "2026-11-01",
   "high": 168.0,
   "first": "2026-10-29",
-  "last": "2026-11-02",
-  "hits": 3,
+  "last": "2026-11-03",
+  "hits": 4,
   "push_date": null,
   "push_price": null,
   "url": "https://www.smzdm.com/p/185037829/",
@@ -28912,23 +28937,24 @@
     "g"
    ]
   ],
-  "title": "今日必买：摩可纳 经典8号 冻干速溶咖啡粉 400g",
+  "title": "摩可纳 经典8号 冻干速溶咖啡粉 400g",
   "ids": [
-   "184935888"
+   "184935888",
+   "185276706"
   ],
-  "low": 105.3,
-  "low_date": "2026-10-30",
+  "low": 99.0,
+  "low_date": "2026-11-03",
   "high": 105.3,
   "first": "2026-10-30",
-  "last": "2026-11-01",
-  "hits": 2,
+  "last": "2026-11-03",
+  "hits": 3,
   "push_date": null,
   "push_price": null,
-  "url": "https://www.smzdm.com/p/184935888/",
+  "url": "https://www.smzdm.com/p/185276706/",
   "mall": "天猫国际官方直营",
   "category": "食品生鲜",
-  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p4/",
-  "last_price": 105.3,
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p3/",
+  "last_price": 99.0,
   "last_origin": null,
   "low_disc": null
  },
@@ -29650,21 +29676,22 @@
   ],
   "title": "WD-40 除锈剂 200ml",
   "ids": [
-   "185091595"
+   "185091595",
+   "185318918"
   ],
   "low": 9.9,
   "low_date": "2026-10-31",
-  "high": 9.9,
+  "high": 15.13,
   "first": "2026-10-31",
-  "last": "2026-10-31",
-  "hits": 1,
+  "last": "2026-11-03",
+  "hits": 2,
   "push_date": null,
   "push_price": null,
-  "url": "https://www.smzdm.com/p/185091595/",
+  "url": "https://www.smzdm.com/p/185318918/",
   "mall": "京东",
   "category": "其他",
-  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p3/",
-  "last_price": 9.9,
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p5/",
+  "last_price": 15.13,
   "last_origin": null,
   "low_disc": null
  },
@@ -30125,13 +30152,13 @@
   "high": 39.95,
   "first": "2026-10-31",
   "last": "2026-11-03",
-  "hits": 5,
+  "hits": 6,
   "push_date": null,
   "push_price": null,
   "url": "https://www.smzdm.com/p/185284594/",
   "mall": "京东",
   "category": "其他",
-  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p1/",
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p3/",
   "last_price": 39.5,
   "last_origin": null,
   "low_disc": null
@@ -33061,8 +33088,8 @@
   "low_date": "2026-11-01",
   "high": 73.5,
   "first": "2026-11-01",
-  "last": "2026-11-02",
-  "hits": 3,
+  "last": "2026-11-03",
+  "hits": 4,
   "push_date": null,
   "push_price": null,
   "url": "https://www.smzdm.com/p/185164773/",
@@ -33235,14 +33262,14 @@
   "low_date": "2026-11-01",
   "high": 110.5,
   "first": "2026-11-01",
-  "last": "2026-11-01",
-  "hits": 1,
+  "last": "2026-11-03",
+  "hits": 2,
   "push_date": null,
   "push_price": null,
   "url": "https://www.smzdm.com/p/185037299/",
   "mall": "京东",
   "category": "电脑数码",
-  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p4/",
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p1/",
   "last_price": 110.5,
   "last_origin": 128.0,
   "low_disc": 86.3
@@ -33299,14 +33326,14 @@
   "low_date": "2026-11-01",
   "high": 65.96,
   "first": "2026-11-01",
-  "last": "2026-11-02",
-  "hits": 4,
+  "last": "2026-11-03",
+  "hits": 5,
   "push_date": null,
   "push_price": null,
   "url": "https://www.smzdm.com/p/185178235/",
   "mall": "京东",
   "category": "其他",
-  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p2/",
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p1/",
   "last_price": 65.96,
   "last_origin": null,
   "low_disc": null
@@ -33531,14 +33558,14 @@
   "low_date": "2026-11-02",
   "high": 9899.0,
   "first": "2026-11-02",
-  "last": "2026-11-02",
-  "hits": 2,
+  "last": "2026-11-03",
+  "hits": 4,
   "push_date": null,
   "push_price": null,
   "url": "https://www.smzdm.com/p/185092807/",
   "mall": "天猫精选",
   "category": "食品生鲜",
-  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p4/",
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p2/",
   "last_price": 8149.0,
   "last_origin": 9999.0,
   "low_disc": 81.5
@@ -33902,43 +33929,44 @@
   "low_date": "2026-11-02",
   "high": 6799.0,
   "first": "2026-11-02",
-  "last": "2026-11-02",
-  "hits": 1,
+  "last": "2026-11-03",
+  "hits": 2,
   "push_date": null,
   "push_price": null,
   "url": "https://www.smzdm.com/p/185105269/",
   "mall": "天猫精选",
   "category": "食品生鲜",
-  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p4/",
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p1/",
   "last_price": 6799.0,
   "last_origin": 8999.0,
   "low_disc": 75.6
  },
  "H:c5080c638a47ce3a": {
-  "norm": "强生婴儿牛奶沐浴露1000ml",
+  "norm": "强生婴儿婴儿牛奶沐浴露1000ml",
   "specs": [
    [
     "1000",
     "ml"
    ]
   ],
-  "title": "88VIP、今日必买：强生 婴儿牛奶沐浴露1000ml",
+  "title": "88VIP：强生 婴儿婴儿牛奶沐浴露1000ml",
   "ids": [
-   "185163203"
+   "185163203",
+   "185331826"
   ],
-  "low": 10.28,
-  "low_date": "2026-11-02",
+  "low": 9.28,
+  "low_date": "2026-11-03",
   "high": 10.28,
   "first": "2026-11-02",
-  "last": "2026-11-02",
-  "hits": 3,
+  "last": "2026-11-03",
+  "hits": 4,
   "push_date": null,
   "push_price": null,
-  "url": "https://www.smzdm.com/p/185163203/",
+  "url": "https://www.smzdm.com/p/185331826/",
   "mall": "天猫超市",
   "category": "日用百货",
-  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p2/",
-  "last_price": 10.28,
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p5/",
+  "last_price": 9.28,
   "last_origin": null,
   "low_disc": null
  },
@@ -34822,8 +34850,8 @@
   "low_date": "2026-11-02",
   "high": 65.92,
   "first": "2026-11-02",
-  "last": "2026-11-02",
-  "hits": 1,
+  "last": "2026-11-03",
+  "hits": 2,
   "push_date": null,
   "push_price": null,
   "url": "https://www.smzdm.com/p/185221546/",
@@ -34961,14 +34989,14 @@
   "low_date": "2026-11-02",
   "high": 65.44,
   "first": "2026-11-02",
-  "last": "2026-11-02",
-  "hits": 1,
+  "last": "2026-11-03",
+  "hits": 2,
   "push_date": null,
   "push_price": null,
   "url": "https://www.smzdm.com/p/185183972/",
   "mall": "京东",
   "category": "其他",
-  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p3/",
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p4/",
   "last_price": 65.44,
   "last_origin": null,
   "low_disc": null
@@ -35123,8 +35151,8 @@
   "low_date": "2026-11-02",
   "high": 113.33,
   "first": "2026-11-02",
-  "last": "2026-11-02",
-  "hits": 1,
+  "last": "2026-11-03",
+  "hits": 2,
   "push_date": null,
   "push_price": null,
   "url": "https://www.smzdm.com/p/185110718/",
@@ -35580,8 +35608,8 @@
   "low_date": "2026-11-02",
   "high": 9754.62,
   "first": "2026-11-02",
-  "last": "2026-11-02",
-  "hits": 1,
+  "last": "2026-11-03",
+  "hits": 2,
   "push_date": null,
   "push_price": null,
   "url": "https://www.smzdm.com/p/184994642/",
@@ -35920,14 +35948,14 @@
   "low_date": "2026-11-02",
   "high": 188.0,
   "first": "2026-11-02",
-  "last": "2026-11-02",
-  "hits": 1,
+  "last": "2026-11-03",
+  "hits": 2,
   "push_date": null,
   "push_price": null,
   "url": "https://www.smzdm.com/p/185143459/",
   "mall": "天猫精选",
   "category": "其他",
-  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p3/",
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p2/",
   "last_price": 188.0,
   "last_origin": null,
   "low_disc": null
@@ -36049,14 +36077,14 @@
   "low_date": "2026-11-02",
   "high": 80.87,
   "first": "2026-11-02",
-  "last": "2026-11-02",
-  "hits": 1,
+  "last": "2026-11-03",
+  "hits": 2,
   "push_date": null,
   "push_price": null,
   "url": "https://www.smzdm.com/p/185271089/",
   "mall": "拼多多",
   "category": "其他",
-  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p4/",
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p1/",
   "last_price": 80.87,
   "last_origin": null,
   "low_disc": null
@@ -36124,13 +36152,13 @@
   "high": 29.38,
   "first": "2026-11-02",
   "last": "2026-11-03",
-  "hits": 2,
+  "hits": 3,
   "push_date": null,
   "push_price": null,
   "url": "https://www.smzdm.com/p/185224069/",
   "mall": "京东",
   "category": "食品生鲜",
-  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p1/",
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p2/",
   "last_price": 29.38,
   "last_origin": null,
   "low_disc": null
@@ -36747,26 +36775,26 @@
   "high": 147.0,
   "first": "2026-11-03",
   "last": "2026-11-03",
-  "hits": 1,
+  "hits": 2,
   "push_date": null,
   "push_price": null,
   "url": "https://www.smzdm.com/p/185299521/",
   "mall": "京东",
   "category": "其他",
-  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p1/",
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p2/",
   "last_price": 147.0,
   "last_origin": 188.0,
   "low_disc": 78.2
  },
  "H:87c3a2eccd69e481": {
-  "norm": "安佳比利时喷射动物淡奶油250g",
+  "norm": "安佳比利时喷射动物淡奶油250g可搭配芝士片黄油等",
   "specs": [
    [
     "250",
     "g"
    ]
   ],
-  "title": "安佳 比利时喷射动物淡奶油 250g",
+  "title": "安佳 比利时喷射动物淡奶油 250g（可搭配芝士片、黄油等）",
   "ids": [
    "185266055"
   ],
@@ -36775,13 +36803,13 @@
   "high": 20.7,
   "first": "2026-11-03",
   "last": "2026-11-03",
-  "hits": 1,
+  "hits": 2,
   "push_date": null,
   "push_price": null,
   "url": "https://www.smzdm.com/p/185266055/",
   "mall": "京东",
-  "category": "其他",
-  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p2/",
+  "category": "食品生鲜",
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p3/",
   "last_price": 20.7,
   "last_origin": 30.9,
   "low_disc": 67.0
@@ -36928,13 +36956,13 @@
   "high": 58.4,
   "first": "2026-11-03",
   "last": "2026-11-03",
-  "hits": 1,
+  "hits": 2,
   "push_date": null,
   "push_price": null,
   "url": "https://www.smzdm.com/p/185273020/",
   "mall": "京东",
   "category": "其他",
-  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p2/",
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p3/",
   "last_price": 58.4,
   "last_origin": 109.9,
   "low_disc": 53.1
@@ -37322,9 +37350,9 @@
   "low_disc": null
  },
  "H:95a85e3aea016e56": {
-  "norm": "极夜DeskOneT2全铝迷你迷你主机电脑集成核芯显卡AMD锐龙7255皓月琉银无内存无硬盘",
+  "norm": "极夜DeskOneT2锐龙7255准系统无内存硬盘迷你主机",
   "specs": [],
-  "title": "今日必买：极夜 DeskOne T2 全铝迷你 迷你主机电脑 集成核芯显卡 AMD 锐龙7 255 皓月琉银 无内存 无硬盘",
+  "title": "今日必买：极夜 DeskOne T2（锐龙7 255、准系统无内存硬盘） 迷你主机",
   "ids": [
    "185299211"
   ],
@@ -37333,13 +37361,13 @@
   "high": 1614.0,
   "first": "2026-11-03",
   "last": "2026-11-03",
-  "hits": 1,
+  "hits": 2,
   "push_date": null,
   "push_price": null,
   "url": "https://www.smzdm.com/p/185299211/",
   "mall": "京东",
   "category": "电脑数码",
-  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p3/",
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p4/",
   "last_price": 1614.0,
   "last_origin": 2199.0,
   "low_disc": 73.4
@@ -37527,7 +37555,7 @@
   "high": 99.0,
   "first": "2026-11-03",
   "last": "2026-11-03",
-  "hits": 1,
+  "hits": 2,
   "push_date": null,
   "push_price": null,
   "url": "https://www.smzdm.com/p/185298448/",
@@ -37555,13 +37583,13 @@
   "high": 38.12,
   "first": "2026-11-03",
   "last": "2026-11-03",
-  "hits": 1,
+  "hits": 2,
   "push_date": null,
   "push_price": null,
   "url": "https://www.smzdm.com/p/185266151/",
   "mall": "京东",
   "category": "其他",
-  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p4/",
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p5/",
   "last_price": 38.12,
   "last_origin": null,
   "low_disc": null
@@ -37610,13 +37638,13 @@
   "high": 39.9,
   "first": "2026-11-03",
   "last": "2026-11-03",
-  "hits": 1,
+  "hits": 2,
   "push_date": null,
   "push_price": null,
   "url": "https://www.smzdm.com/p/185296324/",
   "mall": "京东",
   "category": "食品生鲜",
-  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p4/",
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p5/",
   "last_price": 39.9,
   "last_origin": 56.9,
   "low_disc": 70.1
@@ -37677,30 +37705,26 @@
   "low_disc": null
  },
  "H:0637c8f32c74d121": {
-  "norm": "康师傅1倍半红烧牛肉面5包",
-  "specs": [
-   [
-    "5",
-    "包"
-   ]
-  ],
-  "title": "88VIP：康师傅 1倍半 红烧牛肉面 5包",
+  "norm": "康师傅1倍半红烧牛肉面",
+  "specs": [],
+  "title": "88VIP：康师傅 1倍半 红烧牛肉面",
   "ids": [
-   "185307476"
+   "185307476",
+   "185318899"
   ],
-  "low": 5.44,
+  "low": 2.44,
   "low_date": "2026-11-03",
   "high": 5.44,
   "first": "2026-11-03",
   "last": "2026-11-03",
-  "hits": 1,
+  "hits": 2,
   "push_date": null,
   "push_price": null,
-  "url": "https://www.smzdm.com/p/185307476/",
+  "url": "https://www.smzdm.com/p/185318899/",
   "mall": "天猫超市",
   "category": "食品生鲜",
-  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p4/",
-  "last_price": 5.44,
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p5/",
+  "last_price": 2.44,
   "last_origin": null,
   "low_disc": null
  },
@@ -37810,7 +37834,7 @@
   "low_disc": null
  },
  "H:5156764caaa800fe": {
-  "norm": "维达湿厕纸家庭装80片5包多巴胺湿厕纸纯水湿纸巾厕纸湿巾新旧随机",
+  "norm": "限地区维达湿厕纸家庭装80片5包",
   "specs": [
    [
     "5",
@@ -37821,7 +37845,7 @@
     "片"
    ]
   ],
-  "title": "PLUS会员：维达 湿厕纸 家庭装80片*5包 多巴胺湿厕纸纯水湿纸巾厕纸湿巾新旧随机",
+  "title": "限地区：维达 湿厕纸 家庭装80片*5包",
   "ids": [
    "185307537",
    "185304672"
@@ -37831,14 +37855,14 @@
   "high": 16.18,
   "first": "2026-11-03",
   "last": "2026-11-03",
-  "hits": 2,
+  "hits": 3,
   "push_date": null,
   "push_price": null,
-  "url": "https://www.smzdm.com/p/185304672/",
+  "url": "https://www.smzdm.com/p/185307537/",
   "mall": "京东",
   "category": "日用百货",
-  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p5/",
-  "last_price": 16.18,
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p2/",
+  "last_price": 15.21,
   "last_origin": 50.9,
   "low_disc": 29.9
  },
@@ -38204,5 +38228,732 @@
   "last_price": 17.9,
   "last_origin": 39.9,
   "low_disc": 44.9
+ },
+ "H:a4f04e8aa6a28a35": {
+  "norm": "罗技MXMaster3S菁英版静音无线蓝牙鼠标石墨黑",
+  "specs": [],
+  "title": "罗技 MX Master 3S 菁英版 静音 无线蓝牙鼠标 石墨黑",
+  "ids": [
+   "184765742"
+  ],
+  "low": 305.09,
+  "low_date": "2026-11-03",
+  "high": 305.09,
+  "first": "2026-11-03",
+  "last": "2026-11-03",
+  "hits": 1,
+  "push_date": null,
+  "push_price": null,
+  "url": "https://www.smzdm.com/p/184765742/",
+  "mall": "京东",
+  "category": "电脑数码",
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p2/",
+  "last_price": 305.09,
+  "last_origin": 399.0,
+  "low_disc": 76.5
+ },
+ "H:8b331b1f2f2b844c": {
+  "norm": "特美刻双层纯钛双饮保温杯黑色480ml赠杯套",
+  "specs": [
+   [
+    "480",
+    "ml"
+   ]
+  ],
+  "title": "今日必买：特美刻 双层纯钛双饮保温杯 黑色 480ml (赠杯套)",
+  "ids": [
+   "185269884"
+  ],
+  "low": 80.16,
+  "low_date": "2026-11-03",
+  "high": 80.16,
+  "first": "2026-11-03",
+  "last": "2026-11-03",
+  "hits": 1,
+  "push_date": null,
+  "push_price": null,
+  "url": "https://www.smzdm.com/p/185269884/",
+  "mall": "京东",
+  "category": "日用百货",
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p2/",
+  "last_price": 80.16,
+  "last_origin": 239.0,
+  "low_disc": 33.5
+ },
+ "H:d2ce44092842b2d0": {
+  "norm": "BambuLabA13D智能打印机儿童礼物",
+  "specs": [],
+  "title": "Bambu Lab A1 3D智能打印机 儿童礼物",
+  "ids": [
+   "185161673"
+  ],
+  "low": 874.3,
+  "low_date": "2026-11-03",
+  "high": 874.3,
+  "first": "2026-11-03",
+  "last": "2026-11-03",
+  "hits": 1,
+  "push_date": null,
+  "push_price": null,
+  "url": "https://www.smzdm.com/p/185161673/",
+  "mall": "天猫精选",
+  "category": "电脑数码",
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p3/",
+  "last_price": 874.3,
+  "last_origin": 2199.0,
+  "low_disc": 39.8
+ },
+ "H:1f73ee2f1f935d0e": {
+  "norm": "惠普暗影精灵Pro15Ultra7255H16GB512GBRTX5060游戏本",
+  "specs": [
+   [
+    "16",
+    "g"
+   ],
+   [
+    "512",
+    "g"
+   ]
+  ],
+  "title": "国家补贴、88VIP：惠普 暗影精灵Pro15（Ultra7 255H、16GB、512GB、RTX 5060） 游戏本",
+  "ids": [
+   "185174924"
+  ],
+  "low": 8549.0,
+  "low_date": "2026-11-03",
+  "high": 8549.0,
+  "first": "2026-11-03",
+  "last": "2026-11-03",
+  "hits": 1,
+  "push_date": null,
+  "push_price": null,
+  "url": "https://www.smzdm.com/p/185174924/",
+  "mall": "天猫精选",
+  "category": "其他",
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p3/",
+  "last_price": 8549.0,
+  "last_origin": null,
+  "low_disc": null
+ },
+ "H:c65ebc04733913c1": {
+  "norm": "随机免单每日必抢凯米174极薄非球面树脂镜片高度数更显薄3517冰雾色超轻钛架多款可选可升级FILA斐乐镜架施洛华镜架TK1",
+  "specs": [],
+  "title": "随机免单、每日必抢：凯米 1.74极薄非球面树脂镜片（高度数更显薄）+3517冰雾色超轻钛架多款可选（可升级FILA斐乐镜架/施洛华镜架）TK1",
+  "ids": [
+   "185130296"
+  ],
+  "low": 209.67,
+  "low_date": "2026-11-03",
+  "high": 209.67,
+  "first": "2026-11-03",
+  "last": "2026-11-03",
+  "hits": 1,
+  "push_date": null,
+  "push_price": null,
+  "url": "https://www.smzdm.com/p/185130296/",
+  "mall": "京东",
+  "category": "其他",
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p3/",
+  "last_price": 209.67,
+  "last_origin": null,
+  "low_disc": null
+ },
+ "H:c942af36ce048dc8": {
+  "norm": "波尼亚1号青岛老火腿腱子肉火腿单支礼盒装1981老火腿300g5",
+  "specs": [
+   [
+    "300",
+    "g"
+   ]
+  ],
+  "title": "波尼亚 1号青岛老火腿腱子肉火腿 单支礼盒装1981老火腿300g*5",
+  "ids": [
+   "185278710"
+  ],
+  "low": 75.0,
+  "low_date": "2026-11-03",
+  "high": 75.0,
+  "first": "2026-11-03",
+  "last": "2026-11-03",
+  "hits": 1,
+  "push_date": null,
+  "push_price": null,
+  "url": "https://www.smzdm.com/p/185278710/",
+  "mall": "京东",
+  "category": "食品生鲜",
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p3/",
+  "last_price": 75.0,
+  "last_origin": 89.0,
+  "low_disc": 84.3
+ },
+ "H:33366953f381db9f": {
+  "norm": "意可可厨房不锈钢置物架厨具8件套赠厨具7件套",
+  "specs": [
+   [
+    "7",
+    "件"
+   ],
+   [
+    "8",
+    "件"
+   ]
+  ],
+  "title": "意可可 厨房不锈钢置物架 厨具8件套（赠厨具7件套）",
+  "ids": [
+   "185265853"
+  ],
+  "low": 52.0,
+  "low_date": "2026-11-03",
+  "high": 52.0,
+  "first": "2026-11-03",
+  "last": "2026-11-03",
+  "hits": 1,
+  "push_date": null,
+  "push_price": null,
+  "url": "https://www.smzdm.com/p/185265853/",
+  "mall": "京东",
+  "category": "其他",
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p3/",
+  "last_price": 52.0,
+  "last_origin": 119.0,
+  "low_disc": 43.7
+ },
+ "H:42ccadc05766f56e": {
+  "norm": "绝对伏特加伏特加原味1000ml赠50ml原味小酒",
+  "specs": [
+   [
+    "1000",
+    "ml"
+   ],
+   [
+    "50",
+    "ml"
+   ]
+  ],
+  "title": "今日必买：绝对伏特加 伏特加 原味 1000ml（赠:50ml原味小酒）",
+  "ids": [
+   "184791948"
+  ],
+  "low": 58.04,
+  "low_date": "2026-11-03",
+  "high": 58.04,
+  "first": "2026-11-03",
+  "last": "2026-11-03",
+  "hits": 1,
+  "push_date": null,
+  "push_price": null,
+  "url": "https://www.smzdm.com/p/184791948/",
+  "mall": "天猫精选",
+  "category": "酒类",
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p3/",
+  "last_price": 58.04,
+  "last_origin": null,
+  "low_disc": null
+ },
+ "H:f79329eafefdf9e2": {
+  "norm": "玛戈隆特荷莲盛宴骨瓷餐具套装12头2人份",
+  "specs": [],
+  "title": "玛戈隆特 荷莲盛宴骨瓷餐具套装 12头2人份",
+  "ids": [
+   "185327532"
+  ],
+  "low": 36.17,
+  "low_date": "2026-11-03",
+  "high": 36.17,
+  "first": "2026-11-03",
+  "last": "2026-11-03",
+  "hits": 1,
+  "push_date": null,
+  "push_price": null,
+  "url": "https://www.smzdm.com/p/185327532/",
+  "mall": "京东",
+  "category": "日用百货",
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p4/",
+  "last_price": 36.17,
+  "last_origin": 246.0,
+  "low_disc": 14.7
+ },
+ "H:616a49134ba49991": {
+  "norm": "淘金币18548元华山论剑诗酒年华凤香型白酒52度500ml2瓶礼盒装",
+  "specs": [
+   [
+    "2",
+    "瓶"
+   ],
+   [
+    "500",
+    "ml"
+   ]
+  ],
+  "title": "淘金币185.48元：华山论剑 诗酒年华 凤香型白酒 52度 500ml*2瓶 礼盒装",
+  "ids": [
+   "185204654"
+  ],
+  "low": 254.0,
+  "low_date": "2026-11-03",
+  "high": 254.0,
+  "first": "2026-11-03",
+  "last": "2026-11-03",
+  "hits": 1,
+  "push_date": null,
+  "push_price": null,
+  "url": "https://www.smzdm.com/p/185204654/",
+  "mall": "天猫精选",
+  "category": "酒类",
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p4/",
+  "last_price": 254.0,
+  "last_origin": 495.0,
+  "low_disc": 51.3
+ },
+ "H:1c8b34842106c7a8": {
+  "norm": "淘金币548元袋88VIP安井顺丰上门安井大颗粒虾滑10袋100g",
+  "specs": [
+   [
+    "10",
+    "袋"
+   ],
+   [
+    "100",
+    "g"
+   ]
+  ],
+  "title": "淘金币5.48元/袋、88VIP：安井 顺丰上门 安井大颗粒虾滑10袋*100g",
+  "ids": [
+   "185258758"
+  ],
+  "low": 61.45,
+  "low_date": "2026-11-03",
+  "high": 61.45,
+  "first": "2026-11-03",
+  "last": "2026-11-03",
+  "hits": 1,
+  "push_date": null,
+  "push_price": null,
+  "url": "https://www.smzdm.com/p/185258758/",
+  "mall": "天猫超市",
+  "category": "其他",
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p4/",
+  "last_price": 61.45,
+  "last_origin": null,
+  "low_disc": null
+ },
+ "H:7148745c9ed9e0c6": {
+  "norm": "三星高性能数据传输存储卡512GB",
+  "specs": [
+   [
+    "512",
+    "g"
+   ]
+  ],
+  "title": "今日必买：三星 高性能数据传输 存储卡 512GB",
+  "ids": [
+   "185277638"
+  ],
+  "low": 654.93,
+  "low_date": "2026-11-03",
+  "high": 654.93,
+  "first": "2026-11-03",
+  "last": "2026-11-03",
+  "hits": 1,
+  "push_date": null,
+  "push_price": null,
+  "url": "https://www.smzdm.com/p/185277638/",
+  "mall": "京东全球购",
+  "category": "其他",
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p4/",
+  "last_price": 654.93,
+  "last_origin": 727.65,
+  "low_disc": 90.0
+ },
+ "H:bd5e247ba1ba8dba": {
+  "norm": "西凤酒酒海匠酿系列52度凤香型白酒500ml6瓶整箱装",
+  "specs": [
+   [
+    "500",
+    "ml"
+   ],
+   [
+    "6",
+    "瓶"
+   ]
+  ],
+  "title": "西凤酒 酒海匠酿系列 52度 凤香型白酒 500ml*6瓶 整箱装",
+  "ids": [
+   "185270523"
+  ],
+  "low": 490.0,
+  "low_date": "2026-11-03",
+  "high": 490.0,
+  "first": "2026-11-03",
+  "last": "2026-11-03",
+  "hits": 1,
+  "push_date": null,
+  "push_price": null,
+  "url": "https://www.smzdm.com/p/185270523/",
+  "mall": "天猫精选",
+  "category": "酒类",
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p4/",
+  "last_price": 490.0,
+  "last_origin": 1200.0,
+  "low_disc": 40.8
+ },
+ "H:86ef17b1013e4e40": {
+  "norm": "海飞丝去屑洗发露清爽去油型1kg",
+  "specs": [
+   [
+    "1",
+    "kg"
+   ]
+  ],
+  "title": "海飞丝 去屑洗发露 清爽去油型 1kg",
+  "ids": [
+   "185317948"
+  ],
+  "low": 36.92,
+  "low_date": "2026-11-03",
+  "high": 36.92,
+  "first": "2026-11-03",
+  "last": "2026-11-03",
+  "hits": 1,
+  "push_date": null,
+  "push_price": null,
+  "url": "https://www.smzdm.com/p/185317948/",
+  "mall": "京东",
+  "category": "其他",
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p4/",
+  "last_price": 36.92,
+  "last_origin": null,
+  "low_disc": null
+ },
+ "H:78cefb0b3cdf8326": {
+  "norm": "苹果MacBookAir13英寸M516GB512GB笔记本",
+  "specs": [
+   [
+    "512",
+    "g"
+   ],
+   [
+    "516",
+    "g"
+   ]
+  ],
+  "title": "苹果 MacBook Air 13英寸（M5、16GB、512GB） 笔记本",
+  "ids": [
+   "185154214"
+  ],
+  "low": 7177.35,
+  "low_date": "2026-11-03",
+  "high": 7177.35,
+  "first": "2026-11-03",
+  "last": "2026-11-03",
+  "hits": 1,
+  "push_date": null,
+  "push_price": null,
+  "url": "https://www.smzdm.com/p/185154214/",
+  "mall": "天猫精选",
+  "category": "电脑数码",
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p4/",
+  "last_price": 7177.35,
+  "last_origin": null,
+  "low_disc": null
+ },
+ "H:b4ee65c1b1dc0816": {
+  "norm": "斯凯奇童装女童羽绒服三合一26春两件套羽绒内胆外套Kids",
+  "specs": [],
+  "title": "今日必买：斯凯奇 童装女童羽绒服三合一26春两件套羽绒内胆外套Kids",
+  "ids": [
+   "185322849"
+  ],
+  "low": 145.4,
+  "low_date": "2026-11-03",
+  "high": 145.4,
+  "first": "2026-11-03",
+  "last": "2026-11-03",
+  "hits": 1,
+  "push_date": null,
+  "push_price": null,
+  "url": "https://www.smzdm.com/p/185322849/",
+  "mall": "天猫精选",
+  "category": "其他",
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p4/",
+  "last_price": 145.4,
+  "last_origin": 517.0,
+  "low_disc": 28.1
+ },
+ "H:c5ce108ec9628234": {
+  "norm": "江博士童鞋2026冬季新款加绒保暖户外儿童男女宝宝学步鞋蓝灰27码",
+  "specs": [],
+  "title": "88VIP：江博士 童鞋2026冬季新款加绒保暖户外儿童男女宝宝学步鞋 蓝/灰 27码",
+  "ids": [
+   "185293543"
+  ],
+  "low": 137.65,
+  "low_date": "2026-11-03",
+  "high": 137.65,
+  "first": "2026-11-03",
+  "last": "2026-11-03",
+  "hits": 1,
+  "push_date": null,
+  "push_price": null,
+  "url": "https://www.smzdm.com/p/185293543/",
+  "mall": "天猫精选",
+  "category": "其他",
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p4/",
+  "last_price": 137.65,
+  "last_origin": null,
+  "low_disc": null
+ },
+ "H:0c2ec09f323a19e8": {
+  "norm": "亚瑟士GT200015男士稳定支撑跑鞋",
+  "specs": [],
+  "title": "亚瑟士 GT-2000 15 男士稳定支撑跑鞋",
+  "ids": [
+   "185290804"
+  ],
+  "low": 424.6,
+  "low_date": "2026-11-03",
+  "high": 424.6,
+  "first": "2026-11-03",
+  "last": "2026-11-03",
+  "hits": 1,
+  "push_date": null,
+  "push_price": null,
+  "url": "https://www.smzdm.com/p/185290804/",
+  "mall": "天猫精选",
+  "category": "其他",
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p5/",
+  "last_price": 424.6,
+  "last_origin": null,
+  "low_disc": null
+ },
+ "H:2e36a475c924acdc": {
+  "norm": "海尔云溪40pro海尔洗烘套装家用全自动洗衣机烘干机75DW",
+  "specs": [],
+  "title": "国家补贴：海尔 [云溪4.0 pro]海尔洗烘套装家用全自动洗衣机烘干机75DW",
+  "ids": [
+   "185318796"
+  ],
+  "low": 4843.3,
+  "low_date": "2026-11-03",
+  "high": 4843.3,
+  "first": "2026-11-03",
+  "last": "2026-11-03",
+  "hits": 1,
+  "push_date": null,
+  "push_price": null,
+  "url": "https://www.smzdm.com/p/185318796/",
+  "mall": "天猫精选",
+  "category": "家用电器",
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p5/",
+  "last_price": 4843.3,
+  "last_origin": 19998.0,
+  "low_disc": 24.2
+ },
+ "H:1c412bce43b24c0c": {
+  "norm": "AXE牌西柚香型洗洁精温和不伤手组合囤货装525kg正品",
+  "specs": [
+   [
+    "525",
+    "kg"
+   ]
+  ],
+  "title": "百亿补贴：AXE 牌西柚香型洗洁精温和不伤手组合囤货装5.25kg正品",
+  "ids": [
+   "185319787"
+  ],
+  "low": 38.04,
+  "low_date": "2026-11-03",
+  "high": 38.04,
+  "first": "2026-11-03",
+  "last": "2026-11-03",
+  "hits": 1,
+  "push_date": null,
+  "push_price": null,
+  "url": "https://www.smzdm.com/p/185319787/",
+  "mall": "拼多多",
+  "category": "日用百货",
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p5/",
+  "last_price": 38.04,
+  "last_origin": 64.54,
+  "low_disc": 58.9
+ },
+ "H:233ecc757b993ec0": {
+  "norm": "舍得舍我其谁智慧小酒52度浓香型白酒100ml4瓶礼盒装",
+  "specs": [
+   [
+    "100",
+    "ml"
+   ],
+   [
+    "4",
+    "瓶"
+   ]
+  ],
+  "title": "88VIP、今日必买：舍得 舍我其谁智慧小酒 52度 浓香型白酒 100ml*4瓶 礼盒装",
+  "ids": [
+   "185272333"
+  ],
+  "low": 168.64,
+  "low_date": "2026-11-03",
+  "high": 168.64,
+  "first": "2026-11-03",
+  "last": "2026-11-03",
+  "hits": 1,
+  "push_date": null,
+  "push_price": null,
+  "url": "https://www.smzdm.com/p/185272333/",
+  "mall": "天猫精选",
+  "category": "酒类",
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p5/",
+  "last_price": 168.64,
+  "last_origin": 600.0,
+  "low_disc": 28.1
+ },
+ "H:11787557911ced06": {
+  "norm": "来酷Pro1616英寸酷睿UltraX9378H32GB1TB笔记本电脑",
+  "specs": [
+   [
+    "1",
+    "tb"
+   ],
+   [
+    "32",
+    "g"
+   ]
+  ],
+  "title": "来酷 Pro16 16英寸（酷睿Ultra X9 378H、32GB、1TB） 笔记本电脑",
+  "ids": [
+   "185085186"
+  ],
+  "low": 7428.15,
+  "low_date": "2026-11-03",
+  "high": 7428.15,
+  "first": "2026-11-03",
+  "last": "2026-11-03",
+  "hits": 1,
+  "push_date": null,
+  "push_price": null,
+  "url": "https://www.smzdm.com/p/185085186/",
+  "mall": "天猫精选",
+  "category": "电脑数码",
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p5/",
+  "last_price": 7428.15,
+  "last_origin": null,
+  "low_disc": null
+ },
+ "H:47fb4e26a98e4a73": {
+  "norm": "BambuLab3D打印耗材PLABasic囤货套装六件套净重6kg无料盘",
+  "specs": [
+   [
+    "6",
+    "kg"
+   ]
+  ],
+  "title": "Bambu Lab 3D打印耗材 PLA Basic 囤货套装六件套 净重6kg 无料盘",
+  "ids": [
+   "185223162"
+  ],
+  "low": 196.5,
+  "low_date": "2026-11-03",
+  "high": 196.5,
+  "first": "2026-11-03",
+  "last": "2026-11-03",
+  "hits": 1,
+  "push_date": null,
+  "push_price": null,
+  "url": "https://www.smzdm.com/p/185223162/",
+  "mall": "天猫精选",
+  "category": "其他",
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p5/",
+  "last_price": 196.5,
+  "last_origin": 297.0,
+  "low_disc": 66.2
+ },
+ "H:e7b9d9d2754762ac": {
+  "norm": "万新160非球面树脂镜片9051黑银超轻钛架多款可选来架免费加工",
+  "specs": [],
+  "title": "万新 1.60非球面树脂镜片+9051黑银超轻钛架多款可选（来架免费加工）",
+  "ids": [
+   "185264433"
+  ],
+  "low": 59.16,
+  "low_date": "2026-11-03",
+  "high": 59.16,
+  "first": "2026-11-03",
+  "last": "2026-11-03",
+  "hits": 1,
+  "push_date": null,
+  "push_price": null,
+  "url": "https://www.smzdm.com/p/185264433/",
+  "mall": "京东",
+  "category": "其他",
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p5/",
+  "last_price": 59.16,
+  "last_origin": null,
+  "low_disc": null
+ },
+ "H:9d14ebfe9fbf1c28": {
+  "norm": "奇莫轻柔系列拉拉裤XL56片",
+  "specs": [
+   [
+    "56",
+    "片"
+   ]
+  ],
+  "title": "奇莫 轻柔系列 拉拉裤 XL56片",
+  "ids": [
+   "185121527"
+  ],
+  "low": 59.37,
+  "low_date": "2026-11-03",
+  "high": 59.37,
+  "first": "2026-11-03",
+  "last": "2026-11-03",
+  "hits": 1,
+  "push_date": null,
+  "push_price": null,
+  "url": "https://www.smzdm.com/p/185121527/",
+  "mall": "京东",
+  "category": "其他",
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p5/",
+  "last_price": 59.37,
+  "last_origin": null,
+  "low_disc": null
+ },
+ "H:b9c6008ba66dad86": {
+  "norm": "售罄今日必买伊利纯牛奶250ml21盒33g优质乳蛋白早餐奶",
+  "specs": [
+   [
+    "21",
+    "盒"
+   ],
+   [
+    "250",
+    "ml"
+   ],
+   [
+    "33",
+    "g"
+   ]
+  ],
+  "title": "售罄 今日必买：伊利 纯牛奶250ml*21盒 3.3g优质乳蛋白早餐奶",
+  "ids": [
+   "185318633"
+  ],
+  "low": 21.22,
+  "low_date": "2026-11-03",
+  "high": 21.22,
+  "first": "2026-11-03",
+  "last": "2026-11-03",
+  "hits": 1,
+  "push_date": null,
+  "push_price": null,
+  "url": "https://www.smzdm.com/p/185318633/",
+  "mall": "京东",
+  "category": "食品生鲜",
+  "feed_url": "https://faxian.smzdm.com/h3s0t0f0c0p5/",
+  "last_price": 21.22,
+  "last_origin": 37.9,
+  "low_disc": 56.0
  }
 }
