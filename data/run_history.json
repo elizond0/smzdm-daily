@@ -789,5 +789,19 @@
   "feed": 20,
   "catalog": 1474,
   "min_disc": "35"
+ },
+ {
+  "date": "2026-11-03",
+  "time": "19:54",
+  "status": "ok",
+  "pushed": false,
+  "note": "推送已停用，仅更新日报",
+  "source": 71,
+  "requests": 5,
+  "blocked": false,
+  "hot": 10,
+  "feed": 20,
+  "catalog": 1492,
+  "min_disc": "35"
  }
 ]
