@@ -1,20 +1,6 @@
 [
  {
   "date": "2026-10-23",
-  "time": "20:08",
-  "status": "ok",
-  "pushed": false,
-  "note": "静默测试，未发送通知",
-  "source": 78,
-  "requests": 5,
-  "blocked": false,
-  "hot": 10,
-  "feed": 20,
-  "catalog": 412,
-  "min_disc": "35"
- },
- {
-  "date": "2026-10-23",
   "time": "20:21",
   "status": "ok",
   "pushed": false,
@@ -837,6 +823,20 @@
   "hot": 10,
   "feed": 20,
   "catalog": 1816,
+  "min_disc": "35"
+ },
+ {
+  "date": "2026-11-07",
+  "time": "19:02",
+  "status": "ok",
+  "pushed": false,
+  "note": "推送已停用，仅更新日报",
+  "source": 84,
+  "requests": 5,
+  "blocked": false,
+  "hot": 10,
+  "feed": 20,
+  "catalog": 1849,
   "min_disc": "35"
  }
 ]
