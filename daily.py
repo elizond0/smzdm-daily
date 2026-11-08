@@ -24,6 +24,7 @@ import json
 import os
 import random
 import re
+import shutil
 import subprocess
 import sys
 import time
@@ -37,6 +38,7 @@ sys.path.insert(0, str(BASE))
 
 import faxian  # noqa: E402
 import probe  # noqa: E402
+import thumbs  # noqa: E402
 
 # 本地默认写到 build/；云端（GitHub Actions）用 SMZDM_BUILD 指到持久化目录
 BUILD = Path(os.environ.get("SMZDM_BUILD") or (BASE / "build"))
@@ -45,6 +47,7 @@ STATE = BUILD / "state"
 CACHE = BUILD / "cache"
 REPORTS = BUILD / "reports"
 TOAST = BASE / "tools" / "toast.ps1"
+DOCS = BASE / "docs"          # Pages 静态目录；缩略图放 DOCS / "thumbs"
 
 MARK_PUSH = STATE / "last_push.txt"
 MARK_COOL = STATE / "cooldown_until.txt"
@@ -984,9 +987,18 @@ def render_html(hot: list[dict], passed: list[dict], meta: dict) -> str:
         if axis:
             axis = '<div class="axisrow">' + low_hint + axis + '</div>'
             low_hint = ""
+        # 缩略图：按 article_id 去 docs/thumbs/ 找同名文件（数据库 JSON 不存图）。
+        # 作为 .name 的第一个子元素插入，由 CSS 绝对定位成左栏（v3.21 两栏重排）；
+        # 不新增表格列，也不给右侧信息加包裹层 —— watch.js / block.js 靠
+        # `:scope > span.tag` 定位 .nameops，加包裹层会让关注/屏蔽按钮跑位。
+        # 没有文件的行不加 .haspic，退回 v3.17 排版，零回归。
+        aid = str(d.get("article_id") or "")
+        pic_file = (meta.get("thumbs") or {}).get(aid)
+        pic = (f'<img class="thumb" src="./thumbs/{H.escape(pic_file)}" alt="" '
+               f'loading="lazy" decoding="async">' if pic_file else "")
         return f"""<tr data-sid="{sid}">
   <td class="idx">{i}</td>
-  <td class="name" data-t="{H.escape(d['title'])}"><a href="{d.get('url') or '#'}" target="_blank">{H.escape(display_title(d['title']))}</a>{conds}
+  <td class="name{' haspic' if pic else ''}" data-t="{H.escape(d['title'])}">{pic}<a href="{d.get('url') or '#'}" target="_blank">{H.escape(display_title(d['title']))}</a>{conds}
     <div class="meta">{meta_line(d)}</div></td>
   <td class="num"><b>¥{d['price']:g}</b> {origin}{low_badge}{low_hint}{axis}</td>
   <td class="rate">{rate}</td>
@@ -1263,8 +1275,29 @@ def main() -> int:
         "catalog_count": len(catalog.records),
     }
 
+    # 缩略图：只在「本次真的抓到数据」时按上榜集合替换 + 清理。
+    # stale（离线 / 回退缓存）时只扫描现有文件，绝不下载或删除 ——
+    # 否则一次抓取失败就会把页面上的图清空。
+    try:
+        meta["thumbs"] = thumbs.sync(
+            list(hot) + list(passed), DOCS / "thumbs",
+            allow_download=not (bool(meta.get("stale")) or args.dry_run),
+            log=log)
+    except Exception as e:  # noqa: BLE001 - 图片是可选装饰，不能拖垮日报
+        log(f"缩略图同步异常，本轮跳过：{type(e).__name__}: {e}")
+        meta["thumbs"] = {}
+
     # 报表
     REPORTS.mkdir(parents=True, exist_ok=True)
+    # 报表落在 build/reports/，图片在 docs/thumbs/，相对路径对不上。
+    # 复制一份到报表目录，本地双击 view-report.bat 也能看到图（build/ 不进仓库）。
+    try:
+        src = DOCS / "thumbs"
+        if src.exists():
+            shutil.rmtree(REPORTS / "thumbs", ignore_errors=True)
+            shutil.copytree(src, REPORTS / "thumbs")
+    except OSError:
+        pass
     report = REPORTS / f"{now:%Y-%m-%d}.html"
     report.write_text(render_html(hot, passed, meta), encoding="utf-8")
     log(f"报表已生成 {report}")

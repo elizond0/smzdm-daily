@@ -222,6 +222,80 @@ tbody td.idx{position:relative}
 .name a{color:var(--ink);text-decoration:none;font-weight:400;font-size:14.5px;
   letter-spacing:-.1px;vertical-align:baseline}
 .name a:hover{color:var(--brand);text-decoration:underline;text-underline-offset:2px}
+/* ---------- 商品缩略图（v3.20 立 / v3.21 两栏重排） ----------
+ * 【v3.21】图放大到 PC 92 / 平板 80 / 手机 64 / 超窄 54，商品栏改成规整的
+ * 「左图 + 右侧信息列」。
+ *
+ * ⚠️ 硬约束：watch.js / block.js 的 ensureOps() 用 `:scope > span.tag` 找
+ * **直接子标签**来挂 .nameops，右侧信息**绝不能加包裹层**，否则关注/屏蔽按钮整组跑位。
+ * 解法：图片改成 absolute，脱离 flex 流（规范里 absolutely-positioned flex child
+ * 不参与 flex 布局），右侧 a / 标签 / .nameops / .meta 仍是 .name 的直接子元素，
+ * v3.17 验收过的 flex 链一字未动。
+ *
+ * 让位靠 .name 的 padding-left，不再给 .meta 单独补 padding-left（v3.20 那个
+ * 62px/48px 的 hack 随两栏布局一起删掉），文字起点天然与标题重合。
+ * 三个变量一次定义、断点只覆盖数值，改尺寸不用再翻四处 CSS：
+ *   --pic-w 图边长 / --pic-gap 图与文字间距 / --pic-x 图左边距
+ * --pic-x 取「原本正文的左起点」：PC 是 td 的 padding 14px，手机是 --card-indent 30px。
+ * 注意 absolute 的 left 相对 **padding box** 左边缘（border 内侧），不受
+ * padding-left 影响，所以图片用 --pic-x 定位、正文用 padding-left 让位，两者天然对齐。
+ *
+ * min-height 是必须的：absolute 图片不撑高父盒，若不保底，92px 的图会从
+ * 较矮的行上下溢出、压到相邻行。box-sizing:border-box 保证 width 含 1px 边框，
+ * 图片实际占位精确等于 --pic-w，--pic-gap 才不会被悄悄吃掉 2px。
+ *
+ * 没有图的行（图片下载失败、老缓存）不加 .haspic，完全走回 v3.17 排版，零回归。
+ * 缩略图来自 docs/thumbs/，由 thumbs.py 按每次上榜集合替换并清理；
+ * 数据库 JSON 里不存任何图片字段。 */
+.thumb{display:block;box-sizing:border-box;object-fit:cover;
+  border-radius:10px;background:var(--line-3);border:1px solid var(--line-2)}
+.name.haspic{
+  --pic-w:92px; --pic-gap:14px; --pic-x:14px;
+  position:relative;
+  display:flex;flex-wrap:wrap;align-items:center;gap:0 6px;
+  padding-left:calc(var(--pic-x) + var(--pic-w) + var(--pic-gap));
+  min-height:calc(var(--pic-w) + 4px)}
+.name.haspic>.thumb{
+  position:absolute;left:var(--pic-x);top:50%;transform:translateY(-50%);
+  width:var(--pic-w);height:var(--pic-w)}
+.name.haspic>a{flex:1 1 0%;min-width:0}
+.name.haspic>.meta{flex:1 1 100%;width:100%;box-sizing:border-box}
+/* 桌面端 .nameops 原本只在手机断点里定义（display:inline-flex）。
+ * 有图行把 .name 改成 flex 后，它若还是普通 inline span，内部 22px 按钮的
+ * 基线会让它比 22px 标签矮半拍（实测 5.4px）。这里只给「有图行」补一套
+ * 与手机端相同的几何，无图行仍走 v3.17 验收过的 baseline 老路径。 */
+.name.haspic .nameops{display:inline-flex;align-items:center;gap:4px;flex:0 0 auto}
+.name.haspic .nameops:empty{display:none}
+/* PC 基础样式里 .tag 带 margin-bottom:18px（baseline 位移技巧）。
+ * 有图行改成 flex 后，这个下外边距会被算进「外边距盒」参与 align-items:center，
+ * 实测把标签顶边上推 9px，与按钮组错开 9px。只在有图行清零，
+ * 无图行仍走 v3.17 验收过的 baseline 老路径。 */
+.name.haspic>.tag,.name.haspic>.wish{margin-bottom:0}
+/* ---------- 缩略图点开放大（v3.22） ----------
+ * 弹层只挂在 body 末尾，.name 内部一个元素都不加。
+ * 原因：watch.js 的 ensureOps() 无标签时用 `:scope > a` 找标题来挂 .nameops，
+ * 若给图片套 <a>/<button>，第一个 <a> 就变成图片，按钮会插到图和标题之间。
+ * 同理不能给右侧信息加包裹层（§3.18）。点击用 document 事件委托实现。 */
+.thumb{cursor:zoom-in}
+.thumb:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.lb{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:14px;padding:18px;
+  background:rgba(12,14,18,.86);backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px)}
+/* ⚠️ 必须写：.lb 自己的 display:flex 会盖掉 UA 样式里 [hidden]{display:none} */
+.lb[hidden]{display:none}
+/* ⚠️ 必须显式给 width：max-width 只是上限，<img> 默认按自然尺寸 200px 画，
+ * 只写 max-width 的话「点开了却没放大」。width + height:auto 才会真正撑大，
+ * max-height 兜住长图。上限 480px 是权衡：源图只有 200px，再大就糊成马赛克。 */
+.lb-img{width:min(92vw,480px);height:auto;max-height:76vh;object-fit:contain;
+  border-radius:10px;background:#fff;box-shadow:0 14px 44px rgba(0,0,0,.5)}
+.lb-cap{color:#f2f4f7;font-size:12.5px;line-height:1.5;text-align:center;
+  max-width:min(92vw,480px);opacity:.85}
+.lb-x{position:absolute;top:16px;right:18px;width:38px;height:38px;border-radius:50%;
+  border:1px solid rgba(255,255,255,.45);background:rgba(255,255,255,.14);
+  color:#fff;font-size:24px;line-height:1;cursor:pointer}
+.lb-x:hover{background:rgba(255,255,255,.26)}
+.lb-x:focus-visible{outline:2px solid #fff;outline-offset:2px}
 .meta{color:var(--ink-4);font-size:12px;margin-top:4px;letter-spacing:.1px}
 /* 不可拆分片段（目前用在 meta 的每个「· 值」单元上）。
  * 手机端 .meta 为了防溢出开了 word-break:break-word，副作用是日期会在连字符处断开，
@@ -614,6 +688,24 @@ tbody td.idx{position:relative}
    *   实测 30/30 全部同排，偏差 0，标题宽度 138~321 自适应（长标题折两行、短标题折一行）。
    * 这是 flex 里「文本块 + 不收缩尾随元素」的标准解，别再回退。 */
   .name>a{flex:1 1 0%;min-width:0}
+  /* 【v3.21】手机端图 64px（≤380 再降到 54），图左边距沿用整卡的
+   * --card-indent:30px，让图片与商品名、价格区共用同一条左起线。
+   * 断点里把 gap 覆盖回 4px，与 .nameops 的 margin-left:-4px 抵消逻辑一致。 */
+  .name.haspic{--pic-w:64px;--pic-gap:10px;--pic-x:var(--card-indent);gap:0 4px}
+  .thumb{border-radius:8px}
+  /* 【v3.21b】手机档标题独占整行，长标题不再被标签/按钮组挤成 3~5 字/行。
+   * 图放大到 64 后右栏只剩 ~290px，而不拆的 .nameops + 标签要占 ~130px；
+   * 沿用桌面的 flex:1 1 0% 会把标题压到 113px，实测 390 档最长标题折 5 行、
+   * 单卡高达 222px。改 flex:1 1 100% 后标题吃满右栏，标签 + 按钮组由
+   * flex-wrap 落到第二行且仍同排（顶差 0px），峰值降到 197px、平均高度不变。
+   * ⚠️ 试过 min-width:62%/70% 想让短标题保持同排，但多颗标签会被挤到不同行、
+   * 实测标签顶差 45.9~57.5px，破坏 v3.17 验收过的对齐，已排除。
+   * .nolabel（无标签卡）保持原样，按钮仍贴标题末行右侧。 */
+  .name.haspic:not(.nolabel)>a{flex:1 1 100%}
+  /* 放大弹层：窄屏把大图交给视口宽度，标题别挤在两行以上 */
+  .lb{gap:10px;padding:14px}
+  .lb-img{width:92vw;max-height:70vh}
+  .lb-x{top:12px;right:12px;width:34px;height:34px}
   /* 标签 22×22、按钮 22×22，两套几何完全一致，同高同圆角同字号。
    * 按钮 padding 从 0 7px 收到 0：它是纯图标钮，内容只有一枚 12.5px 的 svg，
    * 留 7px 内边距会撑成 29px 宽，比标签还胖，和「统一大小」正好相反。 */
@@ -727,6 +819,9 @@ tbody td.idx{position:relative}
   h2 .hint{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
   .name a{font-size:14px}
   .num b{font-size:19px}
+  /* 320 档内容区最窄，图再降一档，给标题多留宽度。
+   * 标题独占整行的规则已移到 ≤700 手机断点（见 v3.21b 注释），此处不再重复。 */
+  .name.haspic{--pic-w:54px;--pic-gap:8px}
   /* 320 这类超窄屏：grid 三列已在 700 断点统一设好，这里只做进一步的收缩，
    * 不再重复声明 display/grid-template-columns（重复声明只会让人误以为是另起一套布局） */
   .entries>a.wishlink{padding:6px 2px;gap:2px;font-size:11px;min-width:0}
@@ -746,6 +841,8 @@ tbody td.idx{position:relative}
  * 768 档 12/30 会这样断。（v3.11） */
 @media (min-width:701px) and (max-width:1023px){
   .meta .m1,.meta .m2{display:inline-block}
+  /* 平板商品列 ~430px，92px 的图会把标题压到 20 字/行以内，降到 80 更从容 */
+  .name.haspic{--pic-w:80px;--pic-gap:12px}
 }
 /* 尊重系统的「减少动态效果」：数字滚动和过渡一律关掉 */
 @media (prefers-reduced-motion:reduce){
@@ -857,5 +954,66 @@ tbody td.idx{position:relative}
 </script>
 <script src="./watch.js"></script>
 <script src="./block.js"></script>
+
+<!-- 缩略图点开放大：DOM 只有这一层，键盘/读屏属性由下方脚本补在 <img> 上。
+     列表里只有 54~92px，弹层把同一张缓存图撑到 min(92vw,480px)，约 3~5 倍；
+     源图本身约 200px，上限压在 480px 免得糊成马赛克。不请求原始大图，
+     保持「本地缓存、同源加载」的既定方案，离线也能看。 -->
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="商品缩略图预览" hidden>
+  <button class="lb-x" type="button" aria-label="关闭预览">&times;</button>
+  <img class="lb-img" alt="">
+  <div class="lb-cap"></div>
+</div>
+<script>
+(function(){
+  var lb = document.getElementById('lb');
+  if(!lb) return;
+  var big = lb.querySelector('.lb-img'), cap = lb.querySelector('.lb-cap');
+  var x = lb.querySelector('.lb-x'), last = null;
+
+  function titleOf(im){
+    var tr = im.closest('tr'), a = tr && tr.querySelector('.name>a');
+    return a ? a.textContent.trim() : '商品缩略图';
+  }
+  /* 缩略图原是装饰性 alt=""，可点击后补上可聚焦、可报名字。
+     只补属性不新增元素，保住 `:scope > a` 与 `:scope > span.tag` 两个锚点。 */
+  document.querySelectorAll('img.thumb').forEach(function(im){
+    im.setAttribute('tabindex','0');
+    im.setAttribute('role','button');
+    im.setAttribute('aria-label','放大查看：' + titleOf(im));
+  });
+
+  function open(im){
+    last = im;
+    big.src = im.currentSrc || im.src;
+    big.alt = titleOf(im);
+    cap.textContent = titleOf(im) + ' · 榜单缓存的缩略图预览';
+    lb.hidden = false;
+    document.body.style.overflow = 'hidden';
+    x.focus();
+  }
+  function shut(){
+    if(lb.hidden) return;
+    lb.hidden = true;
+    big.removeAttribute('src');
+    document.body.style.overflow = '';
+    if(last && last.focus) last.focus();
+  }
+  document.addEventListener('click', function(e){
+    var t = e.target;
+    if(t && t.matches && t.matches('img.thumb')){ e.preventDefault(); open(t); return; }
+    if(!lb.hidden && lb.contains(t) && t !== big) shut();
+  });
+  document.addEventListener('keydown', function(e){
+    if(lb.hidden){
+      if((e.key === 'Enter' || e.key === ' ') && e.target.matches &&
+         e.target.matches('img.thumb')){ e.preventDefault(); open(e.target); }
+      return;
+    }
+    if(e.key === 'Escape'){ e.preventDefault(); shut(); }
+    else if(e.key === 'Tab'){ e.preventDefault(); x.focus(); }
+  });
+})();
+</script>
 </body>
 </html>

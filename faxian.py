@@ -45,6 +45,11 @@ TOPLEFT = re.compile(r'class="tag-top-left[^"]*">([^<]+)<')
 ZHI = re.compile(r'class="(?:un)?voted-wrap">\s*<i class="z-icon-zhi"></i><span>(\d+)</span>')
 # 评论数
 COMMENT = re.compile(r'z-icon-comment"></i>\s*(\d+)')
+# 商品缩略图。列表页每个 <li> 里有两张 img：第一张是商品图（y.zdmimg.com /
+# qny.smzdm.com），第二张是爆料人头像（avatarimg.smzdm.com）。只认商品图 CDN，
+# 别把头像当封面。这里**只取 URL 字符串、不下载图片**，图片由 thumbs.py
+# 按每次的上榜集合另行同步，数据库 JSON 里不存任何图片字段。
+THUMB = re.compile(r'<img[^>]+src="(https://(?:y\.zdmimg\.com|qny\.smzdm\.com)/[^"]+)"', re.I)
 
 def txt(s):
     return re.sub(r'\s+', ' ', re.sub(r'<[^>]+>', ' ', s)).strip()
@@ -104,6 +109,8 @@ def parse_feed(html):
             "label": TOPLEFT.search(b).group(1).strip() if TOPLEFT.search(b) else None,
             "desc": desc[:180],
             "time": txt(tm.group(1)) if tm else None,
+            # 注意别用 `m` 做 walrus 变量名：外层 for m in ITEM.finditer 正在用它。
+            "thumb": (pic.group(1) if (pic := THUMB.search(b)) else None),
         })
     return out
 
