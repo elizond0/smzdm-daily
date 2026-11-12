@@ -10,9 +10,10 @@
 所以下载时**绝不设置 Referer**；也不用伪装主站。存到 docs/thumbs/ 之后，
 Pages 页面用同源相对路径 ./thumbs/ 引用，天然没有跨域 / 防盗链问题。
 
-【纪律】图片 URL 只存在于本次抓取的内存 deals 里，
-不写进 catalog.json / pool.json / db.json —— 数据库不存图。
-文件名用 article_id，渲染时按 article_id 反查本模块返回的映射。
+【纪律】图片 URL 随本次抓取的合格商品写进 data/pool.json（供 24h 折扣榜
+跨轮复用），但不写进 catalog.json / docs/db.json；图片二进制始终不入库，
+只以 docs/thumbs/<article_id>.<ext> 形式存在。文件名用 article_id，
+渲染时按 article_id 反查本模块返回的映射。
 
 【护栏】抓取失败（stale / 离线 / 本次无图 URL）时调用方传 allow_download=False，
 本模块只扫描现有文件、不下载也不删除，避免把页面上的图一次性清空。

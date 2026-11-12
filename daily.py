@@ -820,9 +820,13 @@ class Pool:
     不会因为数据源换了一批就消失。
     """
 
+    # thumb 是列表页抓到的图片 URL 字符串（不是图片文件）。写进池子是因为
+    # 折扣榜读的是 pool.recent() 的历史记录，不是本次抓取的 deals ——
+    # 不把地址随商品记下来，这件商品下一轮再上榜时就永远补不上图。
+    # catalog.json / docs/db.json 仍然不含任何图片信息；图片二进制始终不入库。
     FIELDS = ("article_id", "title", "price", "origin_price", "discount_pct",
               "save", "url", "mall", "conds", "category", "zhi", "comments",
-              "source", "time", "rank_no", "feed_url")
+              "source", "time", "rank_no", "feed_url", "thumb")
 
     def __init__(self, path: Path = POOL, hours: int = 24):
         self.path = path
@@ -987,7 +991,8 @@ def render_html(hot: list[dict], passed: list[dict], meta: dict) -> str:
         if axis:
             axis = '<div class="axisrow">' + low_hint + axis + '</div>'
             low_hint = ""
-        # 缩略图：按 article_id 去 docs/thumbs/ 找同名文件（数据库 JSON 不存图）。
+        # 缩略图：按 article_id 去 docs/thumbs/ 找同名文件。
+        # pool.json 只存图片 URL，图片二进制不入库；catalog/db 连 URL 都不存。
         # 作为 .name 的第一个子元素插入，由 CSS 绝对定位成左栏（v3.21 两栏重排）；
         # 不新增表格列，也不给右侧信息加包裹层 —— watch.js / block.js 靠
         # `:scope > span.tag` 定位 .nameops，加包裹层会让关注/屏蔽按钮跑位。
