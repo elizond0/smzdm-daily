@@ -120,20 +120,27 @@ for f in .gitattributes .gitignore docs/.nojekyll; do
 done
 if [ -z "$MISS" ]; then ok "三个点文件齐全"; else bad "缺文件:$MISS"; fi
 
+# 完整性判据 = 关键文件清单，不是总数。
+# 总数会随功能增加而变（37 → 67 只用了几轮），写死必然产生假警报：
+# 实测 2026-11-18 全新拉取后为 67，而旧逻辑按 37 判定，报「偏少说明拉取不完整」，
+# 新对话会以为环境坏了、反复重跑。总数只作参考打印，不参与 pass/fail。
+MISSMOD=""
+for f in daily.py faxian.py probe.py thumbs.py template.html requirements.txt; do
+  [ -f "$f" ] || MISSMOD="$MISSMOD $f"
+done
+if [ -z "$MISSMOD" ]; then
+  ok "关键模块齐全：daily / faxian / probe / thumbs / template / requirements"
+else
+  bad "缺关键模块:$MISSMOD（拉取不完整，重跑本脚本）"
+fi
+
 # 统计口径：只数「仓库里应该有的文件」。以下都排除，否则数字永远对不上：
 #   build/      运行时产物（本脚本刚生成）
 #   config.ini  本地配置（.gitignore 里，脚本刚复制）
 #   __pycache__ 编译缓存
-# 预期 37 = 仓库 36 个 + tools/bootstrap.sh 自身。若用内联命令、没下载脚本，则是 36。
 N=$(find . -type f -not -path './.git/*' -not -path './build/*' \
         -not -path './config.ini' -not -path '*/__pycache__/*' | wc -l | tr -d ' ')
-if [ "$N" = "37" ] || [ "$N" = "36" ]; then
-  ok "文件总数 ${N}（预期 37 = 仓库 36 + bootstrap.sh；无脚本时 36 也正常）"
-elif [ "$N" = "38" ]; then
-  warn "文件总数 38，多了 __pycache__，无妨（rm -rf __pycache__）"
-else
-  warn "文件总数 ${N}（预期 37）：偏少说明拉取不完整或有文件被过滤，重跑本脚本；先看 4.4 口径说明"
-fi
+ok "文件总数 ${N}（仅参考；完整性由上面的关键模块判定）"
 
 python3 - <<'PY'
 import json
