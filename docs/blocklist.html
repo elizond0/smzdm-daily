@@ -61,6 +61,10 @@ button{padding:9px 16px;border-radius:8px;border:1px solid transparent;font-size
   .row button{width:100%}
   .bar button{flex:1}
 }
+
+/* 页脚版本号（§B5.11）：构建时间常量，非 new Date()；与日报首页页面版本一致 */
+.page-foot{margin:26px 0 8px;padding-top:14px;border-top:1px solid #e5e7eb;color:#9aa0a8;font-size:11.5px;line-height:1.7;text-align:center}
+.page-foot a{color:#7c3aed;text-decoration:none}
 </style>
 </head>
 <body>
@@ -109,6 +113,11 @@ button{padding:9px 16px;border-radius:8px;border:1px solid transparent;font-size
 </div>
 
 <div class="toast" id="toast"></div>
+
+
+<footer class="page-foot" data-build="2026-11-23 22:32">
+  页面版本 2026-11-23 22:32　·　<a href="./index.html">返回日报</a> · <a href="./overview.html">运行概览</a>
+</footer>
 
 <script>
 const REPO = 'elizond0/smzdm-daily';
