@@ -55,6 +55,10 @@ tbody tr:hover td{background:#fcfcfd}
 .foot{color:#9aa0a8;font-size:11.5px;margin-top:22px;line-height:1.9}
 a{color:#c8102e;text-decoration:none}
 a:hover{text-decoration:underline}
+
+/* 页脚版本号（§B5.11）：构建时间常量，非 new Date()；与日报首页页面版本一致 */
+.page-foot{margin:26px 0 8px;padding-top:14px;border-top:1px solid #e5e7eb;color:#9aa0a8;font-size:11.5px;line-height:1.7;text-align:center}
+.page-foot a{color:#7c3aed;text-decoration:none}
 </style>
 </head>
 <body>
@@ -78,6 +82,11 @@ a:hover{text-decoration:underline}
     状态说明：已推送＝正常发微信；静默测试＝跑全流程但不通知；仅报表＝--dry-run；跳过＝今天已推或冷却中；失败＝抓取异常。
   </div>
 </div>
+
+
+<footer class="page-foot" data-build="2026-11-23 22:32">
+  页面版本 2026-11-23 22:32　·　<a href="./index.html">返回日报</a> · <a href="./overview.html">运行概览</a>
+</footer>
 
 <script>
 // 状态只表示「抓取是否成功」。推送有没有执行、为何跳过，看最后一列备注。
