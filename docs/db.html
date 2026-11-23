@@ -61,6 +61,10 @@ h1{font-size:21px;margin:0 0 4px}
   .tags{font-size:11px;gap:3px 8px}
   .meta{font-size:11.5px}
 }
+
+/* 页脚版本号（§B5.11）：构建时间常量，非 new Date()；与日报首页页面版本一致 */
+.page-foot{margin:26px 0 8px;padding-top:14px;border-top:1px solid #e5e7eb;color:#9aa0a8;font-size:11.5px;line-height:1.7;text-align:center}
+.page-foot a{color:#7c3aed;text-decoration:none}
 </style>
 </head>
 <body>
@@ -86,6 +90,11 @@ h1{font-size:21px;margin:0 0 4px}
     商品名后的「最低 ¥xx」是它历史上到过的最低价格，不代表现在还是这个价；列表按该价格排序。
   </div>
 </div>
+
+
+<footer class="page-foot" data-build="2026-11-23 22:32">
+  页面版本 2026-11-23 22:32　·　<a href="./index.html">返回日报</a> · <a href="./overview.html">运行概览</a>
+</footer>
 
 <script>
 const PER = 20;
