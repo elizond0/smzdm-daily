@@ -73,15 +73,12 @@ button{padding:9px 16px;border-radius:8px;border:1px solid transparent;font-size
   <div class="sub">命中的商品会从日报前端<b>隐藏</b>（爬取与数据库不受影响）　<a href="./index.html">← 回日报</a></div>
 
   <div class="card">
-    <h2><span class="dot"></span>GitHub Token</h2>
+    <h2><span class="dot"></span>动态码验证</h2>
     <div class="row">
-      <input type="password" id="token" placeholder="粘贴 Token（只需填一次，存在本机浏览器）">
-      <button class="btn-ghost" id="saveToken">保存</button>
+      <input type="text" id="code" placeholder="6 位动态码（与相册同一个验证器）" maxlength="6" inputmode="numeric">
     </div>
     <div class="hint">
-      保存到仓库需要写入权限。去 <a href="https://github.com/settings/tokens" target="_blank">github.com/settings/tokens</a>
-      创建 <b>Classic token</b>，勾选 <code>repo</code> 即可。<br>
-      Token 只存在你当前浏览器的 localStorage，不会上传到任何地方；换设备需要重新填。
+      提交前校验动态码；GitHub Token 已移到 NAS，浏览器不再保存任何密钥。动态码与相册后台是同一个验证器。
     </div>
   </div>
 
@@ -114,7 +111,6 @@ button{padding:9px 16px;border-radius:8px;border:1px solid transparent;font-size
 
 <div class="toast" id="toast"></div>
 
-
 <footer class="page-foot" data-build="2026-11-23 22:32">
   页面版本 2026-11-23 22:32　·　<a href="./index.html">返回日报</a> · <a href="./overview.html">运行概览</a>
 </footer>
@@ -132,6 +128,22 @@ let words = [];          // 当前编辑中的关键词
 let fromIndex = new Set(); // 来自日报页快捷屏蔽、尚未保存过的词
 let original = [];       // 上次加载的，用于「放弃修改」
 let dirty = false;
+
+let NAS_BASE = '';
+async function resolveNasBase(){
+  // 相册隧道地址随重连变化，现读 base.json，绝不写死 trycloudflare.com 域名
+  const sources = [
+    'https://raw.githubusercontent.com/elizond0/album/main/base.json',
+    'https://elizond0.github.io/album/base.json'
+  ];
+  for (const u of sources){
+    try {
+      const r = await fetch(u + '?t=' + Date.now(), { cache:'no-store' });
+      if (r.ok){ const j = await r.json(); if (j.base){ NAS_BASE = j.base.replace(/\/$/,''); return true; } }
+    } catch(e){}
+  }
+  return false;
+}
 
 const $ = id => document.getElementById(id);
 
@@ -323,68 +335,45 @@ async function load(){
 
 /* ---------- 保存：sha 失效时自动重取重试 ---------- */
 async function save(){
-  const token = ($('token').value || '').trim();
-  if (!token){ toast('先填 GitHub Token 才能保存', 'err'); $('token').focus(); return; }
+  const code = ($('code').value || '').trim();
+  if (!/^\d{6}$/.test(code)) { toast('请输入 6 位动态码（相册同一个验证器）', 'err'); $('code').focus(); return; }
 
-  const clean = words.map(s => s.trim()).filter(Boolean);
-  if (!clean.length && !confirm('屏蔽词会全部清空（日报恢复显示全部商品），确定吗？')) return;
+  const clean = words.map(x=>x.trim()).filter(Boolean);
+  if (!clean.length && !confirm('关键词会全部清空，确定吗？')) return;
 
-  $('saveBtn').disabled = true;
-  $('saveBtn').textContent = '保存中…';
+  $('saveBtn').disabled = true; $('saveBtn').textContent = '提交中…';
   try {
-    await putWithRetry(build(), 0);
-    localStorage.setItem('gh_token_blk', token);
+    if (!NAS_BASE && !await resolveNasBase()) throw new Error('读不到相册 NAS 地址，请稍后重试');
+    // 第 1 步：动态码换票（复用相册 /api/login）
+    const lr = await fetch(NAS_BASE + '/api/login', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ code })
+    });
+    const lj = await lr.json().catch(()=>({}));
+    if (!lr.ok || !lj.token) throw new Error(lj.error || '动态码验证失败');
+
+    // 第 2 步：带票提交词表（复用相册 /api/save-file）
+    const sr = await fetch(NAS_BASE + '/api/save-file', {
+      method:'POST', headers:{'Content-Type':'application/json','X-Admin-Auth': lj.token},
+      body: JSON.stringify({ kind: 'block', lines: clean })
+    });
+    const sj = await sr.json().catch(()=>({}));
+    if (!sr.ok) throw new Error(sj.error || '保存失败');
+
+    original = [...clean]; fromIndex.clear(); dirty = false;
     try {
       localStorage.setItem(CACHE_KEY, JSON.stringify({ words: clean, ts: Date.now() }));
       localStorage.removeItem(PENDING_KEY);
-    } catch (e) {}
-    original = [...clean];
-    fromIndex.clear();
-    dirty = false;
+    } catch(e){}
     updateState();
-    toast('已保存 · 刷新日报即可生效', 'ok');
-  } catch (e) {
+    toast('已保存 ' + sj.words + ' 个词 · 刷新日报生效', 'ok');
+  } catch(e) {
     toast(e.message || '保存失败', 'err');
   } finally {
-    $('saveBtn').disabled = false;
-    $('saveBtn').textContent = '保存到仓库';
+    $('saveBtn').disabled = false; $('saveBtn').textContent = '保存到仓库';
   }
 }
 
-async function putWithRetry(content, attempt){
-  const headers = {
-    Authorization: 'token ' + ($('token').value || '').trim(),
-    Accept: 'application/vnd.github+json',
-    'Content-Type': 'application/json'
-  };
-  const g = await fetch(`${API}?ref=${BRANCH}&t=${Date.now()}`, { headers, cache: 'no-store' });
-  if (!g.ok){
-    throw new Error(g.status === 401 ? 'Token 无效或已过期' : '读取仓库失败 ' + g.status);
-  }
-  const meta = await g.json();
-
-  const res = await fetch(API, {
-    method: 'PUT',
-    headers,
-    body: JSON.stringify({
-      message: `chore: 更新屏蔽词（${parse(content).length} 个关键词）`,
-      content: utf8ToB64(content),
-      sha: meta.sha,
-      branch: BRANCH
-    })
-  });
-
-  // 409 = 仓库在我读 sha 之后又被改过，重取 sha 再试一次
-  if (res.status === 409 && attempt < 2){
-    await new Promise(r => setTimeout(r, 900));
-    return putWithRetry(content, attempt + 1);
-  }
-  if (!res.ok){
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err.message || ('写入失败 ' + res.status));
-  }
-  return res.json();
-}
 
 $('addBtn').addEventListener('click', () => {
   const inp = $('newWord');
@@ -400,12 +389,6 @@ $('addBtn').addEventListener('click', () => {
 
 $('newWord').addEventListener('keydown', e => { if (e.key === 'Enter') $('addBtn').click(); });
 
-$('saveToken').addEventListener('click', () => {
-  const v = ($('token').value || '').trim();
-  if (!v){ toast('请先填写 Token', 'err'); return; }
-  localStorage.setItem('gh_token_blk', v);
-  toast('Token 已存在本机', 'ok');
-});
 
 $('saveBtn').addEventListener('click', save);
 $('reloadBtn').addEventListener('click', load);
@@ -424,9 +407,8 @@ window.addEventListener('beforeunload', e => {
   if (changed()){ e.preventDefault(); e.returnValue = ''; }
 });
 
-const saved = localStorage.getItem('gh_token_blk');
-if (saved) $('token').value = saved;
 
+resolveNasBase();
 load();
 </script>
 </body>
