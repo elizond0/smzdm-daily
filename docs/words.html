@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>关键词管理 · 什么值得买优惠推送</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;padding:30px 20px;background:#f5f6f8;color:#16181c;
+  font:14px/1.65 -apple-system,"Segoe UI","Microsoft YaHei",sans-serif}
+.wrap{max-width:760px;margin:0 auto}
+h1{font-size:21px;margin:0 0 4px}
+.sub{color:#71767e;font-size:12.5px;margin-bottom:20px}
+.sub a{color:#c8102e;text-decoration:none}
+.card{background:#fff;border:1px solid #e6e8eb;border-radius:10px;padding:16px 18px;margin-bottom:16px}
+h2{font-size:13.5px;margin:0 0 12px;display:flex;align-items:center;gap:8px;font-weight:600}
+h2 .dot{width:3px;height:13px;background:#7c3aed;border-radius:2px}
+.tabs{display:flex;gap:8px;margin:0 0 16px}
+.tab{flex:1;text-align:center;padding:10px 12px;border:1px solid #e6e8eb;border-radius:9px;background:#fff;
+  color:#71767e;font-size:13.5px;font-weight:600;cursor:pointer;text-decoration:none;transition:.15s}
+.tab:hover{border-color:#c9cdd3}
+.tab.active{color:#16181c;border-color:#d9d2f5;background:#f6f2ff}
+.tab[data-tab="block"].active{color:#a90d26;border-color:#f3c3c9;background:#fdf0f2}
+.panel{display:none}
+.panel.active{display:block}
+.row{display:flex;gap:8px;align-items:center}
+input[type=text]{flex:1;min-width:0;padding:9px 11px;border:1px solid #dfe2e6;
+  border-radius:8px;font-size:14px;font-family:inherit;background:#fff}
+input:focus{outline:none;border-color:#7c3aed;box-shadow:0 0 0 3px rgba(124,58,237,.1)}
+button{padding:9px 16px;border-radius:8px;border:1px solid transparent;font-size:13.5px;
+  font-family:inherit;cursor:pointer;white-space:nowrap}
+.btn-main{background:#7c3aed;color:#fff}
+.btn-main:hover{background:#6d28d9}
+.block .btn-main{background:#c8102e}
+.block .btn-main:hover{background:#a90d26}
+.btn-ghost{background:#fff;border-color:#dfe2e6;color:#16181c}
+.btn-ghost:hover{background:#f7f8fa}
+.btn-del{background:transparent;border:0;color:#c0c4ca;font-size:17px;padding:4px 8px;cursor:pointer}
+.btn-del:hover{color:#c8102e}
+.list{margin-top:4px}
+.item{display:flex;gap:8px;align-items:center;padding:7px 0;border-bottom:1px solid #f2f3f5}
+.item:last-child{border-bottom:0}
+.item input{border-color:transparent;background:#fafbfc}
+.item input:focus{border-color:#7c3aed;background:#fff}
+.item input.emptying{border-color:#f3c3c9;background:#fdf0f2;color:#a1404c}
+.item .fromidx{flex:none;font-size:11px;color:#7c3aed;background:#f3e8ff;
+  padding:2px 6px;border-radius:8px;white-space:nowrap}
+.block .item .fromidx{color:#a1404c;background:#fdecee;border:1px solid #f3c3c9;border-radius:3px}
+.empty{color:#9aa0a8;font-size:13px;padding:14px 0;text-align:center}
+.hint{color:#9aa0a8;font-size:11.5px;line-height:1.8;margin-top:10px}
+.hint code{background:#f2f3f5;padding:1px 5px;border-radius:3px;font-size:11px}
+.bar{display:flex;gap:8px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap}
+.dirtybar{display:flex;align-items:center;gap:8px;background:#fff8e6;border:1px solid #f3e2b8;
+  color:#8a6410;border-radius:8px;padding:9px 13px;font-size:12.5px;margin-bottom:12px}
+.dirtybar b{font-weight:600}
+.dirtybar .dot2{width:6px;height:6px;border-radius:50%;background:#d99b19;flex:none}
+.errbar{display:flex;align-items:center;gap:10px;background:#fdecee;border:1px solid #f3c3c9;
+  color:#a1404c;border-radius:8px;padding:10px 13px;font-size:12.5px;margin-bottom:12px}
+.errbar button{padding:5px 12px;font-size:12px;margin-left:auto}
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);
+  background:#16181c;color:#fff;padding:10px 18px;border-radius:8px;font-size:13px;
+  opacity:0;transition:.25s;pointer-events:none;max-width:88vw;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.err{background:#c8102e}
+.toast.ok{background:#1a7f42}
+.tag{display:inline-block;padding:1px 7px;border-radius:3px;font-size:11px;
+  background:#f3e8ff;color:#7c3aed;border:1px solid #e2d0fd}
+@media (max-width:700px){
+  body{padding:18px 12px}
+  h1{font-size:18px}
+  .card{padding:13px 14px}
+  .row{flex-wrap:wrap}
+  .row input{width:100%}
+  .row button{width:100%}
+  .bar button{flex:1}
+  .tabs{gap:6px}.tab{font-size:12.5px;padding:9px 6px}
+}
+.page-foot{margin:26px 0 8px;padding-top:14px;border-top:1px solid #e5e7eb;color:#9aa0a8;font-size:11.5px;line-height:1.7;text-align:center}
+.page-foot a{color:#7c3aed;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>关键词管理</h1>
+  <div class="sub">关注词与屏蔽词已合并到同一页　<a href="./index.html">← 回日报</a></div>
+
+  <div class="card">
+    <h2><span class="dot"></span>验证方式</h2>
+    <div class="row">
+      <input type="text" id="cred" placeholder="6 位动态码 或 管理员口令" autocomplete="off" spellcheck="false">
+    </div>
+    <div class="hint">
+      提交前校验一次，和相册后台同一套：<b>6 位动态码</b>或<b>管理员口令</b>都可以；GitHub Token 仍在 NAS，浏览器不保存任何密钥。
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" type="button" data-tab="watch">关注词</button>
+    <button class="tab" type="button" data-tab="block">屏蔽词</button>
+  </div>
+
+  <section class="panel active" id="panel-watch">
+    <div class="card">
+      <h2><span class="dot"></span>关注关键词 <span class="hint" id="watch-count" style="margin:0"></span></h2>
+      <div class="errbar" id="watch-errBar" style="display:none">
+        <span id="watch-errText">读取失败</span>
+        <button class="btn-ghost" id="watch-reloadBtn">重新加载</button>
+      </div>
+      <div class="dirtybar" id="watch-dirtyBar" style="display:none">
+        <span class="dot2"></span><span id="watch-dirtyText">有未保存的修改</span>
+      </div>
+      <div class="row">
+        <input type="text" id="watch-newWord" placeholder="输入关键词，比如 耳机" maxlength="30">
+        <button class="btn-main" id="watch-addBtn">添加</button>
+      </div>
+      <div class="list" id="watch-list"></div>
+      <div class="bar">
+        <button class="btn-ghost" id="watch-resetBtn">放弃修改</button>
+        <button class="btn-main" id="watch-saveBtn">保存到仓库</button>
+      </div>
+      <div class="hint">
+        命中的商品会在日报里打上 <span class="tag">愿望单</span> 标签（不区分大小写）。词越长越精确。<br>
+        改动要点「保存到仓库」才会写回；成功后刷新日报页即可看到标签变化。
+      </div>
+    </div>
+  </section>
+
+  <section class="panel block" id="panel-block">
+    <div class="card">
+      <h2><span class="dot" style="background:#c8102e"></span>屏蔽关键词 <span class="hint" id="block-count" style="margin:0"></span></h2>
+      <div class="errbar" id="block-errBar" style="display:none">
+        <span id="block-errText">读取失败</span>
+        <button class="btn-ghost" id="block-reloadBtn">重新加载</button>
+      </div>
+      <div class="dirtybar" id="block-dirtyBar" style="display:none">
+        <span class="dot2"></span><span id="block-dirtyText">有未保存的修改</span>
+      </div>
+      <div class="row">
+        <input type="text" id="block-newWord" placeholder="输入要屏蔽的关键词，比如 路由器" maxlength="30">
+        <button class="btn-main" id="block-addBtn">添加</button>
+      </div>
+      <div class="list" id="block-list"></div>
+      <div class="bar">
+        <button class="btn-ghost" id="block-resetBtn">放弃修改</button>
+        <button class="btn-main" id="block-saveBtn">保存到仓库</button>
+      </div>
+      <div class="hint">
+        命中的商品会从日报前端<b>隐藏</b>（爬取与数据库不受影响）。词越短屏蔽越广，注意误伤。<br>
+        在日报页点 <code>🚫</code> 或 <code>★</code> 加入的词，会在对应页签里标「来自日报页」，随本次保存一并写入。
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<footer class="page-foot" data-build="2026-11-25 13:20">
+  页面版本 2026-11-25 13:20　·　<a href="./index.html">返回日报</a> · <a href="./overview.html">运行概览</a>
+</footer>
+
+<script>
+(function(){
+  'use strict';
+  const REPO = 'elizond0/smzdm-daily';
+  const BRANCH = 'main';
+  const $ = id => document.getElementById(id);
+
+  const CFG = {
+    watch: {
+      file:'watchlist.txt', kind:'watch', label:'关注词',
+      cache:'watch_words_cache', pending:'watch_pending',
+      empty:'还没有关注词，上面输入框添加一个吧',
+      head:'# 关注关键词 · 一行一个\n#\n# 由关键词管理页自动生成 · ',
+      tail:'\n# 命中的商品会在日报里标上「愿望单」标签，筛选规则与折扣榜一致。\n\n'
+    },
+    block: {
+      file:'blocklist.txt', kind:'block', label:'屏蔽词',
+      cache:'block_words_cache', pending:'block_pending',
+      empty:'还没有屏蔽词，上面输入框添加一个吧',
+      head:'# 屏蔽关键词 · 一行一个\n#\n# 由关键词管理页自动生成 · ',
+      tail:'\n# 命中的商品只在日报前端隐藏，爬取与数据库不受影响。\n\n'
+    }
+  };
+  const state = {
+    watch:{words:[],fromIndex:new Set(),original:[]},
+    block:{words:[],fromIndex:new Set(),original:[]}
+  };
+  let NAS_BASE = '';
+  let activeTab = 'watch';
+
+  function toast(msg, type){
+    const t = $('toast');
+    t.textContent = msg;
+    t.className = 'toast show' + (type ? ' ' + type : '');
+    clearTimeout(toast._t);
+    toast._t = setTimeout(() => { t.className = 'toast'; }, 2800);
+  }
+  function parse(text){
+    return String(text || '').split('\n').map(s => s.trim())
+      .filter(s => s && !s.startsWith('#'));
+  }
+  function b64ToUtf8(b64){
+    const bin = atob(String(b64 || '').replace(/\n/g, ''));
+    const bytes = new Uint8Array(bin.length);
+    for (let i=0;i<bin.length;i++) bytes[i] = bin.charCodeAt(i);
+    return new TextDecoder('utf-8').decode(bytes);
+  }
+  function loadPending(tab){
+    try {
+      const arr = JSON.parse(localStorage.getItem(CFG[tab].pending) || '[]');
+      return Array.isArray(arr) ? arr.filter(Boolean) : [];
+    } catch (e) { return []; }
+  }
+  function build(tab){
+    return CFG[tab].head + new Date().toLocaleString('zh-CN') + CFG[tab].tail
+      + state[tab].words.join('\n') + '\n';
+  }
+  function changed(tab){
+    const a = state[tab].words.map(s => s.trim()).filter(Boolean);
+    const b = state[tab].original.map(s => s.trim()).filter(Boolean);
+    return JSON.stringify(a) !== JSON.stringify(b);
+  }
+  function updateState(tab){
+    const diff = changed(tab);
+    $(tab+'-dirtyBar').style.display = diff ? 'flex' : 'none';
+    if (diff){
+      const n = state[tab].words.filter(Boolean).length;
+      $(tab+'-dirtyText').innerHTML = '有未保存的修改（当前 <b>' + n + '</b> 个关键词）· 点「保存到仓库」才会写回';
+    }
+  }
+  function render(tab){
+    const box = $(tab+'-list');
+    box.innerHTML = '';
+    $(tab+'-count').textContent = state[tab].words.length ? state[tab].words.length + ' 个' : '';
+    if (!state[tab].words.length){
+      box.innerHTML = '<div class="empty">' + CFG[tab].empty + '</div>';
+      updateState(tab);
+      return;
+    }
+    state[tab].words.forEach((w, i) => {
+      const row = document.createElement('div');
+      row.className = 'item';
+      row.dataset.i = i;
+      const inp = document.createElement('input');
+      inp.type = 'text'; inp.value = w; inp.maxLength = 30;
+      if (!w.trim()) inp.classList.add('emptying');
+      inp.addEventListener('input', () => {
+        const idx = +row.dataset.i;
+        state[tab].words[idx] = inp.value.trim();
+        inp.classList.toggle('emptying', !inp.value.trim());
+        updateState(tab);
+      });
+      if (state[tab].fromIndex.has(w)){
+        const tag = document.createElement('span');
+        tag.className = 'fromidx'; tag.textContent = '来自日报页';
+        row.appendChild(tag);
+      }
+      const del = document.createElement('button');
+      del.className = 'btn-del'; del.textContent = '×'; del.title = '删除';
+      del.addEventListener('click', () => {
+        const idx = +row.dataset.i;
+        if (!(idx >= 0 && idx < state[tab].words.length)) return;
+        const removed = state[tab].words.splice(idx, 1)[0];
+        render(tab);
+        toast('已移除「' + removed + '」，记得保存', 'ok');
+      });
+      row.insertBefore(inp, row.firstChild);
+      row.appendChild(del);
+      box.appendChild(row);
+    });
+    updateState(tab);
+  }
+  function mergePending(tab){
+    const pending = loadPending(tab);
+    let merged = 0;
+    for (const w of pending){
+      if (!state[tab].words.includes(w)){
+        state[tab].words.push(w);
+        state[tab].fromIndex.add(w);
+        merged++;
+      }
+    }
+    if (pending.length){
+      try { localStorage.removeItem(CFG[tab].pending); } catch (e) {}
+      if (merged) toast('已并入 ' + merged + ' 个来自日报页的' + CFG[tab].label + '，记得保存', 'ok');
+    }
+    return merged;
+  }
+  async function resolveNasBase(){
+    const sources = [
+      'https://raw.githubusercontent.com/elizond0/album/main/base.json',
+      'https://elizond0.github.io/album/base.json'
+    ];
+    for (const u of sources){
+      try {
+        const r = await fetch(u + '?t=' + Date.now(), { cache:'no-store' });
+        if (r.ok){
+          const j = await r.json();
+          if (j.base){ NAS_BASE = j.base.replace(/\/$/, ''); return true; }
+        }
+      } catch (e) {}
+    }
+    return false;
+  }
+  async function loadList(tab){
+    $(tab+'-errBar').style.display = 'none';
+    const cfg = CFG[tab];
+    const api = 'https://api.github.com/repos/' + REPO + '/contents/' + cfg.file;
+    const raw = 'https://raw.githubusercontent.com/' + REPO + '/' + BRANCH + '/' + cfg.file;
+    const sources = [
+      async () => {
+        const r = await fetch(api + '?ref=' + BRANCH + '&t=' + Date.now(), { cache:'no-store' });
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return b64ToUtf8((await r.json()).content || '');
+      },
+      async () => {
+        const r = await fetch(raw + '?t=' + Date.now(), { cache:'no-store' });
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.text();
+      },
+      async () => {
+        const r = await fetch('./' + cfg.file + '?t=' + Date.now(), { cache:'no-store' });
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.text();
+      }
+    ];
+    for (const get of sources){
+      try {
+        const txt = await get();
+        state[tab].words = parse(txt);
+        state[tab].original = [...state[tab].words];
+        state[tab].fromIndex.clear();
+        const merged = mergePending(tab);
+        // changed() 以 original 为基准，合并进来的词自然显示为未保存
+        if (!merged) state[tab].original = [...state[tab].words];
+        try { localStorage.setItem(cfg.cache, JSON.stringify({words:state[tab].words, ts:Date.now()})); } catch (e) {}
+        render(tab);
+        return;
+      } catch (e) {}
+    }
+    try {
+      const obj = JSON.parse(localStorage.getItem(cfg.cache) || 'null');
+      if (obj && Array.isArray(obj.words)){
+        state[tab].words = obj.words;
+        state[tab].original = [...state[tab].words];
+        state[tab].fromIndex.clear();
+        const merged = mergePending(tab);
+        if (!merged) state[tab].original = [...state[tab].words];
+        render(tab);
+        $(tab+'-errText').textContent = '网络不通，显示的是本机缓存（可能不是最新）';
+        $(tab+'-errBar').style.display = 'flex';
+        return;
+      }
+    } catch (e) {}
+    $(tab+'-list').innerHTML = '';
+    $(tab+'-count').textContent = '';
+    $(tab+'-errText').textContent = '读取 ' + cfg.file + ' 失败，点右侧重试';
+    $(tab+'-errBar').style.display = 'flex';
+  }
+  async function saveTab(tab){
+    const cred = ($('cred').value || '').trim();
+    if (!cred){ toast('请输入 6 位动态码或管理员口令', 'err'); $('cred').focus(); return; }
+    const clean = state[tab].words.map(s => s.trim()).filter(Boolean);
+    if (!clean.length && !confirm('关键词会全部清空，确定吗？')) return;
+    const btn = $(tab+'-saveBtn');
+    btn.disabled = true; btn.textContent = '提交中…';
+    try {
+      if (!NAS_BASE && !await resolveNasBase()) throw new Error('读不到相册 NAS 地址，请稍后重试');
+      const lr = await fetch(NAS_BASE + '/api/login', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ code: cred })
+      });
+      const lj = await lr.json().catch(() => ({}));
+      if (!lr.ok || !lj.token) throw new Error(lj.error || '验证失败');
+
+      const sr = await fetch(NAS_BASE + '/api/save-file', {
+        method:'POST', headers:{'Content-Type':'application/json','X-Admin-Auth': lj.token},
+        body: JSON.stringify({ kind: CFG[tab].kind, lines: clean })
+      });
+      const sj = await sr.json().catch(() => ({}));
+      if (!sr.ok) throw new Error(sj.error || '保存失败');
+
+      state[tab].words = [...clean];
+      state[tab].original = [...clean];
+      state[tab].fromIndex.clear();
+      try {
+        localStorage.setItem(CFG[tab].cache, JSON.stringify({words:clean, ts:Date.now()}));
+        localStorage.removeItem(CFG[tab].pending);
+      } catch (e) {}
+      render(tab);
+      toast('已保存 ' + sj.words + ' 个' + CFG[tab].label + ' · 刷新日报生效', 'ok');
+    } catch (e) {
+      toast(e.message || '保存失败', 'err');
+    } finally {
+      btn.disabled = false; btn.textContent = '保存到仓库';
+    }
+  }
+  function activate(tab, push){
+    activeTab = (tab === 'block') ? 'block' : 'watch';
+    document.querySelectorAll('.tab').forEach(b => b.classList.toggle('active', b.dataset.tab === activeTab));
+    document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === 'panel-' + activeTab));
+    if (push !== false){
+      try { history.replaceState(null, '', location.pathname + '?tab=' + activeTab); } catch (e) {}
+    }
+  }
+
+  document.querySelectorAll('.tab').forEach(b => {
+    b.addEventListener('click', () => activate(b.dataset.tab));
+  });
+  ['watch','block'].forEach(tab => {
+    $(tab+'-addBtn').addEventListener('click', () => {
+      const inp = $(tab+'-newWord');
+      const v = inp.value.trim();
+      if (!v) return;
+      if (state[tab].words.some(w => w.trim() === v)){ toast('已经有这个关键词了'); inp.value = ''; return; }
+      state[tab].words.push(v);
+      inp.value = '';
+      render(tab);
+      inp.focus();
+    });
+    $(tab+'-newWord').addEventListener('keydown', e => {
+      if (e.key === 'Enter') $(tab+'-addBtn').click();
+    });
+    $(tab+'-saveBtn').addEventListener('click', () => saveTab(tab));
+    $(tab+'-reloadBtn').addEventListener('click', () => loadList(tab));
+    $(tab+'-resetBtn').addEventListener('click', () => {
+      if (changed(tab) && !confirm('放弃未保存的修改？（来自日报页的词也会一并放弃）')) return;
+      state[tab].words = [...state[tab].original];
+      state[tab].fromIndex.clear();
+      render(tab);
+      toast('已恢复');
+    });
+  });
+  $('cred').addEventListener('keydown', e => {
+    if (e.key === 'Enter') saveTab(activeTab);
+  });
+  window.addEventListener('beforeunload', e => {
+    if (changed('watch') || changed('block')){ e.preventDefault(); e.returnValue = ''; }
+  });
+
+  const initial = new URLSearchParams(location.search).get('tab');
+  activate(initial || 'watch', false);
+  resolveNasBase();
+  Promise.all([loadList('watch'), loadList('block')]);
+})();
+</script>
+</body>
+</html>
