@@ -121,7 +121,7 @@
       try { localStorage.setItem(CACHE_KEY, JSON.stringify({ words: words, ts: Date.now() })); } catch (e2) {}
       addPending(word);
       apply(words);
-      toast('已在本机屏蔽「' + word + '」，去屏蔽词页面「保存到仓库」才对其他设备生效');
+      toast('已在本机屏蔽「' + word + '」，去关键词管理页「保存到仓库」才对其他设备生效');
     });
     /* 锚点 = .nameops 包裹层（见下方 ensureOps 注释），插入其中 → 与标签同排 */
     var ops = ensureOps(td);
@@ -186,7 +186,7 @@
         + '<span>已按屏蔽词隐藏 <b>' + hidden + '</b> 条商品</span>'
         + '<button class="bh-toggle" type="button">' + (open ? '收起' : '看看是哪些')
         + '</button>'
-        + '<a class="bh-link" href="./blocklist.html">管理屏蔽词</a>'
+        + '<a class="bh-link" href="./words.html?tab=block">管理屏蔽词</a>'
         + '</div>'
         + '<ul class="bh-list"' + (open ? '' : ' hidden') + '>' + items + '</ul>';
       bar.querySelector('.bh-toggle').addEventListener('click', function () {
