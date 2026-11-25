@@ -168,14 +168,14 @@ button{padding:9px 16px;border-radius:8px;border:1px solid transparent;font-size
   const CFG = {
     watch: {
       file:'watchlist.txt', kind:'watch', label:'关注词',
-      cache:'watch_words_cache', pending:'watch_pending',
+      cache:'watch_words_cache', pending:'watch_pending', dirty:'watch_dirty',
       empty:'还没有关注词，上面输入框添加一个吧',
       head:'# 关注关键词 · 一行一个\n#\n# 由关键词管理页自动生成 · ',
       tail:'\n# 命中的商品会在日报里标上「愿望单」标签，筛选规则与折扣榜一致。\n\n'
     },
     block: {
       file:'blocklist.txt', kind:'block', label:'屏蔽词',
-      cache:'block_words_cache', pending:'block_pending',
+      cache:'block_words_cache', pending:'block_pending', dirty:'block_dirty',
       empty:'还没有屏蔽词，上面输入框添加一个吧',
       head:'# 屏蔽关键词 · 一行一个\n#\n# 由关键词管理页自动生成 · ',
       tail:'\n# 命中的商品只在日报前端隐藏，爬取与数据库不受影响。\n\n'
@@ -220,8 +220,27 @@ button{padding:9px 16px;border-radius:8px;border:1px solid transparent;font-size
     const b = state[tab].original.map(s => s.trim()).filter(Boolean);
     return JSON.stringify(a) !== JSON.stringify(b);
   }
+  /* 本机缓存 = 用户当前看到的工作集（含未保存到仓库的改动）。
+   * 以前只有「保存到仓库」成功才写缓存，导致在管理页删掉刚关注的词后，
+   * 缓存仍留着旧词，返回日报页就出现「已删却仍标愿望单」的残留。
+   * 现在任何编辑都即时落盘，并用 dirty 标记告诉日报页：别拿远端词表覆盖本机工作集。 */
+  function persistCache(tab){
+    try {
+      localStorage.setItem(CFG[tab].cache, JSON.stringify({
+        words: state[tab].words.slice(), ts: Date.now()
+      }));
+    } catch (e) {}
+  }
+  function markDirty(tab, diff){
+    try {
+      if (diff) localStorage.setItem(CFG[tab].dirty, '1');
+      else localStorage.removeItem(CFG[tab].dirty);
+    } catch (e) {}
+  }
   function updateState(tab){
     const diff = changed(tab);
+    persistCache(tab);
+    markDirty(tab, diff);
     $(tab+'-dirtyBar').style.display = diff ? 'flex' : 'none';
     if (diff){
       const n = state[tab].words.filter(Boolean).length;
