@@ -5,10 +5,13 @@
  * 关键词，现场重算每个商品的标签，所以改完刷新就能看到。
  *
  * 数据来源按优先级：
- *   1. localStorage —— 同域名下共享，愿望单页保存时写进来的，本机改完立刻生效
+ *   1. localStorage —— 同域名下共享，管理页每次编辑（含未保存改动）即时写入，本机立即生效
  *   2. ./watchlist.txt —— Actions 每次运行同步到 docs/ 的副本，同域稳定，但滞后一轮
  *   3. GitHub API —— 实时；raw.githubusercontent 在国内常不可达，API 一般能通
  *
+ * 本机有未保存改动（watch_pending / watch_dirty）时，远端词表不覆盖本机工作集；
+ * 否则远端成功读取后写回缓存，实现跨设备同步。跨标签页用 storage 事件实时刷新，
+ * 浏览器「返回」命中 bfcache 时用 pageshow 补刷新。
  * 全部失败时保留服务端渲染的标签，只是不更新，不会把标签抹掉。
  */
 (function () {
@@ -19,6 +22,7 @@
   var LOCAL_URL = './watchlist.txt';
   var CACHE_KEY = 'watch_words_cache';
   var PENDING_KEY = 'watch_pending';   // 日报页快捷关注、尚未保存到仓库的词
+  var DIRTY_KEY = 'watch_dirty';       // 管理页有未保存改动时置 1，阻止远端词表覆盖本机工作集
 
   function parse(txt) {
     return txt.split('\n')
@@ -168,23 +172,51 @@
     }
   }
 
-  // 1) 本机缓存：愿望单页保存时写入，最新
-  try {
-    var raw = localStorage.getItem(CACHE_KEY);
-    if (raw) {
+  /* 1) 本机缓存 = 当前工作集（管理页即时写入，含未保存改动）。
+   * 以前缓存命中就 return，管理页删词后旧缓存仍生效，返回日报页就有残留。
+   * 现在：先应用本机工作集，再异步拉远端；只有本机没有未保存改动时才允许远端覆盖。 */
+  function readCacheWords() {
+    try {
+      var raw = localStorage.getItem(CACHE_KEY);
+      if (!raw) return null;
       var obj = JSON.parse(raw);
-      if (obj && Object.prototype.toString.call(obj.words) === '[object Array]') {
-        apply(obj.words);
-        return;
-      }
-    }
-  } catch (e) { /* localStorage 被禁用时忽略 */ }
+      return obj && Object.prototype.toString.call(obj.words) === '[object Array]' ? obj.words : null;
+    } catch (e) { return null; }
+  }
+  function readPending() {
+    try {
+      var arr = JSON.parse(localStorage.getItem(PENDING_KEY) || '[]');
+      return Array.isArray(arr) ? arr : [];
+    } catch (e) { return []; }
+  }
+  function hasUnsaved() {
+    var pending = readPending();
+    var dirty = false;
+    try { dirty = localStorage.getItem(DIRTY_KEY) === '1'; } catch (e) {}
+    return pending.length > 0 || dirty;
+  }
+  function applyLocal() {
+    var words = readCacheWords() || [];
+    var pending = readPending();
+    pending.forEach(function (w) { if (words.indexOf(w) === -1) words.push(w); });
+    apply(words);
+  }
 
-  // 2) 同域副本：Actions 同步过来的，比 API 稳
+  // 同域跨页实时同步：管理页在另一个标签页改词，本页无需刷新立刻跟着变。
+  window.addEventListener('storage', function (e) {
+    if (e.key === CACHE_KEY || e.key === PENDING_KEY || e.key === DIRTY_KEY) applyLocal();
+  });
+  // 浏览器「返回」可能命中 bfcache，不重新执行脚本；pageshow 时重读一次缓存。
+  window.addEventListener('pageshow', function (e) {
+    if (e.persisted) applyLocal();
+  });
+
+  applyLocal();
+
+  // 2) 同域副本：Actions 同步过来的，比 API 稳；3) GitHub API 兜底
   fetch(LOCAL_URL + '?t=' + Date.now(), { cache: 'no-store' })
     .then(function (r) { return r.ok ? r.text() : Promise.reject(); })
     .catch(function () {
-      // 3) 最后再试 API
       if (!API_URL) return Promise.reject();
       var url = API_URL + (API_URL.indexOf('?') === -1 ? '?' : '&') + 't=' + Date.now();
       return fetch(url, {
@@ -192,11 +224,17 @@
         headers: { Accept: 'application/vnd.github.raw' }
       }).then(function (r) { return r.ok ? r.text() : Promise.reject(); });
     })
-    .then(function (txt) { apply(parse(txt)); })
+    .then(function (txt) {
+      // 本机还有未保存改动时，远端词表不能覆盖它；等保存到仓库后再同步。
+      if (hasUnsaved()) return;
+      var words = parse(txt);
+      try { localStorage.setItem(CACHE_KEY, JSON.stringify({ words: words, ts: Date.now() })); } catch (e) {}
+      apply(words);
+    })
     .catch(function () {
-      /* 读不到就保持服务端渲染的原始数字，不去改成 0（0 会被误读成「没有关注」） */
+      /* 读不到就保持本机工作集，不报错也不清零 */
       if (window.console) {
-        console.warn('[watch] 关键词读取失败，沿用服务端计数');
+        console.warn('[watch] 远端关键词读取失败，沿用本机缓存');
       }
     });
 })();
