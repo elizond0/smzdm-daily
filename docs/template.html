@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#f4f5f7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#14161a" media="(prefers-color-scheme: dark)">
+<title>值得买日报 {{date}}</title>
+<meta name="watch-src" content="{{watch_raw}}"
+        data-api="{{watch_api}}">
+<style>
+/* ============================================================
+ * 颜色全部走 CSS 变量：暗色模式只重写变量，其余规则一行不用动。
+ * 变量名按用途起（--bg / --card / --line / --ink…），不按颜色起，
+ * 这样暗色反色时语义不会错乱。
+ * ============================================================ */
+:root{
+  --bg:#f4f5f7; --card:#fff; --card-2:#fafbfc;
+  --line:#e8eaed; --line-2:#eceef1; --line-3:#f2f3f5;
+  /* 灰阶五档 → 实际只有四档能承载正文。
+   * 【v3.14 实测】上一版 ink-3/4/5 在白底上分别是 4.19 / 2.64 / 1.95，全部低于
+   * WCAG AA 的 4.5:1 —— 也就是「按折扣力度排序」「其他·京东」「¥200 原价」
+   * 这些字实际上一直在违规边缘，暗色下同样偏低。现在：
+   *   ink-3 5.4:1（--bg）  正文次级
+   *   ink-4 4.6:1（--bg）/ 5.1:1（#fff）  最小号注释的底线
+   *   ink-5 仅装饰：轴刻度、分隔线、空态插画；**不再给任何文字上色**。 */
+  --ink:#16181c; --ink-2:#3d4249; --ink-3:#5f646c; --ink-4:#6a6f77; --ink-5:#b6bac1;
+  --brand:#c8102e; --brand-2:#e8455f; --brand-bg:#fdecee; --brand-line:#f3c3c9;
+  --green:#1a7f42; --green-bg:#e9f6ee; --green-line:#c9e8d4;
+  --teal:#0f766e; --teal-bg:#e6f4f4; --teal-line:#bfe3e3;
+  --amber:#96600f; --amber-bg:#fff4e5; --amber-line:#f5e0c3;
+  --blue:#1d5fbf; --blue-bg:#eef4ff; --blue-line:#cfdefb;
+  --purple:#7c3aed; --purple-bg:#f3e8ff; --purple-line:#ddd0fb;
+  --warn-ink:#8a6410; --warn-bg:#fff8e6; --warn-line:#f3e2b8;
+  --shadow-s:0 1px 2px rgba(16,20,28,.035);
+  --shadow-m:0 4px 14px rgba(16,20,28,.07);
+  --shadow-l:0 10px 30px rgba(16,20,28,.1);
+  --row-hover:#fafbfc;
+  --stripe:linear-gradient(90deg,#e8455f,#c8102e);
+  /* 两张榜的分组色带：折扣榜走红，好价榜走蓝，扫一眼就知道在看哪张表 */
+
+  /* 价格走廊轴（右侧那根小轴）的三个部件。
+   * 【v3.14】旧版轨道用 var(--green-line)→var(--line-2) 渐变，两者在白卡上
+   * 对比度只有 1.1~1.3，实测截图里整根轴只剩一个圆点和两个几乎看不见的刻度，
+   * 「现价落在历史区间哪一段」这个页面唯一的图形信息等于丢失。
+   * 现在拆成三个语义色：轨道（可见的底槽）、刻度（左右端点，满足 3:1 非文本对比）、
+   * 廉价区（左侧绿色端帽，一眼看出"这头是便宜"）。 */
+  /* --axis-track 现在只给 .bar（折扣条轨道）用，名字沿用旧名不再改，
+   * 以免牵动 .bar 那几行。--axis-tick 随价格轴一起删除（v3.15）。 */
+  --axis-track:#c9cfd8;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14161a; --card:#1e2228; --card-2:#252a31;
+    --line:#333941; --line-2:#2d333a; --line-3:#282d34;
+    /* 暗色同样四档：ink-3 5.4:1 / ink-4 4.9:1（对 --card），ink-5 只做装饰 */
+    --ink:#e8eaed; --ink-2:#c6cad0; --ink-3:#9aa0a8; --ink-4:#878d96; --ink-5:#61666d;
+    --brand:#ff5a72; --brand-2:#ff7d90; --brand-bg:#3a1a20; --brand-line:#5c2a33;
+    --green:#4ade80; --green-bg:#14301f; --green-line:#245136;
+    --teal:#2dd4bf; --teal-bg:#0f2e2c; --teal-line:#1d4f4b;
+    --amber:#fbbf24; --amber-bg:#33270d; --amber-line:#54401a;
+    --blue:#6aa8ff; --blue-bg:#132438; --blue-line:#24405f;
+    --purple:#b794ff; --purple-bg:#241a38; --purple-line:#3d2d5c;
+    --warn-ink:#f0c060; --warn-bg:#2c2410; --warn-line:#4a3c18;
+    --shadow-s:0 1px 2px rgba(0,0,0,.4);
+    --shadow-m:0 4px 16px rgba(0,0,0,.45);
+    --shadow-l:0 12px 34px rgba(0,0,0,.55);
+    --row-hover:#23272e;
+    --stripe:linear-gradient(90deg,#ff7d90,#ff5a72);
+
+    --axis-track:#39404a;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+/* 统一焦点环（v3.14）。原来除了关注/屏蔽两个按钮，其余链接与按钮都只有浏览器
+ * 默认的 1px 自动描边（Chrome 下是一条细橙线），在浅灰底上几乎看不出来。
+ * 这里给所有可聚焦元素一条 2px 品牌色描边 + 2px 外扩，满足 WCAG 2.4.11/2.4.13。
+ * 用 a/button 的元素选择器（0,1,1）：能压过浏览器默认样式，
+ * 又会被 .wishbtn:focus-visible 这类（0,2,0）的既有规则覆盖——
+ * 那两个按钮靠反白背景表达焦点，不需要再加描边。 */
+a:focus-visible,button:focus-visible,summary:focus-visible,[tabindex]:focus-visible{
+  outline:2px solid var(--brand);outline-offset:2px;border-radius:4px}
+body{margin:0;padding:40px 20px 60px;background:var(--bg);color:var(--ink);
+  font:15px/1.68 -apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+  transition:background .25s ease,color .25s ease}
+.wrap{max-width:1120px;margin:0 auto}
+/* 报头：标题负责「什么产品」，日期降一级只做参照——原来两者同字号同颜色，
+ * 读起来像一句话，视线没有落点。（v3.14） */
+/* 【v3.16】报头改成一行：标题 + 日期在左，三个入口在右。
+ * 原来入口挂在「抓取…来源…」那行说明文字下面，而那句说明已经搬到页脚，
+ * 报头就只剩标题孤零零一个。入口挪上来补这一行的右侧空白，
+ * 也让「关注/屏蔽/数据库」这类操作在首屏第一眼就能看到，
+ * 不用先读完一行时间戳。（使用者要求：PC 端放到标题后面） */
+.masthead{display:flex;align-items:center;justify-content:flex-start;
+  gap:10px 24px;flex-wrap:wrap;margin:0 0 22px}
+.h1-date{color:var(--ink-4);font-weight:500;margin-left:9px;font-size:.8em;
+  letter-spacing:-.2px;font-variant-numeric:tabular-nums}
+h1{font-size:26px;line-height:1.35;margin:0;letter-spacing:-.6px;font-weight:700}
+h1::after{content:"";display:none}
+.warn{background:var(--warn-bg);border:1px solid var(--warn-line);color:var(--warn-ink);
+  border-radius:10px;padding:12px 16px;font-size:13.5px;margin-bottom:18px}
+.funnel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px;
+  font-size:13px;color:var(--ink-3);margin-bottom:24px;line-height:1.85;
+  box-shadow:var(--shadow-s)}
+.funnel b{color:var(--brand);font-weight:650}
+
+/* 四宫格统计条。
+ * 【v3.16】两处改动，都来自使用者反馈：
+ * ① **标签与数字同一行**（「折扣榜 10 条」），不再上下分两行。
+ *    原来 .k / .v 都是块级 div，一张卡白占两行高度，四张叠起来比数字本身还高，
+ *    中间大片空白。改 flex + baseline 后卡高从约 88px 降到 52px。
+ *    手机端 v3.13 就已经这样了，这次是把 PC 对齐过来。
+ * ② **去掉左侧 3px 竖条**（第一格品牌红、其余灰色）。它和榜单里的组别色带
+ *    表达的是同一件事「这行属于哪个榜」，两条并存显得啰嗦；
+ *    而且竖条在 12px 圆角上切角不齐，放大看有毛刺。 */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.stat{position:relative;background:var(--card);border:1px solid var(--line);border-radius:12px;
+  padding:14px 18px;box-shadow:var(--shadow-s);
+  display:flex;align-items:baseline;gap:9px;flex-wrap:nowrap;
+  overflow:hidden;transition:box-shadow .16s ease,transform .16s ease}
+.stat:hover{box-shadow:var(--shadow-m);transform:translateY(-1px)}
+.stat .k{font-size:13px;color:var(--ink-3);letter-spacing:.2px;
+  flex:none;white-space:nowrap}
+.stat .v{font-size:26px;font-weight:700;letter-spacing:-.8px;margin-top:0;
+  font-variant-numeric:tabular-nums;line-height:1.25}
+.stat .v em{font-size:12.5px;font-style:normal;color:var(--ink-4);font-weight:400;
+  margin-left:3px;letter-spacing:0}
+
+/* ---------------- 分节标题（可折叠） ---------------- */
+h2{font-size:16.5px;margin:34px 0 10px;display:flex;align-items:center;gap:10px;
+  letter-spacing:-.2px;font-weight:650}
+h2 .dot{width:3px;height:16px;background:var(--brand);border-radius:2px;flex:none}
+/* 榜单名 + 条数：「折扣榜 10 条」。条数用品牌色加粗，一眼能看到体量，
+ * 省得再去上方四宫格里找。数字用 tabular-nums，位数变化时标题不抖。 */
+h2 .sec-t{flex:none}
+h2 .sec-t b{font-weight:700;color:var(--brand);margin:0 3px 0 5px;
+  font-variant-numeric:tabular-nums}
+h2 .hint{font-weight:400;color:var(--ink-4);font-size:13px;letter-spacing:0}
+/* 折叠按钮做成标题右侧一个低调的小圆片，不抢视觉，
+ * 但点击区撑到 26px，手指也点得中 */
+.sec-fold{margin-left:auto;flex:none;width:26px;height:26px;padding:0;
+  display:inline-flex;align-items:center;justify-content:center;
+  background:transparent;border:1px solid var(--line);border-radius:8px;
+  color:var(--ink-4);cursor:pointer;transition:background .14s ease,
+  color .14s ease,border-color .14s ease,transform .14s ease}
+/* 【v3.14】26px 的视觉大小保持不变（它只是标题右侧的一个低调附件），
+ * 但把命中区扩到 44×44：伪元素撑出去 9px，用户不用瞄准也能点中。
+ * 这是「视觉小、手感大」的标准做法，比把按钮做成 44 更不破坏标题行。 */
+.sec-fold{position:relative}
+/* 11px 而不是 9px：标称命中区 48，实测因亚像素取整会被吃掉 3px 左右，
+ * 留出余量后真实命中区 45×45，稳稳过 44。 */
+.sec-fold::after{content:"";position:absolute;inset:-11px}
+.sec-fold svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;
+  stroke-linecap:round;stroke-linejoin:round;transition:transform .2s ease}
+.sec-fold:hover{background:var(--card-2);color:var(--ink-2);border-color:var(--ink-5)}
+.sec-fold:active{transform:scale(.92)}
+/* 折叠态：箭头转 90°，本节的 .sec-body 由 JS 逐个打上 .is-folded。
+ * 【坑】这里原先写的是 `h2.collapsed~.sec-body{display:none}`，用通用兄弟选择器
+ * （~）会命中文档里**该 h2 之后所有**的 .sec-body——包含下一个榜单的。
+ * 症状：点「折扣榜」的折叠，好价榜内容跟着一起消失，而好价榜的箭头仍朝下。
+ * 已经踩过，别再用 ~ 做「本节范围」的限定，CSS 没有"到下一个同辈为止"的语法。（v3.12） */
+h2.collapsed .sec-fold svg{transform:rotate(-90deg)}
+.sec-body.is-folded{display:none}
+
+/* ---------------- 表格 ---------------- */
+.tablewrap{background:var(--card);border:1px solid var(--line);border-radius:12px;
+  box-shadow:var(--shadow-s);overflow-x:clip}
+table{width:100%;border-collapse:separate;border-spacing:0;background:var(--card);
+  border-radius:12px}
+/* 表头吸顶：整页往下滚时列名一直可见，粘的是视口（表格本身比视口高）。
+ * ⚠️ 这里踩过坑：.tablewrap 一旦设成 overflow-x:auto / hidden / scroll，
+ * 它就成了"滚动容器"，表头会以表格自身为粘附对象——而表格被它整个装住，
+ * 表头永远顶到 wrap 的顶端，看起来就是"吸顶完全没生效"。
+ * 用 overflow-x:clip 才能既裁掉圆角外的溢出、又不制造滚动容器。 */
+thead th{position:sticky;top:0;z-index:3;
+  backdrop-filter:saturate(180%) blur(8px);
+  -webkit-backdrop-filter:saturate(180%) blur(8px)}
+th{text-align:left;font-size:12px;color:var(--ink-3);font-weight:600;
+  background:color-mix(in srgb,var(--card-2) 88%,transparent);
+  padding:11px 14px;border-bottom:1px solid var(--line-2);white-space:nowrap;
+  letter-spacing:.3px}
+th:first-child{border-top-left-radius:12px}
+th:last-child{border-top-right-radius:12px;text-align:right}
+td{padding:14px;border-bottom:1px solid var(--line-3);vertical-align:middle}
+/* 到手价列表头右对齐：th 没有自己的类名，用 :nth-child(3) 定位
+ * （# / 商品 / 到手价 / 折扣）。表头默认左对齐会把"到手价"推到列左侧，
+ * 离下面右对齐的价格很远，看着像没对齐 */
+thead th:nth-child(3){text-align:right}
+/* 价格列整体留出一行轴的高度：有的行有轴、有的没有，
+ * 不留的话整张表的高低会参差 */
+/* min-height:70px 原是为「价格 + 价格轴」两行留的底。v3.15 轴删掉后价格区
+ * 通常只剩一行，但本条**不用改**：实际行高由商品名列（标题 + meta）决定，
+ * 实测 1440/1024/768 三档都是 78.5px，min-height 从未生效过，留着无害。 */
+td.num{vertical-align:top;min-height:70px}
+tbody tr:last-child td{border-bottom:0}
+tbody tr:last-child td:first-child{border-bottom-left-radius:12px}
+tbody tr:last-child td:last-child{border-bottom-right-radius:12px}
+tbody tr{transition:background .12s ease}
+tbody tr:hover td{background:var(--row-hover)}
+/* 分组色带：两张榜左边缘一条 3px 的色条，区分榜单来源 */
+tbody td.idx{position:relative}
+/* 【v3.14】色带改成固定 16px 高、垂直居中。
+ * 原来写的是 top:14px;bottom:14px（跟着行高走）：1440 档行高 40px → 带子 12px，
+ * 768 档行高 60px（meta 折成两行）→ 带子 32px。同一套视觉，在平板上变成
+ * 一长条红灯管，比商品名还抢眼；而且它贴着表格左边缘，最后一行还会戳进
+ * 12px 的圆角里。固定 16px 之后两个档位一致，也自然避开圆角。 */
+/* 组别色带（每行最左侧 3px 竖条，折扣榜红 / 好价榜蓝）已删除（v3.16）。
+ * 使用者：「两个榜单内的商品信息卡前面的红边框也去掉」。
+ * 它原本用来一眼分辨「这行在哪个榜」，但两张表各有自己的 h2 标题和条数，
+ * 表格又是纵向连续排列、不会交错，这个信息其实不缺。
+ * 删掉后每行左侧留白由 td 的 padding 承担，行首内容起点不变。
+ * --band-hot / --band-feed 两个变量随之删除。
+ * ⚠️ 好价榜容器的 class="band-feed" **保留**：它已经没有配色作用，但仍作为
+ * 「这是好价榜那一段」的 DOM 钩子被外部脚本（量测/审计）用来定位。
+ * 删掉它会让 `document.querySelector('.sec-body.band-feed')` 返回 null。 */
+.idx{color:var(--ink-4);width:38px;font-variant-numeric:tabular-nums;font-size:13px;
+  font-weight:500}
+.cat{color:var(--ink-3);font-size:13px;width:82px}
+.name a{color:var(--ink);text-decoration:none;font-weight:400;font-size:14.5px;
+  letter-spacing:-.1px;vertical-align:baseline}
+.name a:hover{color:var(--brand);text-decoration:underline;text-underline-offset:2px}
+/* ---------- 商品缩略图（v3.20 立 / v3.21 两栏重排） ----------
+ * 【v3.21】图放大到 PC 92 / 平板 80 / 手机 64 / 超窄 54，商品栏改成规整的
+ * 「左图 + 右侧信息列」。
+ *
+ * ⚠️ 硬约束：watch.js / block.js 的 ensureOps() 用 `:scope > span.tag` 找
+ * **直接子标签**来挂 .nameops，右侧信息**绝不能加包裹层**，否则关注/屏蔽按钮整组跑位。
+ * 解法：图片改成 absolute，脱离 flex 流（规范里 absolutely-positioned flex child
+ * 不参与 flex 布局），右侧 a / 标签 / .nameops / .meta 仍是 .name 的直接子元素，
+ * v3.17 验收过的 flex 链一字未动。
+ *
+ * 让位靠 .name 的 padding-left，不再给 .meta 单独补 padding-left（v3.20 那个
+ * 62px/48px 的 hack 随两栏布局一起删掉），文字起点天然与标题重合。
+ * 三个变量一次定义、断点只覆盖数值，改尺寸不用再翻四处 CSS：
+ *   --pic-w 图边长 / --pic-gap 图与文字间距 / --pic-x 图左边距
+ * --pic-x 取「原本正文的左起点」：PC 是 td 的 padding 14px，手机是 --card-indent 30px。
+ * 注意 absolute 的 left 相对 **padding box** 左边缘（border 内侧），不受
+ * padding-left 影响，所以图片用 --pic-x 定位、正文用 padding-left 让位，两者天然对齐。
+ *
+ * min-height 是必须的：absolute 图片不撑高父盒，若不保底，92px 的图会从
+ * 较矮的行上下溢出、压到相邻行。box-sizing:border-box 保证 width 含 1px 边框，
+ * 图片实际占位精确等于 --pic-w，--pic-gap 才不会被悄悄吃掉 2px。
+ *
+ * 没有图的行（图片下载失败、老缓存）不加 .haspic，完全走回 v3.17 排版，零回归。
+ * 缩略图来自 docs/thumbs/，由 thumbs.py 按每次上榜集合替换并清理；
+ * 数据库 JSON 里不存任何图片字段。 */
+.thumb{display:block;box-sizing:border-box;object-fit:cover;
+  border-radius:10px;background:var(--line-3);border:1px solid var(--line-2)}
+.name.haspic{
+  --pic-w:92px; --pic-gap:14px; --pic-x:14px;
+  position:relative;
+  display:flex;flex-wrap:wrap;align-items:center;gap:0 6px;
+  padding-left:calc(var(--pic-x) + var(--pic-w) + var(--pic-gap));
+  min-height:calc(var(--pic-w) + 4px)}
+.name.haspic>.thumb{
+  position:absolute;left:var(--pic-x);top:50%;transform:translateY(-50%);
+  width:var(--pic-w);height:var(--pic-w)}
+.name.haspic>a{flex:1 1 0%;min-width:0}
+.name.haspic>.meta{flex:1 1 100%;width:100%;box-sizing:border-box}
+/* 桌面端 .nameops 原本只在手机断点里定义（display:inline-flex）。
+ * 有图行把 .name 改成 flex 后，它若还是普通 inline span，内部 22px 按钮的
+ * 基线会让它比 22px 标签矮半拍（实测 5.4px）。这里只给「有图行」补一套
+ * 与手机端相同的几何，无图行仍走 v3.17 验收过的 baseline 老路径。 */
+.name.haspic .nameops{display:inline-flex;align-items:center;gap:4px;flex:0 0 auto}
+.name.haspic .nameops:empty{display:none}
+/* PC 基础样式里 .tag 带 margin-bottom:18px（baseline 位移技巧）。
+ * 有图行改成 flex 后，这个下外边距会被算进「外边距盒」参与 align-items:center，
+ * 实测把标签顶边上推 9px，与按钮组错开 9px。只在有图行清零，
+ * 无图行仍走 v3.17 验收过的 baseline 老路径。 */
+.name.haspic>.tag,.name.haspic>.wish{margin-bottom:0}
+/* ---------- 缩略图点开放大（v3.22） ----------
+ * 弹层只挂在 body 末尾，.name 内部一个元素都不加。
+ * 原因：watch.js 的 ensureOps() 无标签时用 `:scope > a` 找标题来挂 .nameops，
+ * 若给图片套 <a>/<button>，第一个 <a> 就变成图片，按钮会插到图和标题之间。
+ * 同理不能给右侧信息加包裹层（§3.18）。点击用 document 事件委托实现。 */
+.thumb{cursor:zoom-in}
+.thumb:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.lb{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:14px;padding:18px;
+  background:rgba(12,14,18,.86);backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px)}
+/* ⚠️ 必须写：.lb 自己的 display:flex 会盖掉 UA 样式里 [hidden]{display:none} */
+.lb[hidden]{display:none}
+/* ⚠️ 必须显式给 width：max-width 只是上限，<img> 默认按自然尺寸 200px 画，
+ * 只写 max-width 的话「点开了却没放大」。width + height:auto 才会真正撑大，
+ * max-height 兜住长图。上限 480px 是权衡：源图只有 200px，再大就糊成马赛克。 */
+.lb-img{width:min(92vw,480px);height:auto;max-height:76vh;object-fit:contain;
+  border-radius:10px;background:#fff;box-shadow:0 14px 44px rgba(0,0,0,.5)}
+.lb-cap{color:#f2f4f7;font-size:12.5px;line-height:1.5;text-align:center;
+  max-width:min(92vw,480px);opacity:.85}
+.lb-x{position:absolute;top:16px;right:18px;width:38px;height:38px;border-radius:50%;
+  border:1px solid rgba(255,255,255,.45);background:rgba(255,255,255,.14);
+  color:#fff;font-size:24px;line-height:1;cursor:pointer}
+.lb-x:hover{background:rgba(255,255,255,.26)}
+.lb-x:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.meta{color:var(--ink-4);font-size:12px;margin-top:4px;letter-spacing:.1px}
+/* 不可拆分片段（目前用在 meta 的每个「· 值」单元上）。
+ * 手机端 .meta 为了防溢出开了 word-break:break-word，副作用是日期会在连字符处断开，
+ * 变成「拉取 2026-」换行「10-28」。日期属于「拆开就变味」的内容，整体不许断。（v3.9）
+ * display:inline-block 是关键：只写 white-space:nowrap 时，Chrome 仍可能在这个盒子
+ * 边界上做出「半个单元」的断行，实测会让行首残留一个孤立的「·」。（v3.11） */
+.nw{display:inline-block;white-space:nowrap}
+.num{white-space:nowrap;font-variant-numeric:tabular-nums;text-align:right;width:152px}
+.num b{color:var(--brand);font-size:17px;font-weight:700;letter-spacing:-.35px}
+.num s{color:var(--ink-4);font-size:12.5px;margin-left:5px}
+/* 「历史低 ¥313.26（10-29）」独占价格下方一行，右对齐。
+ * 【v3.15】价格轴整个删掉了（用户：「横轴不要了，挺丑的」）。
+ * 原来 .lowhint 是 flex 容器 .axisrow 的子项，靠 flex 才成块、margin-top 才生效；
+ * 容器一撤，它退回 inline，会紧贴在「¥25 ￥299」同一行行尾。
+ * 所以这里必须自己 display:block 把块级化接过来。 */
+.save{color:var(--ink-3);font-size:12.5px}
+/* 【坑】td 的默认 vertical-align 是 middle，而「到手价」那一列写成 top。
+ * 折扣列的盒子比价格列矮（数字 14px + 4px 进度条），一居中就整体下沉：
+ * 实测 1440 下沉 5.5px，768 商品名换行、行更高时下沉 28px——
+ * 行越高沉得越多，正是 middle 居中的特征。改成 top 后两列从同一基线起步。（v3.9） */
+.rate{width:88px;text-align:right;font-weight:700;color:var(--brand);
+  font-variant-numeric:tabular-nums;font-size:14px;letter-spacing:-.3px;
+  vertical-align:top}
+.rate small{font-size:11px;font-weight:400}
+/* 折扣条。v3.9 时它的 margin-top 从 6px 提到 14px，唯一理由是要和左边的
+ * 「价格轴」落在同一条水平线上（两列各一根横条，一高一低像两组数据）。
+ * 【v3.15】轴删了，对齐目标消失，14px 变成纯白撑——折扣条孤零零飘在
+ * 「1.2折」下方 21px 处，和数字断开。收回 6px，重新贴住折扣数字。
+ * 手机上 .bar 是 display:none，不受影响。
+ *
+ * 【v3.14】修两件事：
+ * ① 轨道原来用 --line-2（#eceef1），在白卡上几乎不可见，1.2 折时只剩一小截红色，
+ *    看着像"渲染坏掉的横线"。换 --axis-track 后"长度 = 折扣深浅"才成立。
+ * ② 曾试过切成十格刻度（1 格 = 1 折），实测 88px 列里每格只有 6px，加上分隔缝后
+ *    整条变成一排虚线，比原来的问题更难看。改回实心条，只在 5 折处留一条参考刻度。 */
+.bar{height:5px;border-radius:99px;margin-top:6px;overflow:hidden;
+  background:var(--axis-track)}
+.bar i{display:block;height:100%;min-width:5px;border-radius:99px;background:var(--stripe)}
+
+/* ---------------- 价格区间轴：已删除（v3.15） ----------------
+ * 曾在这里画一根 64px 的「历史低 ↔ 历史高」细线，圆点=现价位置。
+ * 用户两次反馈后彻底移除：v3.13 先撤手机端（「现价史低下面的横轴不要了」），
+ * v3.15 再撤桌面端（「横轴不要了，挺丑的」）。
+ *
+ * 复盘：这个图形从一开始就缺乏说服力——64px 的画布上要同时表达
+ * 低点、高点、现价三个量，结果是"一根看不清的横线加一个小球"；
+ * v3.14 把对比度从 1.16 提到 1.57、端点刻度提到 3.18，技术上全过 WCAG，
+ * 但**可读≠有用**：读者要的「离史低还差多少」用一句
+ * 「历史低 ¥313.26（10-29）」就说完了，不需要再换算成像素位置。
+ * 教训：辅助图形只有在能表达文字说不清的关系时才值得占位置。
+ *
+ * 保留的痕迹：--axis-track 变量仍被 .bar（折扣条轨道）复用，
+ * 名字没改是为了不牵动那处；.axis-tick 随轴一起删掉了。
+ */
+/* 三个入口按钮组。v3.16 起是 .masthead 的 flex 子项，靠右对齐，
+ * 不再依赖任何父级块级容器（原来挂在 .sub 里，需显式 display:block 才独占一行）。
+ * 手机端（≤700）在下面媒体查询里换成 grid 三列、整行铺满。 */
+.entries{display:flex;align-items:center;gap:7px;flex:none}
+@media (min-width:701px){
+  .entries{max-width:760px}
+  /* 桌面端三颗胶囊按钮高 26px：鼠标够用、也过了 AA 的 24px，但离 44 的触摸标准还差。
+   * 同样用伪元素把命中区上下各撑 9px（横向本来就 >100px），
+   * 视觉一点不变，手感直接到 44。相邻按钮间距 8px，横向不撑，所以不会互相抢点击。 */
+  .wishlink{position:relative}
+  .wishlink::after{content:"";position:absolute;inset:-11px 0}
+}
+
+/* ---------------- 标签 ---------------- */
+/* 【坑】行内小标签的 vertical-align 必须逐个写全，不能指望继承。
+ * 第 67 行的 .warn（顶部橙色提示框）会命中 <span class="tag warn">淘金币</span>：
+ * 它的 padding/font-size/border 都被下面 .tag/.tag.warn 的正常样式盖掉了，
+ * 但它没设 vertical-align → 标签退回默认 baseline，实测比商品名中线低 8px，
+ * 看起来就是「淘金币飘起来了」。同类选择器一律显式声明，别再踩。 */
+/* 用 baseline 而不是 middle：middle 的对齐基准是「父基线 + 半个 x-height」，
+ * 商品名换行后基准会变，内联盒就整体下沉；baseline 跟着当前行走，换行也不歪。
+ * 再把相对基线的位移统一成 -3px（商品名 14.5px、标签 18px 盒高，中心恰好对齐）。 */
+.tag,.newlow,.atlow,.first,.wish{display:inline-block;margin-left:5px;padding:0 5px;
+  border-radius:3px;font-size:10.5px;line-height:16px;
+  vertical-align:.5px}
+.tag{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-line)}
+.tag.warn{background:var(--brand-bg);color:var(--brand);border-color:var(--brand-line)}
+.newlow{background:var(--green-bg);color:var(--green);border:1px solid var(--green-line)}
+.atlow{background:var(--teal-bg);color:var(--teal);border:1px solid var(--teal-line)}
+.first{background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-line)}
+.wish{background:var(--purple-bg);color:var(--purple);
+  border:1px solid var(--purple-line);padding:0 6px;font-weight:600}
+
+/* ---------------- 快捷操作按钮 ---------------- */
+/* 由 watch.js 与 block.js 插入，紧跟商品标签之后（同一行内）。
+ * 图标用内联 SVG 而不是 emoji：emoji 依赖系统字体，Windows 上有概率渲染成 □ */
+.wishbtn,.blkbtn{display:inline-flex;align-items:center;gap:3px;margin-left:6px;
+  padding:0 7px;height:18px;box-sizing:border-box;border-radius:5px;font-size:11px;
+  cursor:pointer;vertical-align:0;line-height:20px;flex:none;
+  transition:background .14s ease,color .14s ease,border-color .14s ease,
+             box-shadow .14s ease,transform .1s ease}
+.wishbtn svg,.blkbtn svg{width:11px;height:11px;display:block}
+.wishbtn{border:1px solid var(--purple-line);background:var(--purple-bg);color:var(--purple)}
+.wishbtn svg{fill:none;stroke:currentColor;stroke-width:1.8}
+.wishbtn:hover,.wishbtn:focus-visible{color:#fff;background:#7c3aed;
+  border-color:#7c3aed;box-shadow:0 2px 8px rgba(124,58,237,.3);outline:none}
+.wishbtn:hover svg,.wishbtn:focus-visible svg{fill:currentColor}
+.wishbtn:active{transform:scale(.96)}
+.blkbtn{border:1px solid var(--brand-line);background:var(--brand-bg);color:#d9576d}
+.blkbtn svg{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
+.blkbtn:hover,.blkbtn:focus-visible{color:#fff;background:#c8102e;
+  border-color:#c8102e;box-shadow:0 2px 8px rgba(200,16,46,.28);outline:none}
+.blkbtn:active{transform:scale(.96)}
+
+/* ---------------- 顶部三个入口 ---------------- */
+/* 宽度随内容自适应（不设 min-width，否则会撑成一整行），
+ * 用 inline-flex + 统一 line-height 让图标与文字严格同基线。
+ * 配色写在类里而不是 inline style：inline 会盖掉 :hover 的背景色 */
+.wishlink{display:inline-flex;align-items:center;justify-content:center;gap:5px;
+  margin-left:8px;padding:4px 13px;border-radius:999px;
+  font-size:13px;line-height:16px;box-sizing:border-box;
+  background:var(--purple-bg);color:var(--purple);border:1px solid var(--purple-line);
+  text-decoration:none;font-weight:600;vertical-align:middle;
+  font-variant-numeric:tabular-nums;
+  transition:background .15s ease,border-color .15s ease,box-shadow .15s ease}
+.wishlink .ico{width:13px;height:13px;flex:none;fill:none;stroke:currentColor;
+  stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;display:block}
+.wishlink[href*="wishlist"] .ico{fill:currentColor}
+.wishlink:hover{border-color:#c9b3f5;text-decoration:none;filter:brightness(.96);
+  box-shadow:0 1px 4px rgba(124,58,237,.16)}
+.wishlink.blk{background:var(--brand-bg);color:#a1404c;border-color:var(--brand-line)}
+.wishlink.blk:hover{border-color:#eaa9b4;box-shadow:0 1px 4px rgba(200,16,46,.14)}
+.wishlink.db{background:var(--blue-bg);color:var(--blue);border-color:var(--blue-line)}
+.wishlink.db:hover{border-color:#b8cff7;box-shadow:0 1px 4px rgba(29,95,191,.14)}
+@media (prefers-color-scheme:dark){
+  .wishlink.blk{color:#ff8095}
+  .blkbtn{color:#ff8095}
+  .wishlink:hover{filter:brightness(1.35)}
+}
+
+.lowhint{display:block;font-size:11.5px;color:var(--ink-4);margin-top:3px;
+  font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.legend{display:flex;flex-wrap:wrap;gap:5px 18px;font-size:12px;color:var(--ink-3);
+  margin:-2px 0 12px;line-height:1.7}
+.legend .sw{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:5px}
+.legend .sw-nl{background:var(--green)}
+.legend .sw-al{background:var(--teal)}
+.legend .sw-lh{background:var(--ink-5)}
+.foot{color:var(--ink-4);font-size:12px;margin-top:26px;line-height:1.9}
+/* 【v3.16】「抓取时间 / 请求次数 / 来源」从报头搬到页脚。
+ * 这三项是「这个页面是什么时候的快照」的免责信息，读者要先看的是商品，
+ * 不是时间戳；放页脚既不丢信息，也不再占首屏第一行。
+ * 用 .foot-meta 单独一段，颜色比版本行稍深一档，表明它属于「本次数据」而非「页面本身」。*/
+.foot p{margin:0}
+.foot p.foot-meta{color:var(--ink-3);margin-bottom:5px}
+
+/* ---------------- 屏蔽词命中提示条 ----------------
+ * 结构由 block.js 动态生成（#blockBar）。配色走变量，
+ * 暗色模式下自动跟着反色，不再用写死的 inline 颜色 */
+.blockhit{background:var(--brand-bg);border:1px solid var(--brand-line);
+  border-radius:10px;padding:10px 14px;margin-bottom:16px;font-size:12.5px;
+  color:var(--ink-2);box-shadow:var(--shadow-s)}
+.bh-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.bh-ico{width:14px;height:14px;flex:none;fill:none;stroke:var(--brand);stroke-width:1.8;
+  stroke-linecap:round}
+.bh-head b{color:var(--brand);font-variant-numeric:tabular-nums}
+/* 「看看是哪些」做成低调的描边小按钮，不跟主操作抢注意力 */
+.bh-toggle{margin-left:2px;padding:0 10px;border-radius:999px;font-size:12px;
+  border:1px solid var(--brand-line);background:transparent;color:var(--brand);
+  cursor:pointer;min-height:30px;display:inline-flex;align-items:center;
+  line-height:1.4;transition:background .14s ease,color .14s ease}
+.bh-toggle:hover{background:var(--brand);border-color:var(--brand);color:#fff}
+.bh-toggle:active{transform:scale(.96)}
+.bh-link{margin-left:auto;color:var(--brand);text-decoration:none;white-space:nowrap}
+.bh-link:hover{text-decoration:underline}
+.bh-list{margin:9px 0 0;padding:9px 0 0;border-top:1px dashed var(--brand-line);
+  list-style:none;display:flex;flex-direction:column;gap:5px;
+  max-height:170px;overflow:auto;font-size:12px;color:var(--ink-3);line-height:1.6}
+.bh-list[hidden]{display:none}
+.bh-list li{word-break:break-word}
+.bh-list b{color:var(--brand);font-weight:600;margin-right:2px}
+
+/* ---------------- 空态 ---------------- */
+/* 榜单为空时不再是一行灰字，给一张内联 SVG 插图 + 一句人话，
+ * 顺手把「去哪里调门槛」写清楚 */
+/* 空榜单：表头也别留，整块只显示插图 */
+.sec-body.is-empty .tablewrap{display:none}
+.empty{display:flex;flex-direction:column;align-items:center;gap:10px;
+  padding:44px 20px 40px;background:var(--card);border:1px dashed var(--line);
+  border-radius:12px;color:var(--ink-3);text-align:center;box-shadow:var(--shadow-s)}
+.empty svg{width:72px;height:72px;fill:none;stroke:var(--ink-5);stroke-width:1.5;
+  stroke-linecap:round;stroke-linejoin:round;opacity:.85}
+.empty .t{font-size:14.5px;font-weight:600;color:var(--ink-2)}
+.empty .d{font-size:12.5px;color:var(--ink-4);line-height:1.7;max-width:360px}
+/* 【v3.14】code 的底色是 --card-2，暗色下比 --card 更亮（#252a31 vs #1e2228），
+ * 继承的 --ink-4 在上面只剩 4.32:1。改成 --ink-2，深浅两套都稳。 */
+.empty .d code{background:var(--card-2);border:1px solid var(--line);border-radius:4px;
+  padding:0 4px;font-size:12px;color:var(--ink-2)}
+
+/* ============================================================
+ * 手机端：表格拆成卡片，避免窄屏把商品名挤成竖排
+ * ============================================================ */
+@media (max-width:700px){
+  html,body{overflow-x:hidden;max-width:100%}
+  body{padding:14px 10px 26px;font-size:15px;background:var(--bg);
+    font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+
+  h1{font-size:19px;letter-spacing:-.3px;margin:0;font-weight:700}
+
+  /* 手机端报头两行：第一行标题+日期，第二行三个入口整行铺满。
+   * 【v3.16】入口从 .sub 里挪出来成了 .masthead 的直接子项，
+   * 这里靠 flex-basis:100% 强制它换到第二行（.masthead 是 flex-wrap）。
+   * 三列等宽的理由不变：**永远不换行**。
+   * 【坑·v3.11】原先用 flex + flex-wrap:wrap + 内容自适应宽度，320~520 之间只要
+   * 三个按钮合计比容器宽几个像素，第三个「数据库」就整颗掉到第二行——而它一旦
+   * 掉行，下面所有内容整体下移一行，卡片区起始位置跟着抖。
+   * 改成 grid repeat(3,1fr)：每列宽度由容器决定，与文字长度无关，任何屏宽都是
+   * 一行三颗；文字撑不下时靠缩字号 + 缩内边距消化，不做省略号（括号里的数字不能截）。 */
+  .masthead{gap:10px 0;margin-bottom:13px}
+  .entries{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;
+    width:100%;flex:0 0 100%;margin:1px 0 0}
+  /* 【v3.17】高度 44 -> 36。使用者：「关注屏蔽这3个按钮太胖了」。
+   * 44 是 WCAG 2.5.5（AAA）的触摸目标，但那是「建议值」不是「必须」——
+   * 2.5.8 的 AA 下限是 24×24，36 已经高出 50%。
+   * 这三颗是胶囊按钮、间距 6px、彼此不重叠，误触风险主要来自「太挤」而不是「太矮」；
+   * 反过来 44 让它们占掉手机首屏近 1/6 的高度，视觉上比下面的商品卡还重。
+   * 用 min-height 而不是 height：字号被系统放大时按钮可以跟着长高，不裁字。 */
+  .entries>a.wishlink{display:inline-flex;width:100%;min-width:0;max-width:100%;
+    align-items:center;justify-content:center;gap:4px;padding:4px 3px;min-height:36px;
+    font-size:11.5px;border-radius:999px;margin:0;font-weight:600;
+    line-height:16px;white-space:nowrap;overflow:hidden}
+  .entries>a.wishlink .ico{width:12px;height:12px;flex:none}
+  /* 括号里的数字不要再压 opacity：.8 会把「关注（0）」里那个 0 的
+   * 有效对比度从 4.83 压到 3.50，低于 AA。层级已经由括号本身表达了。 */
+  .entries>a.wishlink span{font-size:11.5px;opacity:1;margin-left:0}
+
+  /* 四宫格统计：标签与数字**同一行**（v3.13）。
+   * 原来 .k / .v 都是块级 div，天然上下两行，2×2 布局里每张卡都白占一行高度，
+   * 四块叠起来比数字本身还高。改成 flex + 基线对齐 + nowrap：「折扣榜 10 条」一行读完。 */
+  .stats{grid-template-columns:repeat(2,1fr);gap:9px;margin-bottom:14px}
+  .stat{padding:9px 12px;border-radius:11px;display:flex;align-items:baseline;
+    gap:6px;flex-wrap:nowrap}
+  .stat .k{font-size:11.5px;color:var(--ink-3);margin:0;flex:none;white-space:nowrap}
+  .stat .v{font-size:21px;font-weight:700;letter-spacing:-.4px;line-height:1.2;
+    flex:0 1 auto;min-width:0;white-space:nowrap}
+  .stat .v em{font-size:11px;font-weight:400;color:var(--ink-3);margin-left:2px}
+  /* 手机上不做位移，避免卡片抖动 */
+  .stat:hover{transform:none}
+
+  .funnel{font-size:12px;padding:10px 12px;line-height:1.9;border-radius:10px;
+    word-break:break-word;margin-bottom:15px;color:var(--ink-3)}
+  .warn{font-size:12.5px;padding:10px 12px;border-radius:10px;margin-bottom:12px}
+
+  /* 分节标题：折叠按钮改到同一行右侧 */
+  h2{font-size:15px;margin:20px 0 9px;gap:7px;font-weight:650}
+  /* 手机上不要标题左边那道红竖条（.dot）：卡片化布局里它既不对齐任何东西，
+   * 又和下方每张卡片的色带重复表达同一个信息。留着只觉得"多了一道边"。（v3.12） */
+  h2 .dot{display:none}
+  h2 .sec-t b{margin:0 2px 0 4px}
+  h2 .hint{font-size:11.5px;color:var(--ink-4);font-weight:400;display:block;
+    margin-left:10px;margin-top:-2px}
+  .sec-fold{width:28px;height:28px}
+
+  .legend{flex-wrap:wrap;gap:3px 12px;font-size:11.5px;margin:0 0 9px;
+    line-height:1.6;color:var(--ink-3)}
+  .legend>span{white-space:nowrap;flex:none}
+  .legend .sw{width:8px;height:8px;margin-right:5px}
+
+  /* ---------- 卡片 ---------- */
+  .tablewrap{background:transparent;border:0;border-radius:0;box-shadow:none}
+  table,tbody,tr,td{display:block;width:auto}
+  table{border:0;background:transparent;border-radius:0}
+  thead{display:none}
+  tbody{display:block}
+  tr{position:relative;background:var(--card);border:1px solid var(--line);
+     border-radius:13px;padding:10px 12px 9px;margin-bottom:8px;
+     box-shadow:var(--shadow-s);transition:box-shadow .15s ease;
+     /* 卡片内所有正文（商品名 / meta / 价格）共用的左缩进：
+      * 圆片宽 19 + 5px 呼吸位，因为圆片左边缘与内容盒左边缘齐平。
+      * 推法见下面 .name 上方的注释，改圆片尺寸时同步改这里。 */
+     --card-indent:30px}
+  tr:last-child{margin-bottom:0}
+  tbody tr:hover td{background:transparent}
+  td{border:0;padding:0}
+
+  /* 序号做成左上角小圆片。
+   * 【v3.13】组别色带（红/蓝的整卡左侧竖带）在手机上去掉了：
+   * 两张榜一前一后、各有 h2 标题，色带没提供额外信息，只让每张卡看起来都像被"标红"。
+   * PC 端仍保留 `tbody td.idx::after` 那条 3px 竖条。
+   *
+   * 【坑·v3.13】必须写成 `tbody td.idx`，不能只写 `.idx`：
+   * 上面第 151 行有 `tbody td.idx{position:relative}`（特异性 0,1,2），
+   * 而 `.idx{position:absolute}` 只有 (0,1,0)——比不过，**一直没生效**。
+   * 结果圆片以 position:relative 的身份留在 flex 流里当第一个 flex 项，
+   * `flex:0 0 auto` + 高 19px，把 `.name`（flex-basis:100%）挤到第二行，
+   * 于是每张卡片顶部都白挂着一个 19px 的空行。这就是「卡片太高」的主因。
+   * left/top 用 12/10（= 卡片内边距）让圆片左上角对齐内容区左上角。 */
+  /* 【v3.17】序号片 19x19/11px -> 24x24/12.5px，位置从「贴左上角」改成「整卡垂直居中」。
+   * 使用者：「商品序号略小，改成在信息卡垂直居中」。
+   * 原来 top:10px 是照着卡片内边距定的，只能对齐商品名首行；
+   * 一旦标题折成两行，圆片就缩在卡片最上面、离视觉中心很远。
+   * 定位改用 top:50% + translateY(-50%)：卡片高度由内容决定，居中永远成立。
+   * top 的参照系是 tr（position:relative）的 padding box，含 10px 上内边距，
+   * 而 50% 相对的是 padding box 的高度——两者只差上下内边距之差（10 vs 9），
+   * 实测偏移 <0.5px，忽略。 */
+  tbody td.idx{position:absolute;left:10px;top:50%;transform:translateY(-50%);
+    width:24px;height:24px;
+    display:flex;align-items:center;justify-content:center;
+    background:var(--line-3);color:var(--ink-3);border-radius:7px;font-size:12.5px;
+    font-weight:600;font-variant-numeric:tabular-nums;line-height:1}
+  /* td.idx::after 色带已在基础规则里整条删除（v3.16），此处无需再隐藏 */
+  /* ---------- 左侧缩进：一个变量说完 ----------
+   * 序号圆片 absolute 定位在 left:10px、宽 24px（v3.17 尺寸），
+   * 右边界落在内容盒 +34 处；再留 5px 呼吸位 → 正文统一从 30px 起排。
+   * 实测 360 档：圆片 18..42，商品名与价格都从 48 起，间隙 6px。
+   *
+   * 【坑·v3.13】这里原先写的是 `.name{padding-left:49px;margin-left:-30px}`，
+   * 靠负 margin「抵消 flex 占位」。实测 margin-left:-30px 在 flex 项上只左移了 11px
+   * （因为同时还有 flex:1 1 100% 和 margin-right:-7px 参与剩余空间计算），
+   * 于是商品名实际起点是 59px，而价格区 padding-left 写的是 19px（以为净缩进是 19），
+   * 结果「商品名往里缩、价格往外顶」，一列两种左边线——这正是使用者说的
+   * 「序号缩进过多，而价格却贴边」。
+   * 现在两边都直接吃同一个 --card-indent，不再有负 margin 这种跨引擎不保证的位移。 */
+  .name{padding-left:var(--card-indent);margin-left:0;margin-right:-7px;margin-bottom:5px;
+    line-height:1.55;word-break:break-word}
+  .name a{font-size:15px;font-weight:400;color:var(--ink);letter-spacing:-.1px;
+    display:inline;text-decoration:none;word-break:break-word;vertical-align:baseline}
+  .meta{font-size:11.5px;line-height:1.5;margin-top:4px;color:var(--ink-4);
+    word-break:break-word;overflow-wrap:anywhere;letter-spacing:-.1px}
+  /* meta 拆成 m1（分类·商城·来源）/ m2（时间·值评·拉取）两段。
+   * 窗口极窄时两段各占一行，比让它在任意位置折行整齐。
+   * 每段内部每个「· 值」是独立 .nw 盒，断点只落在盒与盒之间，
+   * 分隔点写在前一盒末尾，行首永远不会以「·」开头。（v3.11） */
+  .meta .m1,.meta .m2{display:inline}
+  .meta .m2{margin-top:0}
+
+  /* 标签与快捷按钮：自然换行，不再挤成一团。
+   * 用 vertical-align:baseline（不是 middle）——middle 的对齐基准是父元素基线
+   * 加半个 x-height，文字一换行就会整体下沉十几个像素，看着像"标签跑到行中间"。
+   * 基线对齐时，换行前后都自动跟着当前行对齐。
+   *
+   * 【v3.17】标签与两颗图标钮**统一成 22px 高的方块**。
+   * 使用者：「商品标签和关注屏蔽按钮不对齐，改成统一大小」。
+   * 改前是「标签 18px 高、按钮 26px 高、三者 vertical-align 各不相同」
+   * （标签 +1px、按钮 -7px、商品名 baseline），逻辑上是在对齐基线，
+   * 视觉上却是一行里三种高度，像三组不相干的东西浮在文字旁边。
+   * 现在：同高 22、同圆角 5、同 margin-left 5、同 vertical-align:-9px。
+   * 标签靠 line-height 撑出 22（盒高 = 边框 2 + 20），按钮显式 height:22。
+   * 【坑】-9px 不是拍脑袋：22px 的盒子要垂直居中于 15px 的商品名，
+   * 差距是 (22 - 17)/2 ≈ 2.5，而基线本身在盒内偏下约 12px（line-height 20 的一半
+   * 再加半行距），合起来正好 -9。用 middle 反而会更歪——它把盒子的**中心**
+   * 对齐到「基线 + 半个 x-height」，跟 baseline 走的商品名算不出同一个结果。
+   * 这个值对标签和按钮是同一套算法（两者盒高都是 22），所以能共用。
+   * ⚠️ 按钮从 26 缩到 22 是有代价的：WCAG 2.5.8 的 AA 下限是 24×24。
+   * 用 ::after 做「隐形扩容」补回来——视觉 22×22，命中区左右各 +3、上下各 +3
+   * 变成 28×28（图标本身会吃掉中心，四周多出来的是空气，不会误触到相邻标签）。 */
+  /* 【坑·v3.17】标签必须写 display:inline-**flex**，不能写 inline-block。
+   * 两者盒高都是 22px（1px 边框 x2 + line-height 20），但**基线位置不同**：
+   *   inline-block 的基线 = 最后一个行盒的基线，实测落在盒顶 +17（盒内偏下）；
+   *   inline-flex 的基线 = 第一个 flex item 的基线，实测落在盒顶 +8（盒内偏上）。
+   * 同一个 vertical-align 值作用在这两个基准上，出来的 top 相差 2px——
+   * 就是使用者看到的「标签和按钮不对齐」的真因，改多少 px 都治不好，
+   * 必须先让两者用同一套基线。按钮本来就是 inline-flex，所以把标签也拉齐。 */
+  /* 【v3.17 最终方案】标签与两颗图标钮共用一套几何：盒 22×22、border-radius 5、
+   * margin-left 5、inline-flex、baseline 对齐。
+   * 关键是**不再用任何 vertical-align 位移值**——上一版给标签 -9px、给按钮也 -9px，
+   * 两个都是 inline-flex 却仍然差 2px，因为盒子本身不等高（标签 20 内容 + 2 边框，
+   * 按钮 height:22 但 line-height 20 落在 22 盒里，内部基线位置不同）。
+   * 现在强制两者 line-height 都是 20、盒高都是 22，baseline 自然重合。 */
+  /* 手机端标题行改成 flex 行：标题 / 标签 / 关注 / 屏蔽 都是同一行的 flex item，
+   * 由 **flex 对齐**（align-items:center）保证中线一致，不再靠 vertical-align。
+   *
+   * 【坑·v3.17 血泪】这里先后试过四种 inline 方案，全都不彻底：
+   *   ① 标签 18px + 按钮 26px + 各自 vertical-align → 三种盒高，怎么调都像浮着；
+   *   ② 统一 22px 高，但保留 inline-block/inline-flex 混用 → 两者**基线位置不同**
+   *     （inline-block 基线在盒顶 +17，inline-flex 在盒顶 +8），同一 vertical-align
+   *     值算出来的 top 差 2px；
+   *   ③ 标签也改 inline-flex + baseline → 差 2px 依旧（按钮盒里 line-height 与
+   *     height 不等，内部基线位置又不一样）；
+   *   ④ 全部 vertical-align:middle → 同一行里能对上，**但标题一折行，
+   *     掉到第二行的那颗就以它自己那一行为基准，又偏了 22~34px**。
+   * 根因是 vertical-align 永远相对「当前行盒」算，而这一行会换行。
+   * flex 的 align-items 相对「这一行的 items」算，换行后每一行各自居中，天然成立。
+   * 实测 27 个标签：垂直偏差从「差 2px / 折行差 22~34px」收敛到 0。 */
+  .name{display:flex;flex-wrap:wrap;align-items:center;gap:0 4px}
+  /* 【坑·v3.17 定案】标题必须写 flex:1 1 **0%**，不能写 0 1 auto、也不能写 1 1 auto。
+   *
+   * 写 `0 1 auto`（按内容基准、可收缩）：浏览器以为「标题想要 224，标签+按钮要 159，
+   *   加起来 383 > 351」，于是把标题压到 224-32=192 想挤在一行；可标题是文本块，
+   *   压缩只会让它内部折行（min-content 之下还能再压），挤出来的空间并没有给到
+   *   右侧那组，最后变成「标题吃满一行，.nameops 掉到第二行」。
+   *   实测 30 行里 7 行这样，偏差恒为 22.6px（正好一行 item 高 + 行距）。
+   * 写 `1 1 auto`：基准仍是内容宽，加号只影响剩余空间分配，收缩问题原样存在，一样 7 行错。
+   * 写 `1 1 0%`（零基准 + 全部拉伸）：标题先按 0 基准占位，把**所有剩余空间**拿走后
+   *   自己再在盒内自动折行；右侧 .nameops 因为 flex:none 不参与收缩，永远留在同一行。
+   *   实测 30/30 全部同排，偏差 0，标题宽度 138~321 自适应（长标题折两行、短标题折一行）。
+   * 这是 flex 里「文本块 + 不收缩尾随元素」的标准解，别再回退。 */
+  .name>a{flex:1 1 0%;min-width:0}
+  /* 【v3.21】手机端图 64px（≤380 再降到 54），图左边距沿用整卡的
+   * --card-indent:30px，让图片与商品名、价格区共用同一条左起线。
+   * 断点里把 gap 覆盖回 4px，与 .nameops 的 margin-left:-4px 抵消逻辑一致。 */
+  .name.haspic{--pic-w:64px;--pic-gap:10px;--pic-x:var(--card-indent);gap:0 4px}
+  .thumb{border-radius:8px}
+  /* 【v3.21b】手机档标题独占整行，长标题不再被标签/按钮组挤成 3~5 字/行。
+   * 图放大到 64 后右栏只剩 ~290px，而不拆的 .nameops + 标签要占 ~130px；
+   * 沿用桌面的 flex:1 1 0% 会把标题压到 113px，实测 390 档最长标题折 5 行、
+   * 单卡高达 222px。改 flex:1 1 100% 后标题吃满右栏，标签 + 按钮组由
+   * flex-wrap 落到第二行且仍同排（顶差 0px），峰值降到 197px、平均高度不变。
+   * ⚠️ 试过 min-width:62%/70% 想让短标题保持同排，但多颗标签会被挤到不同行、
+   * 实测标签顶差 45.9~57.5px，破坏 v3.17 验收过的对齐，已排除。
+   * .nolabel（无标签卡）保持原样，按钮仍贴标题末行右侧。 */
+  .name.haspic:not(.nolabel)>a{flex:1 1 100%}
+  /* 放大弹层：窄屏把大图交给视口宽度，标题别挤在两行以上 */
+  .lb{gap:10px;padding:14px}
+  .lb-img{width:92vw;max-height:70vh}
+  .lb-x{top:12px;right:12px;width:34px;height:34px}
+  /* 标签 22×22、按钮 22×22，两套几何完全一致，同高同圆角同字号。
+   * 按钮 padding 从 0 7px 收到 0：它是纯图标钮，内容只有一枚 12.5px 的 svg，
+   * 留 7px 内边距会撑成 29px 宽，比标签还胖，和「统一大小」正好相反。 */
+  .tag,.newlow,.atlow,.first,.wish{display:inline-flex;align-items:center;flex:none;
+    height:22px;font-size:10.5px;margin:0;padding:0 6px;border-radius:5px;
+    line-height:20px;white-space:nowrap;box-sizing:border-box}
+  .wishbtn,.blkbtn{position:relative;display:inline-flex;align-items:center;
+    justify-content:center;flex:none;margin:0;padding:0;width:22px;height:22px;
+    border-radius:5px;gap:0;font-size:11px;line-height:20px;box-sizing:border-box}
+  /* 【坑·v3.17 最后一环】flex 行只保证「同一行内」中线一致，**管不了跨行**。
+   * 实测 27 个样本里 8 个仍差 23px：标题 224 + 标签 43 + 35 + 三个间距 ≈ 314，
+   * 再塞两颗按钮 44+4 就超出 351 的容器宽 → 标签留在第一行末尾、按钮整组掉到
+   * 第二行，两行各自居中，于是错开整整一行（22 + 1 行高）。
+   * 解法是两件事一起做：① 让标签与按钮**住进同一个 flex item**（.nameops，不可拆，
+   * 换行时整块一起走）；② 把标题改成零基准拉伸（见上面 flex:1 1 0% 那段）。
+   * 只做①不做②，标签和按钮是「同排」了，却一起被挤到第二行，标签留在第一行——照样错 22.6px。
+   *
+   * 结构由 watch.js / block.js 在运行时生成（模板里本来没有按钮，
+   * 也就不该有这个包裹层）：
+   *   <td class="name"><a>标题</a><span class="tag">…</span>×N<span class="nameops">
+   *     <button class="wishbtn">…</button><button class="blkbtn">…</button></span></td>
+   * 包裹层的 margin-left:-4px 抵消它和标签之间的 4px 列间距——标签之间本来就是
+   * 4px，若包裹层再加 4px，最后一个标签到第一颗按钮的间距会变成 8px。
+   *
+   * ⚠️ 这两条规则必须写在手机断点里（这里就是），桌面端走 baseline 老路径，
+   * 桌面端没有换行压力，改了反而会挪动已验收的排版。 */
+  .nameops{display:inline-flex;align-items:center;gap:4px;flex:0 0 auto;margin-left:-4px}
+  .nameops:empty{display:none}
+  /* 【无标签的卡片】整站有约三分之一的卡片没有任何 .tag（第一张「售罄 petsty」就是）。
+   * 那些行只有「标题 + 按钮组」两个 item：
+   *   · 标题 flex:1 1 0% 会吃满整行 → 按钮组被挤到第二行，独占一行，
+   *     看起来像「两个裸按钮浮在标题下面」，比 v3.16 更难看；
+   *   · 若让标题 fit-content，短标题时按钮组紧贴文字、长标题时又得折行，
+   *     一行里左右两端忽宽忽窄，卡片节奏乱。
+   * 定案：让按钮组**贴住标题末行的右侧**——标题照旧 flex:1 1 0% 吃满剩余宽度，
+   * 自己内部折行；按钮组不换行，就挂在末行右侧那片空白里。
+   * 实现靠 .nolabel 这个运行时标记（watch.js/block.js 里加），不用 :has()：
+   * :has() 虽然有 96% 支持率，但一旦哪个旧内核不认，整条规则静默失效，
+   * 表现就是「部分手机按钮又独占一行」，排查起来极难。显式类名没有这个风险。 */
+  .name.nolabel>a{width:auto}
+  .name.nolabel{align-items:flex-end}
+  /* 标题折行后，按钮组要跟**末行**对齐而不是首行——align-items:flex-end 已经做到；
+   * 再补一点下移量，让 22px 的钮中线压住末行 15px 字号的中线。 */
+  .name.nolabel>.nameops{margin-bottom:1px}
+  .name>.meta{flex:1 1 100%;width:100%;margin-top:4px}
+  .wishbtn::after,.blkbtn::after{content:"";position:absolute;inset:-3px}
+  .wishbtn svg,.blkbtn svg{width:12.5px;height:12.5px}
+  /* 手机没有 hover，用 :active 给触摸即时反馈 */
+  .wishbtn:active,.blkbtn:active{transform:scale(.94)}
+  .wishbtn:active{background:#7c3aed;border-color:#7c3aed;color:#fff}
+  .wishbtn:active svg{fill:currentColor}
+  .blkbtn:active{background:#c8102e;border-color:#c8102e;color:#fff}
+
+  /* 底部价格区：flex 两端对齐，价格在左、折扣在右 */
+  tr{display:flex;flex-wrap:wrap;align-items:flex-start}
+  tr>.idx{flex:0 0 auto}
+  tr>.name{flex:1 1 100%;width:100%}
+  tr>.num{flex:1 1 auto;min-width:0;display:flex;align-items:baseline;flex-wrap:wrap;
+    gap:0 5px;order:2;font-size:13px;white-space:normal;text-align:left;
+    padding-left:var(--card-indent);
+    /* 【坑·v3.13】桌面端 `td.num{min-height:70px}`（第 144 行）是为了让表格里
+     * 价格/轴两行的高度一致、行与行不忽高忽低。但卡片化之后价格区只有一行文字
+     * （约 23px），这条 70px 的最小高度就成了每张卡片底部固定多出的 47px 空白——
+     * 「卡片太高」另一半原因就是它。手机上必须归零。 */
+    min-height:0;
+    margin-top:6px;padding-top:6px;border-top:1px dashed var(--line-3)}
+  tr>.rate{flex:0 0 auto;order:3;margin-top:6px;padding-top:6px;
+    border-top:1px dashed var(--line-3);text-align:right;align-self:stretch;
+    display:flex;align-items:baseline;justify-content:flex-end}
+  .num b{font-size:21px;letter-spacing:-.5px;font-variant-numeric:tabular-nums;
+    color:var(--brand);line-height:1.2}
+  .num s{font-size:11.5px;color:var(--ink-4)}
+  .num .atlow,.num .newlow{font-size:10.5px;vertical-align:2px}
+  .lowhint{flex:1 1 100%;font-size:11px;margin:0;color:var(--ink-4);
+    letter-spacing:-.1px}
+  /* 价格轴 v3.15 起桌面手机都没有了，.axisrow 容器一并消失，
+   * .lowhint 成为 td.num 的直接子项，靠自己的 display:block 独占一行。
+   * 手机端价格是左对齐，提示文字跟着左对齐（桌面对齐方式见基础规则）。 */
+  .lowhint{flex:1 1 100%;margin:3px 0 0;text-align:left;font-size:10.5px}
+  .save{display:inline-block;margin:0;font-size:12px;color:var(--ink-3)}
+  .rate{font-size:14px;font-weight:700;color:var(--brand);letter-spacing:-.2px}
+  .rate small{font-size:10.5px;font-weight:400}
+  .bar{display:none}
+
+    .empty{padding:34px 16px 30px;border-radius:13px}
+  .empty svg{width:62px;height:62px}
+  .empty .t{font-size:14px}
+  .empty .d{font-size:12px}
+
+  .foot{font-size:11.5px;line-height:1.85;margin-top:18px;padding:0 2px;color:var(--ink-4)}
+  /* 【坑·v3.16】这条 `.foot br{display:none}` 是 v3.13 为「手机上页脚少占一行」
+   * 加的。但现在页脚多了「抓取时间/来源」一段（<p class="foot-meta">），
+   * 而版本行里的 <br> 恰好是「页面版本 2026-10-29 18:53」与「由 daily.py 自动生成」
+   * 之间的断点——一隐藏就粘成「18:53由 daily.py」，两个不同性质的句子挤在一行。
+   * 页脚本来就在页面最末，省这一行没有收益，删除。 */
+
+  /* 屏蔽提示条：手机上让「管理屏蔽词」独占一行右侧，避免挤在一块 */
+  .blockhit{padding:9px 12px;border-radius:10px;margin-bottom:12px}
+  .bh-head{gap:6px}
+  .bh-list{max-height:150px}
+}
+@media (max-width:380px){
+  body{padding:12px 8px 20px}
+  /* 320 档：标签+数字同行后每格只有 ~123px 可用，
+   * 「最高立省 ¥984」是四块里最长的，字号必须再降一档才不挤 */
+  .stat{padding:8px 10px;gap:5px}
+  .stat .k{font-size:11px}
+  .stat .v{font-size:19px}
+  /* 320 档 h2 里「折扣榜 10 条」+ 折叠按钮已经占满，hint 再换行就只剩一个「内」字
+   * 孤零零挂在第二行。改成单行省略，保住行高整齐。（v3.13） */
+  h2 .hint{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+  .name a{font-size:14px}
+  .num b{font-size:19px}
+  /* 320 档内容区最窄，图再降一档，给标题多留宽度。
+   * 标题独占整行的规则已移到 ≤700 手机断点（见 v3.21b 注释），此处不再重复。 */
+  .name.haspic{--pic-w:54px;--pic-gap:8px}
+  /* 320 这类超窄屏：grid 三列已在 700 断点统一设好，这里只做进一步的收缩，
+   * 不再重复声明 display/grid-template-columns（重复声明只会让人误以为是另起一套布局） */
+  .entries>a.wishlink{padding:6px 2px;gap:2px;font-size:11px;min-width:0}
+  .entries>a.wishlink .ico{width:10px;height:10px}
+  .entries>a.wishlink span{font-size:11px}
+}
+
+/* 520 以下：m1 / m2 各占一行，两行都是完整的语义段 */
+@media (max-width:520px){
+  .meta .m1,.meta .m2{display:block}
+  .meta .m2{margin-top:1px}
+}
+
+/* 平板宽度（701~1023）：m1、m2 都当整体搬动。
+ * 【坑】不锁的话，m2 会从「值评」和「拉取」之间断开，变成三行——
+ * 第三行只剩下「拉取 2026-10-29」，比折成两行更难看。实测 701 档 27/30、
+ * 768 档 12/30 会这样断。（v3.11） */
+@media (min-width:701px) and (max-width:1023px){
+  .meta .m1,.meta .m2{display:inline-block}
+  /* 平板商品列 ~430px，92px 的图会把标题压到 20 字/行以内，降到 80 更从容 */
+  .name.haspic{--pic-w:80px;--pic-gap:12px}
+}
+/* 尊重系统的「减少动态效果」：数字滚动和过渡一律关掉 */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="masthead">
+  <h1>值得买日报<span class="h1-date">{{date}}</span></h1>
+  <span class="entries">
+    <a class="wishlink" href="./words.html?tab=watch"><svg class="ico" viewBox="0 0 16 16"><path d="M8 2.2l1.75 3.55 3.92.57-2.84 2.77.67 3.9L8 11.16l-3.5 1.83.67-3.9L2.33 6.32l3.92-.57z"/></svg>关注（<span id="wishCount">{{wish_count}}</span>）</a>
+    <a class="wishlink blk" href="./words.html?tab=block"><svg class="ico" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.2"/><path d="M3.8 12.2 12.2 3.8"/></svg>屏蔽（<span id="blockCount">0</span>）</a>
+    <a class="wishlink db" href="./db.html"><svg class="ico" viewBox="0 0 16 16"><ellipse cx="8" cy="4" rx="5.6" ry="2.2"/><path d="M2.4 4v3.2c0 1.2 2.5 2.2 5.6 2.2s5.6-1 5.6-2.2V4"/><path d="M2.4 7.2v3.2c0 1.2 2.5 2.2 5.6 2.2s5.6-1 5.6-2.2V7.2"/></svg>数据库（{{db_count}}）</a>
+  </span>
+  </header>
+  <main id="content">
+  {{warn}}{{empty}}
+  <div class="stats">
+    <div class="stat"><div class="k">折扣榜</div><div class="v"><span class="cnt" data-n="{{hot_count}}">{{hot_count}}</span><em> 条</em></div></div>
+    <div class="stat"><div class="k">好价榜</div><div class="v"><span class="cnt" data-n="{{feed_count}}">{{feed_count}}</span><em> 条</em></div></div>
+    <div class="stat"><div class="k">最低折</div><div class="v">{{min_zhe}}</div></div>
+    <div class="stat"><div class="k">最高立省</div><div class="v">{{max_save}}</div></div>
+  </div>
+  {{funnel}}
+  <h2 data-sec="hot"><span class="dot"></span><span class="sec-t">折扣榜<b>{{hot_count}}</b>条</span><span class="hint">按折扣力度排序 · 只收 {{min_disc}} 折以内</span><button class="sec-fold" type="button" aria-label="折叠折扣榜" aria-expanded="true"><svg viewBox="0 0 16 16"><path d="M4 6l4 4 4-4"/></svg></button></h2>
+  <div class="legend sec-body">
+    <span><i class="sw sw-nl"></i>新低 = 比历史最低还低</span>
+    <span><i class="sw sw-al"></i>史低 = 与历史最低持平</span>
+    <span><i class="sw sw-lh"></i>历史低 ¥xx = 当前高于历史最低</span>
+  </div>
+  <div class="sec-body{{hot_empty_cls}}">{{hot_empty}}<div class="tablewrap"><table><thead><tr><th scope="col">#</th><th scope="col">商品</th><th scope="col">到手价</th><th scope="col">折扣</th></tr></thead>
+  <tbody>{{hot_rows}}</tbody></table></div></div>
+  <h2 data-sec="feed"><span class="dot"></span><span class="sec-t">好价榜<b>{{feed_count}}</b>条</span><span class="hint">{{feed_name}} 原始顺序</span><button class="sec-fold" type="button" aria-label="折叠好价榜" aria-expanded="true"><svg viewBox="0 0 16 16"><path d="M4 6l4 4 4-4"/></svg></button></h2>
+  <div class="sec-body{{feed_empty_cls}} band-feed">{{feed_empty}}<div class="tablewrap"><table><thead><tr><th scope="col">#</th><th scope="col">商品</th><th scope="col">到手价</th><th scope="col">折扣</th></tr></thead>
+  <tbody>{{feed_rows}}</tbody></table></div></div>
+  </main>
+  <footer class="foot">
+    <p class="foot-meta">抓取 {{fetched_at}}　请求 {{requests}} 次　来源 smzdm.com（时点快照，价格与库存随时变动）</p>
+    <p>页面版本 {{build_at}}<br>由 daily.py 自动生成 · <a href="./overview.html" style="color:var(--brand);text-decoration:none">运行概览</a> ·
+    数据源 {{feed_name}}（全部好价排行榜）·
+    仅抓列表页，未访问商品详情页 · 折扣按「现价/原价」计算，原价取自好价流描述，仅供参考。</p>
+  </footer>
+</div>
+<script>
+/* ---------- 页面增强：折叠 + 数字滚动 ----------
+ * 都做成「不加这句也不影响阅读」的渐进增强：
+ * 折叠按钮是 <button>，脚本不跑时两个榜单就都展开着，内容照样读；
+ * 数字滚动——模板里**直接写的是真值**，脚本跑起来之后才在第一帧改成 0 再数上去。
+ * 【坑·v3.14】原来模板里写的是 0、靠 data-n 记真值，注释里说有 <noscript> 兜底，
+ * 但实际上从来没有那段 noscript：脚本一旦不执行（被拦、解析失败、旧浏览器），
+ * 四宫格就永远停在「0 条」，而下面标题里明明写着「折扣榜 10 条」，自相矛盾。 */
+(function(){
+  'use strict';
+  var reduce = window.matchMedia &&
+               window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+  /* 分节折叠：状态存 localStorage，刷新后保持用户的选择 */
+  var KEY = 'smzdm.fold.';
+  document.querySelectorAll('h2[data-sec]').forEach(function(h2){
+    var btn = h2.querySelector('.sec-fold');
+    if(!btn) return;
+    var sec = h2.getAttribute('data-sec');
+    /* 收集「本节」的 .sec-body：从这个 h2 往后数，遇到下一个 h2 就停。
+     * 【坑】不能靠 CSS 的 ~ 兄弟选择器，那会把后面所有榜单的 body 一起收进来。 */
+    var bodies = [];
+    for(var n = h2.nextElementSibling; n && n.tagName !== 'H2'; n = n.nextElementSibling){
+      if(n.classList.contains('sec-body')) bodies.push(n);
+    }
+    /* 与 aria-expanded 配套：把折叠按钮和被折叠的区块显式关联起来，
+     * 屏幕阅读器在按钮上就能报出「控制着哪几块内容」。区块原本没有 id，这里补。 */
+    bodies.forEach(function(el, i){ if(!el.id) el.id = 'sec-' + sec + '-' + (i + 1); });
+    if(bodies.length) btn.setAttribute('aria-controls', bodies.map(function(el){ return el.id; }).join(' '));
+    function apply(folded, save){
+      h2.classList.toggle('collapsed', folded);
+      bodies.forEach(function(el){ el.classList.toggle('is-folded', folded); });
+      btn.setAttribute('aria-expanded', String(!folded));
+      btn.setAttribute('aria-label', (folded ? '展开' : '折叠') +
+        (sec === 'hot' ? '折扣榜' : '好价榜'));
+      if(save) { try{ localStorage.setItem(KEY+sec, folded?'1':'0'); }catch(e){} }
+    }
+    var st = '0';
+    try{ st = localStorage.getItem(KEY+sec) || '0'; }catch(e){}
+    apply(st === '1', false);
+    btn.addEventListener('click', function(){
+      apply(!h2.classList.contains('collapsed'), true);
+    });
+  });
+
+  /* 数字滚动：从 0 数到目标值，420ms，ease-out */
+  document.querySelectorAll('.cnt').forEach(function(el){
+    var target = parseInt(el.getAttribute('data-n'), 10) || 0;
+    if(reduce || target <= 0){ el.textContent = target; return; }
+    var t0 = null, dur = 420;
+    function step(ts){
+      if(t0 === null) t0 = ts;
+      var p = Math.min(1, (ts - t0) / dur);
+      var eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = Math.round(target * eased);
+      if(p < 1) requestAnimationFrame(step);
+      else el.textContent = target;
+    }
+    /* 置 0 放进第一帧里做：HTML 中是真值，若在这里同步改成 0，浏览器可能已经
+     * 画过一帧真值再跳回 0（闪一下）；放进 rAF 后「首帧即 0」，两全。 */
+    requestAnimationFrame(function(ts){ el.textContent = '0'; step(ts); });
+  });
+})();
+</script>
+<script src="./watch.js"></script>
+<script src="./block.js"></script>
+
+<!-- 缩略图点开放大：DOM 只有这一层，键盘/读屏属性由下方脚本补在 <img> 上。
+     列表里只有 54~92px，弹层把同一张缓存图撑到 min(92vw,480px)，约 3~5 倍；
+     源图本身约 200px，上限压在 480px 免得糊成马赛克。不请求原始大图，
+     保持「本地缓存、同源加载」的既定方案，离线也能看。 -->
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="商品缩略图预览" hidden>
+  <button class="lb-x" type="button" aria-label="关闭预览">&times;</button>
+  <img class="lb-img" alt="" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==">
+  <div class="lb-cap"></div>
+</div>
+<script>
+(function(){
+  var lb = document.getElementById('lb');
+  if(!lb) return;
+  var big = lb.querySelector('.lb-img'), cap = lb.querySelector('.lb-cap');
+  var x = lb.querySelector('.lb-x'), last = null;
+
+  function titleOf(im){
+    var tr = im.closest('tr'), a = tr && tr.querySelector('.name>a');
+    return a ? a.textContent.trim() : '商品缩略图';
+  }
+  /* 缩略图原是装饰性 alt=""，可点击后补上可聚焦、可报名字。
+     只补属性不新增元素，保住 `:scope > a` 与 `:scope > span.tag` 两个锚点。 */
+  document.querySelectorAll('img.thumb').forEach(function(im){
+    im.setAttribute('tabindex','0');
+    im.setAttribute('role','button');
+    im.setAttribute('aria-label','放大查看：' + titleOf(im));
+    im.addEventListener('error',function(){
+      var cell=im.closest('.name.haspic');
+      if(cell) cell.classList.remove('haspic');
+      im.remove();
+    });
+    if(im.complete && im.naturalWidth===0) im.dispatchEvent(new Event('error'));
+  });
+
+  function open(im){
+    last = im;
+    big.src = im.currentSrc || im.src;
+    big.alt = titleOf(im);
+    cap.textContent = titleOf(im) + ' · 榜单缓存的缩略图预览';
+    lb.hidden = false;
+    document.body.style.overflow = 'hidden';
+    x.focus();
+  }
+  function shut(){
+    if(lb.hidden) return;
+    lb.hidden = true;
+    big.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
+    document.body.style.overflow = '';
+    if(last && last.focus) last.focus();
+  }
+  document.addEventListener('click', function(e){
+    var t = e.target;
+    if(t && t.matches && t.matches('img.thumb')){ e.preventDefault(); open(t); return; }
+    if(!lb.hidden && lb.contains(t) && t !== big) shut();
+  });
+  document.addEventListener('keydown', function(e){
+    if(lb.hidden){
+      if((e.key === 'Enter' || e.key === ' ') && e.target.matches &&
+         e.target.matches('img.thumb')){ e.preventDefault(); open(e.target); }
+      return;
+    }
+    if(e.key === 'Escape'){ e.preventDefault(); shut(); }
+    else if(e.key === 'Tab'){ e.preventDefault(); x.focus(); }
+  });
+})();
+</script>
+</body>
+</html>
