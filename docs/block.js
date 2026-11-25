@@ -5,9 +5,12 @@
  * 数据库里照样有记录（爬取逻辑不变），删掉屏蔽词刷新即恢复。
  *
  * 数据来源按优先级：
- *   1. localStorage —— 本机缓存，屏蔽页保存后或日报页快捷屏蔽后立即生效
+ *   1. localStorage —— 本机缓存，管理页每次编辑（含未保存改动）即时写入，立即生效
  *   2. ./blocklist.txt —— Actions 每次运行同步到 docs/ 的副本
  *   3. GitHub API —— 实时兜底
+ *
+ * 本机有未保存改动（block_pending / block_dirty）时，远端词表不覆盖本机工作集；
+ * 跨标签页用 storage 事件实时刷新，浏览器「返回」命中 bfcache 时用 pageshow 补刷新。
  *
  * 额外职责：给每行商品插入「屏蔽」按钮（服务端模板不动，
  * daily.py 渲染逻辑零改动）。
@@ -20,6 +23,7 @@
   var LOCAL_URL = './' + FILE;
   var CACHE_KEY = 'block_words_cache';
   var PENDING_KEY = 'block_pending';
+  var DIRTY_KEY = 'block_dirty';       // 管理页有未保存改动时置 1，阻止远端词表覆盖本机工作集
 
   function parse(txt) {
     return txt.split('\n')
@@ -207,18 +211,47 @@
     });
   }
 
-  /* 1) 本机缓存：立即生效，之后仍异步拉最新保持跨设备同步 */
-  try {
-    var raw = localStorage.getItem(CACHE_KEY);
-    if (raw) {
+  /* 1) 本机缓存 = 当前工作集（管理页即时写入，含未保存改动）。
+   * 先应用它保证本机改动立即生效；再异步拉远端，只有没有未保存改动时才允许覆盖。 */
+  function readCacheWords() {
+    try {
+      var raw = localStorage.getItem(CACHE_KEY);
+      if (!raw) return null;
       var obj = JSON.parse(raw);
-      if (obj && Object.prototype.toString.call(obj.words) === '[object Array]') {
-        apply(obj.words);
-      }
-    }
-  } catch (e) { /* localStorage 被禁用时忽略 */ }
+      return obj && Object.prototype.toString.call(obj.words) === '[object Array]' ? obj.words : null;
+    } catch (e) { return null; }
+  }
+  function readPending() {
+    try {
+      var arr = JSON.parse(localStorage.getItem(PENDING_KEY) || '[]');
+      return Array.isArray(arr) ? arr : [];
+    } catch (e) { return []; }
+  }
+  function hasUnsaved() {
+    var pending = readPending();
+    var dirty = false;
+    try { dirty = localStorage.getItem(DIRTY_KEY) === '1'; } catch (e) {}
+    return pending.length > 0 || dirty;
+  }
+  function applyLocal() {
+    var words = readCacheWords() || [];
+    var pending = readPending();
+    pending.forEach(function (w) { if (words.indexOf(w) === -1) words.push(w); });
+    apply(words);
+  }
 
-  /* 2) 同域副本 → 3) API；无论缓存是否命中都执行，谁成功用谁 */
+  // 同域跨页实时同步：管理页在另一个标签页改词，本页无需刷新立刻跟着变。
+  window.addEventListener('storage', function (e) {
+    if (e.key === CACHE_KEY || e.key === PENDING_KEY || e.key === DIRTY_KEY) applyLocal();
+  });
+  // 浏览器「返回」命中 bfcache 时不会重跑脚本，pageshow 补一次重读。
+  window.addEventListener('pageshow', function (e) {
+    if (e.persisted) applyLocal();
+  });
+
+  applyLocal();
+
+  /* 2) 同域副本 → 3) API；有未保存本机改动时不覆盖 */
   fetch(LOCAL_URL + '?t=' + Date.now(), { cache: 'no-store' })
     .then(function (r) { return r.ok ? r.text() : Promise.reject(); })
     .catch(function () {
@@ -228,6 +261,7 @@
       }).then(function (r) { return r.ok ? r.text() : Promise.reject(); });
     })
     .then(function (txt) {
+      if (hasUnsaved()) return;
       var words = parse(txt);
       try { localStorage.setItem(CACHE_KEY, JSON.stringify({ words: words, ts: Date.now() })); } catch (e) {}
       apply(words);
