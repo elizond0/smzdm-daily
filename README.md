@@ -5,7 +5,7 @@
 线上日报：https://elizond0.github.io/smzdm-daily/
 运行概览：https://elizond0.github.io/smzdm-daily/overview.html
 数据库：https://elizond0.github.io/smzdm-daily/db.html
-愿望单：https://elizond0.github.io/smzdm-daily/wishlist.html
+关键词管理（关注+屏蔽）：https://elizond0.github.io/smzdm-daily/words.html
 
 ## 先读这份（跨设备 / 新会话必看）
 
@@ -97,7 +97,7 @@ PUT  /repos/{owner}/{repo}/contents/{path}        → base64 内容 + sha
 | `probe.py` | 访问前的站点可用性探测 |
 | `template.html` | 日报页面模板（`{{key}}` 占位符，改样式只动这个） |
 | `watchlist.txt` | 愿望单关键词，一行一个 |
-| `docs/` | Pages 发布目录（生成的页面 + watch.js / db.html / wishlist.html / overview.html） |
+| `docs/` | Pages 发布目录（生成的页面 + watch.js / block.js / db.html / words.html / overview.html；旧 wishlist.html / blocklist.html 仅作跳转兼容） |
 | `data/` | 跨运行持久化：catalog.json、pool.json、run_history.json、state/ |
 | `.github/workflows/daily.yml` | 定时任务定义 |
 | `WORKING_RULES.md` | **工作纪律**：文件归属、开工动作、禁止事项 |
