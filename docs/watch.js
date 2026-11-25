@@ -122,7 +122,7 @@
       try { localStorage.setItem(CACHE_KEY, JSON.stringify({ words: words, ts: Date.now() })); } catch (e2) {}
       addPending(word);
       apply(words);
-      toast('已在本机关注「' + word + '」，去愿望单页面「保存到仓库」才对其他设备生效');
+      toast('已在本机关注「' + word + '」，去关键词管理页「保存到仓库」才对其他设备生效');
     });
     /* 锚点 = .nameops 包裹层（与 block.js 共用，见那里的注释），插入其中 → 与标签同排 */
     var ops = ensureOps(td);
