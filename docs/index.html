@@ -1141,7 +1141,7 @@ tbody td.idx{position:relative}
      保持「本地缓存、同源加载」的既定方案，离线也能看。 -->
 <div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="商品缩略图预览" hidden>
   <button class="lb-x" type="button" aria-label="关闭预览">&times;</button>
-  <img class="lb-img" alt="">
+  <img class="lb-img" alt="" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==">
   <div class="lb-cap"></div>
 </div>
 <script>
@@ -1161,6 +1161,12 @@ tbody td.idx{position:relative}
     im.setAttribute('tabindex','0');
     im.setAttribute('role','button');
     im.setAttribute('aria-label','放大查看：' + titleOf(im));
+    im.addEventListener('error',function(){
+      var cell=im.closest('.name.haspic');
+      if(cell) cell.classList.remove('haspic');
+      im.remove();
+    });
+    if(im.complete && im.naturalWidth===0) im.dispatchEvent(new Event('error'));
   });
 
   function open(im){
@@ -1175,7 +1181,7 @@ tbody td.idx{position:relative}
   function shut(){
     if(lb.hidden) return;
     lb.hidden = true;
-    big.removeAttribute('src');
+    big.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
     document.body.style.overflow = '';
     if(last && last.focus) last.focus();
   }
