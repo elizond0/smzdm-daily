@@ -54,6 +54,9 @@ button{padding:9px 16px;border-radius:8px;border:1px solid transparent;font-size
   color:#8a6410;border-radius:8px;padding:9px 13px;font-size:12.5px;margin-bottom:12px}
 .dirtybar b{font-weight:600}
 .dirtybar .dot2{width:6px;height:6px;border-radius:50%;background:#d99b19;flex:none}
+.savedbar{display:flex;align-items:center;gap:8px;background:#eefaf1;border:1px solid #c7e9d1;
+  color:#20643a;border-radius:8px;padding:9px 13px;font-size:12.5px;margin-bottom:12px}
+.savedbar .dot2{width:6px;height:6px;border-radius:50%;background:#2fa360;flex:none}
 .errbar{display:flex;align-items:center;gap:10px;background:#fdecee;border:1px solid #f3c3c9;
   color:#a1404c;border-radius:8px;padding:10px 13px;font-size:12.5px;margin-bottom:12px}
 .errbar button{padding:5px 12px;font-size:12px;margin-left:auto}
@@ -109,6 +112,9 @@ button{padding:9px 16px;border-radius:8px;border:1px solid transparent;font-size
       <div class="dirtybar" id="watch-dirtyBar" style="display:none">
         <span class="dot2"></span><span id="watch-dirtyText">有未保存的修改</span>
       </div>
+      <div class="savedbar" id="watch-savedBar" style="display:none">
+        <span class="dot2"></span><span id="watch-savedText">已保存到仓库</span>
+      </div>
       <div class="row">
         <input type="text" id="watch-newWord" placeholder="输入关键词，比如 耳机" maxlength="30">
         <button class="btn-main" id="watch-addBtn">添加</button>
@@ -135,6 +141,9 @@ button{padding:9px 16px;border-radius:8px;border:1px solid transparent;font-size
       <div class="dirtybar" id="block-dirtyBar" style="display:none">
         <span class="dot2"></span><span id="block-dirtyText">有未保存的修改</span>
       </div>
+      <div class="savedbar" id="block-savedBar" style="display:none">
+        <span class="dot2"></span><span id="block-savedText">已保存到仓库</span>
+      </div>
       <div class="row">
         <input type="text" id="block-newWord" placeholder="输入要屏蔽的关键词，比如 路由器" maxlength="30">
         <button class="btn-main" id="block-addBtn">添加</button>
@@ -154,8 +163,8 @@ button{padding:9px 16px;border-radius:8px;border:1px solid transparent;font-size
 
 <div class="toast" id="toast"></div>
 
-<footer class="page-foot" data-build="2026-11-25 13:20">
-  页面版本 2026-11-25 13:20　·　<a href="./index.html">返回日报</a> · <a href="./overview.html">运行概览</a>
+<footer class="page-foot" data-build="2026-11-25 23:30">
+  页面版本 2026-11-25 23:30　·　<a href="./index.html">返回日报</a> · <a href="./overview.html">运行概览</a>
 </footer>
 
 <script>
@@ -168,14 +177,14 @@ button{padding:9px 16px;border-radius:8px;border:1px solid transparent;font-size
   const CFG = {
     watch: {
       file:'watchlist.txt', kind:'watch', label:'关注词',
-      cache:'watch_words_cache', pending:'watch_pending', dirty:'watch_dirty',
+      cache:'watch_words_cache', pending:'watch_pending', dirty:'watch_dirty', saved:'watch_saved_at',
       empty:'还没有关注词，上面输入框添加一个吧',
       head:'# 关注关键词 · 一行一个\n#\n# 由关键词管理页自动生成 · ',
       tail:'\n# 命中的商品会在日报里标上「愿望单」标签，筛选规则与折扣榜一致。\n\n'
     },
     block: {
       file:'blocklist.txt', kind:'block', label:'屏蔽词',
-      cache:'block_words_cache', pending:'block_pending', dirty:'block_dirty',
+      cache:'block_words_cache', pending:'block_pending', dirty:'block_dirty', saved:'block_saved_at',
       empty:'还没有屏蔽词，上面输入框添加一个吧',
       head:'# 屏蔽关键词 · 一行一个\n#\n# 由关键词管理页自动生成 · ',
       tail:'\n# 命中的商品只在日报前端隐藏，爬取与数据库不受影响。\n\n'
@@ -237,14 +246,28 @@ button{padding:9px 16px;border-radius:8px;border:1px solid transparent;font-size
       else localStorage.removeItem(CFG[tab].dirty);
     } catch (e) {}
   }
+  function savedAt(tab){
+    try { return parseInt(localStorage.getItem(CFG[tab].saved) || '0', 10) || 0; } catch (e) { return 0; }
+  }
   function updateState(tab){
     const diff = changed(tab);
+    const n = state[tab].words.filter(Boolean).length;
     persistCache(tab);
     markDirty(tab, diff);
     $(tab+'-dirtyBar').style.display = diff ? 'flex' : 'none';
+    const savedBar = $(tab+'-savedBar');
     if (diff){
-      const n = state[tab].words.filter(Boolean).length;
       $(tab+'-dirtyText').innerHTML = '有未保存的修改（当前 <b>' + n + '</b> 个关键词）· 点「保存到仓库」才会写回';
+      savedBar.style.display = 'none';
+    } else if (n === 0){
+      // 空词表：明确告知状态，避免「啥都没有」的茫然
+      $(tab+'-savedText').textContent = '词表为空 · 当前仓库中也没有' + CFG[tab].label;
+      savedBar.style.display = 'flex';
+    } else {
+      const ts = savedAt(tab);
+      const when = ts ? new Date(ts).toLocaleString('zh-CN', {month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}) : '';
+      $(tab+'-savedText').textContent = (when ? '已同步 · ' + when : '与仓库一致') + ' · 共 ' + n + ' 个' + CFG[tab].label;
+      savedBar.style.display = 'flex';
     }
   }
   function render(tab){
@@ -404,6 +427,7 @@ button{padding:9px 16px;border-radius:8px;border:1px solid transparent;font-size
       state[tab].fromIndex.clear();
       try {
         localStorage.setItem(CFG[tab].cache, JSON.stringify({words:clean, ts:Date.now()}));
+        localStorage.setItem(CFG[tab].saved, String(Date.now()));
         localStorage.removeItem(CFG[tab].pending);
       } catch (e) {}
       render(tab);
